@@ -1,0 +1,16 @@
+evolved_from: &id001 []
+fitness_score: 0.15560000000000002
+generation: 0
+name: diversity
+parameters:
+  common_reject_rate: 0.05
+  deficit_panic_threshold: 0.8
+  diversity_emphasis: 1.5
+  early_game_threshold: 0.3
+  mid_game_threshold: 0.7
+  min_diversity_ratio: 0.6
+  multi_attr_bonus: 1.2
+  rare_accept_rate: 0.95
+  ultra_rare_threshold: 0.1
+parent_ids: *id001
+type: diversity

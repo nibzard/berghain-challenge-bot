@@ -1,0 +1,32 @@
+# Balanced Strategy
+# Blends rarity-driven and shortage-driven signals with phase adjustments
+
+name: "Balanced"
+description: "Balanced acceptance using rarity and constraint shortage, tuned by phase."
+
+parameters:
+  # Shared/variation keys
+  ultra_rare_threshold: 0.10
+  rare_accept_rate: 0.95
+  common_reject_rate: 0.05
+  deficit_panic_threshold: 0.80
+  early_game_threshold: 0.30
+  mid_game_threshold: 0.70
+
+  # Balanced-specific
+  rarity_weight: 1.0
+  shortage_weight: 1.2
+  multi_attr_bonus: 1.3
+  needed_attr_boost: 1.2
+  base_offset: 0.20
+  score_scale: 0.05
+
+scenario_adjustments:
+  1:
+    shortage_weight: 1.3
+  2:
+    ultra_rare_threshold: 0.08
+    rare_accept_rate: 0.97
+  3:
+    multi_attr_bonus: 1.4
+

@@ -1,0 +1,37 @@
+# ABOUTME: High score thresholds for early game termination
+# ABOUTME: Contains best rejection counts per scenario to avoid wasting time
+
+# Current high scores (best rejection counts)
+# Games exceeding these counts will be terminated early to save time
+high_scores:
+  # Keep this equal to the true best record. The global buffer below controls
+  # how early termination triggers relative to this record.
+  scenario_1: 716   # Maksim's record (updated)
+  scenario_2: 3140  # Maksim's record
+  scenario_3: 4003  # Maksim's record
+
+# Configuration options
+settings:
+  # Buffer percentage - stop when rejections reach X% of high score.
+  # Set > 1.0 to allow going beyond the record before early termination.
+  # For Scenario 1, base rates require finishing to reach 1000 admits; using a
+  # larger buffer prevents premature aborts while preserving the true record.
+  buffer_percentage: 1.35
+
+  # Whether to enable high score checking by default
+  enabled: true
+
+  # Log level for high score messages
+  log_early_termination: true
+
+# Metadata about high scores
+metadata:
+  current_champion: "Maksim"
+  last_updated: "2025-09-05"
+  total_score: 7859  # Sum of all three scenarios
+
+  # Notes about each scenario
+  scenario_notes:
+    scenario_1: "Friday Night - young + well_dressed constraints"
+    scenario_2: "Creative scenario - rare attribute requirements"
+    scenario_3: "Multi-rare scenario - multiple rare attributes"

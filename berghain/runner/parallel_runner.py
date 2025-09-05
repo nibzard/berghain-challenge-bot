@@ -5,6 +5,7 @@ import concurrent.futures
 import logging
 import json
 import random
+import time
 from datetime import datetime
 from pathlib import Path
 from typing import List, Dict, Any, Optional, Callable
@@ -24,6 +25,8 @@ class GameTask:
     strategy_name: str
     solver_id: str
     strategy_params: Optional[Dict[str, Any]] = None
+    enable_high_score_check: bool = True
+    mode: str = "local"
 
 
 @dataclass  
@@ -60,10 +63,14 @@ class ParallelRunner:
         strategy_config = self.executor.load_strategy_config(base_strategy)
         base_params = strategy_config.get('parameters', {})
         
-        # Apply scenario adjustments to base
+        # Apply scenario adjustments to base (support int or string keys)
         scenario_adjustments = strategy_config.get('scenario_adjustments', {})
-        if str(scenario_id) in scenario_adjustments:
-            base_params.update(scenario_adjustments[str(scenario_id)])
+        try:
+            normalized_adjustments = {str(k): v for k, v in scenario_adjustments.items()}
+        except AttributeError:
+            normalized_adjustments = {}
+        if str(scenario_id) in normalized_adjustments:
+            base_params.update(normalized_adjustments[str(scenario_id)])
         
         variations = [base_params.copy()]  # Include base params
         
@@ -127,13 +134,18 @@ class ParallelRunner:
     def execute_task(self, task: GameTask, stream_callback: Optional[Callable] = None) -> GameResult:
         """Execute a single game task."""
         try:
+            # Stagger starts slightly to avoid API rate spikes
+            time.sleep(random.uniform(0.4, 1.2))
             # For now, always use the standard executor path
             # Custom strategy parameters can be handled in GameExecutor
             return self.executor.execute_game(
-                task.scenario_id,
-                task.strategy_name,
-                task.solver_id,
-                stream_callback
+                scenario_id=task.scenario_id,
+                strategy_name=task.strategy_name,
+                solver_id=task.solver_id,
+                stream_callback=stream_callback,
+                enable_high_score_check=task.enable_high_score_check,
+                strategy_params=task.strategy_params,
+                mode=task.mode
             )
                 
         except Exception as e:
@@ -141,11 +153,18 @@ class ParallelRunner:
             # Return a failed result
             from ..core import GameState, GameStatus
             
+            # Create dummy statistics to prevent None access errors
+            from ..core import AttributeStatistics
+            dummy_statistics = AttributeStatistics(
+                frequencies={},
+                correlations={}
+            )
+            
             failed_state = GameState(
                 game_id="failed",
                 scenario=task.scenario_id,
                 constraints=[],
-                statistics=None
+                statistics=dummy_statistics
             )
             failed_state.complete_game(GameStatus.FAILED)
             

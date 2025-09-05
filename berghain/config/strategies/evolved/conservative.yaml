@@ -1,20 +1,16 @@
-evolved_from: &id001
-- diversity
-- conservative
-fitness_score: 0.042333333333333334
-generation: 6
-name: cross_conservative_gen6_3319
+evolved_from: &id001 []
+fitness_score: 0.044
+generation: 0
+name: conservative
 parameters:
   capacity_panic_threshold: 0.9
   common_accept_rate: 0.6
   common_reject_rate: 0.08
   deficit_panic_threshold: 0.75
-  diversity_emphasis: 1.5
   dual_rare_bonus: 1.5
-  early_game_threshold: 0.3
+  early_game_threshold: 0.25
   mid_game_threshold: 0.7
-  min_diversity_ratio: 0.6
-  multi_attr_bonus: 1.2
+  multi_attr_bonus: 1.3
   no_constraint_accept_rate: 0.08
   phase1_multi_attr_only: false
   rare_accept_rate: 0.85
@@ -24,8 +20,3 @@ parameters:
   ultra_rare_threshold: 0.12
 parent_ids: *id001
 type: conservative
-scenario_adjustments:
-  1:
-    # Be less harsh on no-constraint and avoid multi-attr-only in early
-    common_reject_rate: 0.01
-    phase1_multi_attr_only: false

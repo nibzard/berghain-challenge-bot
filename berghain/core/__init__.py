@@ -6,9 +6,10 @@ from .domain import (
     GameState, GameResult, GameStatus
 )
 from .api_client import BerghainAPIClient, BerghainAPIError
+from .high_score_checker import HighScoreChecker
 
 __all__ = [
     "Person", "Constraint", "Decision", "AttributeStatistics",
     "GameState", "GameResult", "GameStatus", 
-    "BerghainAPIClient", "BerghainAPIError"
+    "BerghainAPIClient", "BerghainAPIError", "HighScoreChecker"
 ]

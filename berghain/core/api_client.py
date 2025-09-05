@@ -1,8 +1,11 @@
 # ABOUTME: Clean API client for the Berghain Challenge API
 # ABOUTME: Single responsibility - handle HTTP communication with the game API
 
+import os
 import requests
 import logging
+import time
+import random
 from typing import Dict, Optional, Any
 from .domain import GameState, Person, Constraint, AttributeStatistics, GameStatus
 
@@ -20,16 +23,18 @@ class BerghainAPIClient:
     
     def __init__(self, base_url: str = "https://berghain.challenges.listenlabs.ai", 
                  player_id: str = "3f60a32b-8232-4b52-a11d-31a82aaa0c61", 
-                 timeout: int = 30):
-        self.base_url = base_url
-        self.player_id = player_id
+                 timeout: int = 60):
+        # Allow overrides via environment
+        self.base_url = os.getenv("BERGHAIN_BASE_URL", base_url)
+        self.player_id = os.getenv("BERGHAIN_PLAYER_ID", player_id)
         self.timeout = timeout
+        # Lightweight defaults; use per-request connections for simplicity
         self.session = requests.Session()
-        
-        # Configure session with timeout
-        adapter = requests.adapters.HTTPAdapter()
-        self.session.mount('http://', adapter)
-        self.session.mount('https://', adapter)
+        self.default_headers = {
+            "User-Agent": "python-requests",
+            "Accept": "application/json",
+            "Connection": "close",
+        }
         
     def start_new_game(self, scenario: int) -> GameState:
         """Start a new game and return initial game state."""
@@ -39,11 +44,37 @@ class BerghainAPIClient:
             "playerId": self.player_id
         }
         
+        # Simple, robust start with fresh connection per attempt
+        data = None
+        last_exc: Optional[Exception] = None
+        for attempt in range(1, 7):
+            try:
+                # Backoff: 2s, 4s, 8s, 12s, 16s, 20s (+jitter)
+                delay = 2.0 * attempt
+                time.sleep(delay + random.uniform(0, 0.5))
+                resp = requests.get(url, params=params, headers=self.default_headers, timeout=(10, self.timeout))
+                if resp.status_code == 429:
+                    ra = resp.headers.get("Retry-After")
+                    if ra:
+                        try:
+                            time.sleep(min(15.0, float(ra)))
+                        except Exception:
+                            pass
+                    last_exc = BerghainAPIError("HTTP 429 Too Many Requests")
+                    continue
+                if 500 <= resp.status_code < 600:
+                    last_exc = BerghainAPIError(f"HTTP {resp.status_code}")
+                    continue
+                resp.raise_for_status()
+                data = resp.json()
+                break
+            except requests.RequestException as e:
+                last_exc = e
+                continue
+        if data is None:
+            raise BerghainAPIError(f"Failed to start game after retries: {last_exc}")
+        
         try:
-            response = self.session.get(url, params=params, timeout=self.timeout)
-            response.raise_for_status()
-            data = response.json()
-            
             # Parse constraints
             constraints = [
                 Constraint(c["attribute"], c["minCount"]) 
@@ -84,13 +115,8 @@ class BerghainAPIClient:
         if accept is not None:
             params["accept"] = str(accept).lower()
         
-        try:
-            response = self.session.get(url, params=params, timeout=self.timeout)
-            response.raise_for_status()
-            return response.json()
-            
-        except requests.exceptions.RequestException as e:
-            raise BerghainAPIError(f"Failed to make decision: {e}")
+        # Simple per-call request with modest backoff
+        return self._simple_get_with_backoff(url, params)
     
     def get_next_person(self, game_state: GameState, person_index: int) -> Optional[Person]:
         """Get the next person without making a decision."""
@@ -144,3 +170,31 @@ class BerghainAPIClient:
     def close(self):
         """Clean up resources."""
         self.session.close()
+
+    # --- Internal helpers ---
+    def _simple_get_with_backoff(self, url: str, params: Dict[str, Any], max_retries: int = 6) -> Dict[str, Any]:
+        """Simple GET with small backoff and new connection per attempt."""
+        last_exc: Optional[Exception] = None
+        for attempt in range(1, max_retries + 1):
+            try:
+                if attempt > 1:
+                    time.sleep(min(10.0, attempt * 1.5) + random.uniform(0, 0.5))
+                resp = requests.get(url, params=params, headers=self.default_headers, timeout=(10, self.timeout))
+                if resp.status_code == 429:
+                    ra = resp.headers.get("Retry-After")
+                    if ra:
+                        try:
+                            time.sleep(min(15.0, float(ra)))
+                        except Exception:
+                            pass
+                    last_exc = BerghainAPIError("HTTP 429 Too Many Requests")
+                    continue
+                if 500 <= resp.status_code < 600:
+                    last_exc = BerghainAPIError(f"HTTP {resp.status_code}")
+                    continue
+                resp.raise_for_status()
+                return resp.json()
+            except requests.RequestException as e:
+                last_exc = e
+                continue
+        raise BerghainAPIError(f"HTTP request failed after retries: {last_exc}")

@@ -1,0 +1,29 @@
+# Greedy Constraint Strategy
+# Accepts any person that contributes to unmet constraints
+
+name: "Greedy"
+description: "Greedy constraint-first decisions; minimal filler otherwise."
+
+parameters:
+  # Shared/variation keys
+  ultra_rare_threshold: 0.10
+  rare_accept_rate: 0.98
+  common_reject_rate: 0.03
+  deficit_panic_threshold: 0.80
+  early_game_threshold: 0.30
+  mid_game_threshold: 0.70
+
+  # Greedy-specific
+  needed_accept_prob: 0.90
+  filler_prob: 0.05
+
+scenario_adjustments:
+  1:
+    # Scenario 1: accept singles aggressively; allow a little filler to maintain rate
+    needed_accept_prob: 0.995
+    filler_prob: 0.055
+  2:
+    ultra_rare_threshold: 0.08
+    needed_accept_prob: 0.95
+  3:
+    filler_prob: 0.06

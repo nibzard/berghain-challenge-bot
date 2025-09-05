@@ -1,0 +1,15 @@
+evolved_from: &id001 []
+fitness_score: 0.15316666666666667
+generation: 0
+name: greedy
+parameters:
+  common_reject_rate: 0.03
+  deficit_panic_threshold: 0.8
+  early_game_threshold: 0.3
+  filler_prob: 0.05
+  mid_game_threshold: 0.7
+  needed_accept_prob: 0.9
+  rare_accept_rate: 0.98
+  ultra_rare_threshold: 0.1
+parent_ids: *id001
+type: greedy

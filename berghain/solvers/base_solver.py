@@ -2,11 +2,14 @@
 # ABOUTME: Separates strategy from execution - clean architecture
 
 import logging
+import time
+import random
 from typing import Optional, Callable, List
 from datetime import datetime
 
-from ..core import GameState, Person, Decision, BerghainAPIClient, GameResult
+from ..core import GameState, Person, Decision, BerghainAPIClient, GameResult, GameStatus
 from ..core.strategy import DecisionStrategy
+from ..core.high_score_checker import HighScoreChecker
 
 
 logger = logging.getLogger(__name__)
@@ -15,12 +18,14 @@ logger = logging.getLogger(__name__)
 class BaseSolver:
     """Base game solver that executes strategies."""
     
-    def __init__(self, strategy: DecisionStrategy, solver_id: str = "base"):
+    def __init__(self, strategy: DecisionStrategy, solver_id: str = "base", enable_high_score_check: bool = True, api_client: Optional[BerghainAPIClient] = None):
         self.strategy = strategy
         self.solver_id = solver_id
-        self.api_client = BerghainAPIClient()
+        self.api_client = api_client or BerghainAPIClient()
         self.decisions: List[Decision] = []
         self.stream_callback: Optional[Callable] = None
+        self.enable_high_score_check = enable_high_score_check
+        self.high_score_checker: Optional[HighScoreChecker] = None
         
     def set_stream_callback(self, callback: Callable):
         """Set callback for streaming updates."""
@@ -40,8 +45,28 @@ class BaseSolver:
         """Execute a complete game using the configured strategy."""
         logger.info(f"Starting game - Solver: {self.solver_id}, Strategy: {self.strategy.name}, Scenario: {scenario}")
         
-        # Start new game
-        game_state = self.api_client.start_new_game(scenario)
+        # Initialize high score checker
+        if self.enable_high_score_check:
+            self.high_score_checker = HighScoreChecker(scenario, enabled=True)
+        else:
+            self.high_score_checker = None
+        
+        # Start new game with robust retry/backoff
+        max_attempts = 5
+        last_error = None
+        for attempt in range(1, max_attempts + 1):
+            try:
+                game_state = self.api_client.start_new_game(scenario)
+                break
+            except Exception as e:
+                last_error = e
+                if attempt == max_attempts:
+                    logger.error(f"Failed to start new game after {max_attempts} attempts: {e}")
+                    raise
+                wait = 5 * (2 ** (attempt - 1)) + random.uniform(0, 2)
+                logger.warning(f"Start new game failed (attempt {attempt}/{max_attempts}): {e}. "
+                               f"Backing off {wait:.1f}s ...")
+                time.sleep(wait)
         self.decisions = []
         
         # Stream game start
@@ -93,9 +118,29 @@ class BaseSolver:
             
             # Update game state
             game_state.update_decision(decision)
+
+            # Stream API response snapshot (post-update row for append-only logs)
+            try:
+                self._stream_update("api_response", {
+                    "person_index": decision.person.index,
+                    "attributes": decision.person.attributes,
+                    "decision": decision.accepted,
+                    "reasoning": decision.reasoning,
+                    "admitted": game_state.admitted_count,
+                    "rejected": game_state.rejected_count,
+                    "progress": game_state.constraint_progress(),
+                    "status": game_state.status.value
+                })
+            except Exception:
+                pass
             
-            # Get next person if game continues
-            if response["status"] == "running" and "nextPerson" in response:
+            # Check high score threshold after each decision
+            if self.high_score_checker and self.high_score_checker.should_terminate(game_state.rejected_count):
+                reason = self.high_score_checker.get_termination_reason(game_state.rejected_count)
+                logger.info(f"🏁 [{self.solver_id}] Early termination: {reason}")
+                game_state.complete_game(GameStatus.ABORTED_HIGH_SCORE)
+                person = None
+            elif response["status"] == "running" and "nextPerson" in response:
                 person_data = response["nextPerson"]
                 person = Person(person_data["personIndex"], person_data["attributes"])
             else:

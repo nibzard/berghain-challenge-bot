@@ -15,6 +15,8 @@ parameters:
   rare_accept_rate: 0.95
   common_accept_rate: 0.40
   no_constraint_accept_rate: 0.02    # Very harsh
+  # Used by implementation for filler acceptance when no constraints match
+  common_reject_rate: 0.02
   
   # Phase thresholds
   early_game_threshold: 0.35         # Longer early phase

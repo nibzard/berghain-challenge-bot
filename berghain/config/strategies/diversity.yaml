@@ -1,0 +1,28 @@
+# Diversity-First Strategy
+# Emphasizes balancing underrepresented constraints, especially early
+
+name: "DiversityFirst"
+description: "Prioritizes underrepresented constraints to build a balanced foundation."
+
+parameters:
+  # Shared/variation keys
+  ultra_rare_threshold: 0.10
+  rare_accept_rate: 0.95
+  common_reject_rate: 0.05
+  deficit_panic_threshold: 0.80
+  early_game_threshold: 0.30
+  mid_game_threshold: 0.70
+
+  # Diversity-specific
+  diversity_emphasis: 1.5
+  min_diversity_ratio: 0.60
+  multi_attr_bonus: 1.2
+
+scenario_adjustments:
+  1:
+    min_diversity_ratio: 0.65
+  2:
+    diversity_emphasis: 1.7
+  3:
+    multi_attr_bonus: 1.3
+

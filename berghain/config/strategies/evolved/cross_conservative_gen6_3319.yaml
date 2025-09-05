@@ -24,8 +24,3 @@ parameters:
   ultra_rare_threshold: 0.12
 parent_ids: *id001
 type: conservative
-scenario_adjustments:
-  1:
-    # Be less harsh on no-constraint and avoid multi-attr-only in early
-    common_reject_rate: 0.01
-    phase1_multi_attr_only: false

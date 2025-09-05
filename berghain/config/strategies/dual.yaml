@@ -1,0 +1,26 @@
+# Dual Deficit Controller
+# Acceptance-rate PI control + urgency-based single acceptance
+
+name: "DualDeficit"
+description: "PI-controlled acceptance rate and dual-constraint urgency logic."
+
+parameters:
+  early_singles_until: 0.85
+  lag_bias_threshold: 0.01
+  single_accept_prob: 0.90
+  surplus_single_p_base: 0.10
+  surplus_single_p_boost: 0.25
+  r_target_early: 0.56
+  r_target_mid: 0.53
+  r_target_late: 0.52
+  filler_base: 0.02
+  filler_max: 0.15
+  pi_kp: 0.8
+  pi_ki: 0.1
+
+scenario_adjustments:
+  1:
+    early_singles_until: 0.86
+    r_target_early: 0.57
+    r_target_mid: 0.535
+    r_target_late: 0.525

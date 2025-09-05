@@ -82,14 +82,41 @@ Edit files in `berghain/config/scenarios/`:
 - `scenario_3.yaml` - Custom scenarios
 
 ### Strategies
-Edit files in `berghain/config/strategies/`:
-- `conservative.yaml` - Safe approach
-- `aggressive.yaml` - High acceptance rate
-- `adaptive.yaml` - Dynamic parameter adjustment
+Edit files in `berghain/config/strategies/`.
+
+Supported strategy names (use with `--strategy`):
+- `conservative` → Rarity-weighted, safe baseline
+- `aggressive` → Rarity-weighted, stricter early game
+- `adaptive` → Learns acceptance rates from state
+- `balanced` → Blends rarity and shortage signals
+- `greedy` → Accepts any unmet-constraint person
+- `diversity` → Balances underrepresented constraints
+
+Strategy config schema:
+- `name`: Human-readable name (string)
+- `description`: Short description (string)
+- `parameters`: Dict of strategy parameters used by the implementation
+- `scenario_adjustments`: Dict keyed by scenario ID (int or string) with param overrides
+
+Common parameter keys recognized across strategies:
+- `ultra_rare_threshold`: Frequency threshold treated as ultra-rare
+- `rare_accept_rate`: Acceptance prob for ultra-rare cases
+- `common_reject_rate`: Baseline prob for no-constraint fillers
+- `early_game_threshold`, `mid_game_threshold`: Phase boundaries (0–1 capacity)
+- `deficit_panic_threshold`: Progress threshold to consider a constraint critical
+
+Notes:
+- Scenario adjustments accept keys as `1:` or `'1':`; both are supported.
+- Additional strategy-specific keys are documented in each YAML.
 
 ## Game Logs
 
-All games are logged to `game_logs/` with structured JSON format including:
+All games are logged to `game_logs/` with structured logs:
+- `game_*.json`: Final summary per game with metadata, params, and last 1000 decisions.
+- `live_{solver_id}.json`: Live snapshot, overwritten on each update.
+- `events_{solver_id}_*.jsonl`: Append-only NDJSON; one row per API response (post-decision state).
+
+The summary JSON includes:
 - Game metadata and timing
 - Strategy parameters used
 - Constraint satisfaction details

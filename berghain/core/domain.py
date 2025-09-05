@@ -11,6 +11,7 @@ class GameStatus(Enum):
     RUNNING = "running"
     COMPLETED = "completed"
     FAILED = "failed"
+    ABORTED_HIGH_SCORE = "aborted_high_score"
 
 
 @dataclass
@@ -96,9 +97,12 @@ class GameState:
     
     def __post_init__(self):
         if not self.admitted_attributes:
-            self.admitted_attributes = {
-                attr: 0 for attr in self.statistics.frequencies.keys()
-            }
+            if self.statistics and self.statistics.frequencies:
+                self.admitted_attributes = {
+                    attr: 0 for attr in self.statistics.frequencies.keys()
+                }
+            else:
+                self.admitted_attributes = {}
     
     @property
     def target_capacity(self) -> int:

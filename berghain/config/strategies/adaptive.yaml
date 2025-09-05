@@ -76,7 +76,7 @@ learning:
   parameter_drift_correction: true
 
 # Scenario-specific adaptations
-scenario_adaptations:
+scenario_adjustments:
   1:  # Friday Night
     focus_dual_attributes: true
     

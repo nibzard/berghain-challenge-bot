@@ -23,8 +23,10 @@ from .optimal_control_safe import OptimalControlSafeSolver, OptimalControlSafeSt
 from .perfect_solver import PerfectSolver, PerfectStrategy
 from .mec_solver import MecSolver, MecStrategy
 from .ogds_solver import OGDSSolver, OGDSStrategy
+from .ogds_simple import OGDSSimpleSolver, OGDSSimpleStrategy
 from .apex_solver import ApexSolver, ApexStrategy
 from .pec_solver import PECStrategy
+from .pec_v2_solver import PECv2Strategy
 
 __all__ = [
     "BaseSolver",
@@ -61,7 +63,10 @@ __all__ = [
     "MecStrategy",
     "OGDSSolver",
     "OGDSStrategy",
+    "OGDSSimpleSolver", 
+    "OGDSSimpleStrategy",
     "ApexSolver",
     "ApexStrategy",
     "PECStrategy",
+    "PECv2Strategy",
 ]

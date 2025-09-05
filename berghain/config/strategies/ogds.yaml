@@ -2,10 +2,9 @@ name: "OracleGatedDeficitStrategy"
 description: "Maintains high feasibility probability against a target rejection count using an oracle."
 
 parameters:
-  # The target number of rejections the bot aims for. The feasibility calculations
-  # are based on staying within this budget. Aiming slightly below the record (716)
-  # gives a small margin of error.
-  target_rejections: 710
+  # The target number of rejections the bot aims for. Set lower to be more aggressive
+  # about accepting needed attributes. We can afford more rejections if needed.
+  target_rejections: 800
 
   # The fraction of total capacity (1000) after which the strategy switches
   # from 'early game' to 'late game' logic. In the late game, it stops
@@ -35,6 +34,6 @@ parameters:
 scenario_adjustments:
   1:
     # Scenario 1 specific optimization
-    target_rejections: 710    # Optimal budget for scenario 1
+    target_rejections: 800    # Allow more rejections to meet constraints
     oracle_delta: 0.03        # More permissive confidence requirement
     lag_bias_threshold: 1.05  # Balanced approach

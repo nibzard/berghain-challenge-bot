@@ -1,0 +1,46 @@
+name: "RL_LSTM"
+description: "LSTM-based reinforcement learning strategy trained with PPO"
+
+parameters:
+  # Model configuration
+  model_path: "models/berghain_rl_best.pth"  # Path to trained model
+  device: "cpu"  # Device for inference ('cpu' or 'cuda')
+  fallback_strategy: "greedy"  # Fallback when model unavailable
+  
+  # Inference parameters
+  deterministic: true  # Use deterministic policy for evaluation
+  
+  # Model architecture (for reference)
+  input_dim: 8
+  hidden_dim: 128
+  lstm_layers: 2
+  dropout: 0.1
+
+# Strategy metadata
+strategy_type: "reinforcement_learning"
+trained_on_scenario: 1
+requires_model_file: true
+
+# Performance expectations (update after training)
+expected_success_rate: 0.85
+expected_rejection_count: 700
+training_timesteps: 1000000
+
+# Notes about the strategy
+notes: |
+  This strategy uses a trained LSTM policy network to make sequential admission decisions.
+  The network was trained using Proximal Policy Optimization (PPO) on successful game trajectories.
+  
+  Key features:
+  - Learns temporal patterns in person arrivals
+  - Optimizes for constraint satisfaction and efficiency
+  - Maintains hidden state across decisions for context
+  - Falls back to greedy strategy if model unavailable
+  
+  Training data sources:
+  - Expert demonstrations from successful strategies (OGDS, Ultimate, etc.)
+  - Online experience from PPO training
+  
+  Usage:
+  1. Ensure model file exists at specified path
+  2. Run with: python main.py run --scenario 1 --strategy rl_lstm

@@ -1,0 +1,48 @@
+name: "RL_LSTM_Hybrid"
+description: "Hybrid RL strategy combining LSTM policy with safety rules"
+
+parameters:
+  # Model configuration
+  model_path: "models/berghain_rl_best.pth"
+  device: "cpu"
+  fallback_strategy: "greedy"
+  
+  # Hybrid-specific parameters
+  confidence_threshold: 0.8  # Minimum confidence for RL decisions
+  safety_rules: true  # Enable rule-based safety overrides
+  
+  # Safety rule configuration
+  early_dual_accept: true  # Always accept dual-attribute people early
+  constraint_protection: true  # Emergency accept when near constraint failure
+  filler_blocking: true  # Block fillers when constraints are met
+  
+  # Model architecture
+  input_dim: 8
+  hidden_dim: 128
+  lstm_layers: 2
+
+strategy_type: "hybrid_reinforcement_learning"
+trained_on_scenario: 1
+requires_model_file: true
+
+expected_success_rate: 0.90  # Higher than pure RL due to safety rules
+expected_rejection_count: 650  # More conservative due to safety rules
+
+notes: |
+  Hybrid strategy that combines the learning capability of RL with rule-based safety mechanisms.
+  
+  Safety rules:
+  1. Early dual acceptance: People with both required attributes are always accepted 
+     in the first 500 admissions to ensure efficient constraint progress
+  2. Emergency acceptance: If very close to constraint failure and capacity allows,
+     override RL rejection for people with needed attributes
+  3. Filler blocking: Once all constraints are satisfied, prevent RL from accepting
+     people who don't contribute to any constraint
+  
+  This approach provides the benefits of learned decision-making while maintaining
+  robustness against edge cases that pure RL might handle poorly.
+  
+  Best used when:
+  - Model reliability is uncertain
+  - High success rate is critical
+  - Conservative approach is preferred

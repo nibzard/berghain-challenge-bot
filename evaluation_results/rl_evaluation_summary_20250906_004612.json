@@ -1,0 +1,8 @@
+{
+  "rl_lstm": {
+    "error": "'GameExecutor' object has no attribute 'run_batch_games'"
+  },
+  "ogds": {
+    "error": "'GameExecutor' object has no attribute 'run_batch_games'"
+  }
+}

@@ -270,11 +270,11 @@ class TUIDashboard:
             )
         
         table = Table(show_header=True, header_style="bold magenta")
-        table.add_column("Solver", style="cyan", width=15)
-        table.add_column("S", justify="center", width=2)  # Scenario
-        table.add_column("Status", width=10)
-        table.add_column("A/R", justify="right", width=8)  # Admitted/Rejected
-        table.add_column("Progress", width=20)
+        table.add_column("Solver", style="cyan", width=16)
+        table.add_column("S", justify="center", width=3)  # Scenario
+        table.add_column("Status", width=11)
+        table.add_column("A/R", justify="right", width=10)  # Admitted/Rejected
+        table.add_column("Constraint Progress", width=25)
         table.add_column("Time", justify="right", width=8)
         
         for game in self.active_games.values():
@@ -284,16 +284,31 @@ class TUIDashboard:
             else:
                 status_text = Text(f"● {game.status.title()}", style="green" if game.success else "red")
             
-            # Progress bar
+            # Improved progress display
             if game.constraints and game.progress:
-                progress_text = ""
+                progress_parts = []
                 for constraint in game.constraints:
                     attr = constraint["attribute"] 
-                    prog = game.progress.get(attr, 0)
-                    bar_length = 3
+                    prog = min(game.progress.get(attr, 0), 1.0)  # Cap at 100%
+                    
+                    # Create a 6-character progress bar
+                    bar_length = 6
                     filled = int(prog * bar_length)
                     bar = "█" * filled + "░" * (bar_length - filled)
-                    progress_text += f"{attr[:3]}:{bar} "
+                    
+                    # Color the bar based on progress
+                    if prog >= 0.95:
+                        bar_color = "green"
+                    elif prog >= 0.5:
+                        bar_color = "yellow" 
+                    else:
+                        bar_color = "red"
+                    
+                    # Show full attribute name (truncated) and percentage
+                    attr_short = attr[:4] if len(attr) > 4 else attr
+                    progress_parts.append(f"{attr_short}:{bar} {prog:.0%}")
+                
+                progress_text = " ".join(progress_parts)
             else:
                 progress_text = "N/A"
             
@@ -308,11 +323,14 @@ class TUIDashboard:
             except:
                 time_str = "N/A"
             
+            # Format admitted/rejected with better spacing
+            ar_text = f"{game.admitted:,}/{game.rejected:,}"
+            
             table.add_row(
-                game.solver_id[:14],
-                str(game.scenario),
+                game.solver_id[:15],
+                str(game.scenario) if game.scenario else "?",
                 status_text,
-                f"{game.admitted}/{game.rejected}",
+                ar_text,
                 progress_text.strip(),
                 time_str
             )
@@ -380,10 +398,46 @@ class TUIDashboard:
     
     def _update_layout(self):
         """Update the layout with current data."""
+        # Clean up stale games (active for more than 10 minutes)
+        self._cleanup_stale_games()
+        
         self.layout["header"].update(self._create_header())
         self.layout["active"].update(self._create_active_games_panel())
         self.layout["completed"].update(self._create_completed_games_panel())
         self.layout["footer"].update(self._create_footer())
+    
+    def _cleanup_stale_games(self):
+        """Remove active games that have been running too long (likely dead)."""
+        current_time = datetime.now()
+        stale_games = []
+        
+        for solver_id, game in self.active_games.items():
+            try:
+                if game.start_time:
+                    # Try to parse different timestamp formats
+                    start_time_str = game.start_time
+                    if 'T' in start_time_str:
+                        # ISO format
+                        start = datetime.fromisoformat(start_time_str.replace('Z', '+00:00'))
+                        start = start.replace(tzinfo=None)  # Remove timezone for comparison
+                    else:
+                        continue  # Skip if we can't parse
+                    
+                    elapsed = current_time - start
+                    # If game has been "active" for more than 10 minutes, it's probably stale
+                    if elapsed.total_seconds() > 600:  # 10 minutes
+                        stale_games.append(solver_id)
+            except Exception:
+                # If we can't parse the time, assume it's stale
+                stale_games.append(solver_id)
+        
+        # Move stale games to completed with unknown status
+        for solver_id in stale_games:
+            game = self.active_games[solver_id]
+            game.status = "timeout"
+            game.success = False
+            self.completed_games.insert(0, game)
+            del self.active_games[solver_id]
     
     def run(self):
         """Run the TUI dashboard."""

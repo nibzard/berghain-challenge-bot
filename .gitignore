@@ -122,13 +122,6 @@ cython_debug/
 # VS Code
 .vscode/
 
-# Game logs and data files
-game_logs/
-*.jsonl
-*.json
-!berghain/config/**/*.json
-!berghain/config/**/*.yaml
-
 # Archive directory
 archive_old_files/
 

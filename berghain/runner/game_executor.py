@@ -78,7 +78,7 @@ class GameExecutor:
         else:
             # Try additional strategies if available
             try:
-                from ..solvers import BalancedStrategy, GreedyConstraintStrategy, DiversityFirstStrategy, QuotaTrackerStrategy, DualDeficitController, RBCRStrategy, RBCR2Strategy, DVOStrategy, RamanujanStrategy, UltimateStrategy, Ultimate2Strategy, Ultimate3Strategy, Ultimate3HStrategy, OptimalControlStrategy, OptimalControlFinalStrategy, OptimalControlSafeStrategy, PerfectStrategy, MecStrategy
+                from ..solvers import BalancedStrategy, GreedyConstraintStrategy, DiversityFirstStrategy, QuotaTrackerStrategy, DualDeficitController, RBCRStrategy, RBCR2Strategy, DVOStrategy, RamanujanStrategy, UltimateStrategy, Ultimate2Strategy, Ultimate3Strategy, Ultimate3HStrategy, OptimalControlStrategy, OptimalControlFinalStrategy, OptimalControlSafeStrategy, PerfectStrategy, MecStrategy, OGDSStrategy, ApexStrategy, PECStrategy
                 if name == 'balanced':
                     return BalancedStrategy(base_params)
                 if name == 'greedy':
@@ -115,6 +115,12 @@ class GameExecutor:
                     return PerfectStrategy(base_params)
                 if name in ('mec', 'exact', 'mathematician'):
                     return MecStrategy(base_params)
+                if name in ('ogds', 'oracle', 'oracle_gated'):
+                    return OGDSStrategy(base_params)
+                if name in ('apex', 'superior', 'hybrid_apex', 'triple_mode'):
+                    return ApexStrategy(base_params)
+                if name in ('pec', 'predictive', 'equilibrium', 'predictive_equilibrium'):
+                    return PECStrategy(base_params)
             except Exception:
                 pass
             
@@ -215,6 +221,9 @@ class GameExecutor:
         elif name in ('ramanujan', 'rimo', 'mathematical'):
             from ..solvers import RamanujanSolver
             solver = RamanujanSolver(solver_id, api_client=api_client, enable_high_score_check=enable_high_score_check)
+        elif name in ('apex', 'superior', 'hybrid_apex', 'triple_mode'):
+            from ..solvers import ApexSolver
+            solver = ApexSolver(solver_id, api_client=api_client, enable_high_score_check=enable_high_score_check)
         else:
             # Use BaseSolver for strategies that don't have specialized solvers
             solver = BaseSolver(strategy, solver_id, enable_high_score_check, api_client=api_client)

@@ -1,0 +1,23 @@
+# Core API and HTTP
+requests>=2.31.0
+
+# Data processing and analysis
+numpy>=1.24.0
+scipy>=1.10.0
+pandas>=2.0.0
+
+# Configuration management
+pyyaml>=6.0.0
+
+# TUI and console output
+rich>=13.0.0
+
+# File system monitoring
+watchdog>=3.0.0
+
+# WebSocket streaming
+websockets>=11.0.0
+
+# Plotting and visualization (optional - for future analysis features)
+matplotlib>=3.0.0
+seaborn>=0.11.0

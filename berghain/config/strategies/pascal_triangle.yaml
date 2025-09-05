@@ -1,0 +1,253 @@
+# Pascal Triangle Strategy
+# Uses Pascal's triangle binomial coefficients for combinatorial optimization
+
+name: "Pascal Triangle"
+description: "Applies Pascal's triangle and binomial coefficients for combinatorial decision patterns and probability weighting"
+
+# Core parameters based on Pascal's triangle
+parameters:
+  # Pascal-based thresholds using binomial coefficients
+  ultra_rare_threshold: 0.0625   # 1/16 = 1/2^4 (row 4 middle coefficient)
+  rare_threshold: 0.1667         # 1/6 = 1/(3!) (relates to row 3)
+  
+  # Acceptance rates using binomial distributions
+  ultra_rare_accept_rate: 0.9688 # 31/32 (relates to 2^5 - 1)
+  rare_accept_rate: 0.8333       # 5/6 (complement of rare threshold)
+  common_accept_rate: 0.5000     # 1/2 (central binomial probability)
+  no_constraint_accept_rate: 0.0313  # 1/32 = 1/2^5
+  
+  # Phase thresholds using triangle symmetry
+  early_game_threshold: 0.2500   # 1/4 = 1/2² (symmetric position)
+  mid_game_threshold: 0.6250     # 5/8 (golden ratio approximation)
+  
+  # Pascal triangle parameters
+  triangle_depth: 20             # Compute up to row 20
+  binomial_precision: 15         # Precision for binomial coefficients
+  
+  # Key binomial coefficients C(n,k)
+  central_binomial_4: 6          # C(4,2) = 6
+  central_binomial_6: 20         # C(6,3) = 20  
+  central_binomial_8: 70         # C(8,4) = 70
+  
+  # Symmetry and probability parameters
+  symmetric_weighting: true
+  probability_normalization: true
+
+# Pascal triangle mechanics
+pascal_mechanics:
+  # Triangle construction
+  triangle_construction:
+    enabled: true
+    additive_property: true      # C(n,k) = C(n-1,k-1) + C(n-1,k)
+    symmetric_property: true     # C(n,k) = C(n,n-k)
+    
+  # Binomial theorem applications
+  binomial_theorem:
+    enabled: true
+    expansion_coefficients: true # (x+y)ⁿ coefficients
+    probability_applications: true
+    
+  # Row sum properties
+  row_sums:
+    enabled: true
+    power_of_two: true          # Sum of row n = 2ⁿ
+    alternating_sum: true       # Alternating sum = 0 (n>0)
+    
+  # Diagonal sequences
+  diagonal_patterns:
+    enabled: true
+    triangular_numbers: true    # 2nd diagonal: 1,3,6,10,15...
+    tetrahedral_numbers: true   # 3rd diagonal: 1,4,10,20,35...
+
+# Combinatorial applications
+combinatorial_pascal:
+  # Probability distributions
+  probability_distributions:
+    enabled: true
+    binomial_distribution: true  # B(n,p) using Pascal coefficients
+    hypergeometric: false       # More complex distribution
+    
+  # Combinations and permutations
+  combinations:
+    enabled: true
+    choose_function: true       # C(n,k) = n!/(k!(n-k)!)
+    combinatorial_optimization: true
+    
+  # Graph theory connections
+  graph_applications:
+    enabled: true
+    path_counting: true         # Lattice paths using binomial coefficients
+    tree_enumeration: false     # More advanced applications
+    
+  # Cellular automata
+  cellular_automata:
+    enabled: true
+    rule_30_connection: true    # Sierpinski triangle emerges
+    fractal_patterns: true
+
+# Phase-specific Pascal behaviors
+phases:
+  early:
+    description: "Triangle base - build combinatorial foundation"
+    low_row_preference: true
+    symmetric_selection: true
+    binomial_optimization: true
+    
+  mid:
+    description: "Central coefficients - maximize combinations"
+    central_binomial_focus: true
+    peak_coefficient_weighting: true
+    probability_balancing: true
+    
+  late:
+    description: "High rows - large coefficient utilization"
+    large_coefficient_preference: true
+    asymptotic_behavior: true
+    stirling_approximation: true
+    
+  panic:
+    description: "Combinatorial emergency - maximum probability"
+    emergency_probability: 0.5  # Central probability
+    binomial_fallback: true
+
+# Mathematical properties of Pascal's triangle
+mathematical_properties:
+  # Algebraic properties
+  binomial_theorem: true        # (a+b)ⁿ expansion
+  vandermonde_identity: true    # Convolution identity
+  
+  # Number theory connections
+  lucas_theorem: true           # C(n,k) mod p
+  kummer_theorem: true          # p-adic valuation
+  
+  # Generating functions
+  generating_function: true     # (1+x)ⁿ coefficients
+  
+  # Recurrence relations
+  pascal_recurrence: true       # C(n,k) = C(n-1,k-1) + C(n-1,k)
+
+# Fractal and geometric properties
+geometric_pascal:
+  # Sierpinski triangle emergence
+  sierpinski_connection:
+    enabled: true
+    modular_arithmetic: true    # Pascal mod 2 → Sierpinski
+    fractal_structure: true
+    
+  # Geometric interpretations
+  geometric_meaning:
+    enabled: true
+    lattice_paths: true         # Grid paths interpretation
+    hockey_stick_identity: true # Sum along diagonals
+    
+  # Symmetries
+  symmetry_properties:
+    enabled: true
+    reflectional_symmetry: true
+    rotational_patterns: false
+
+# Probability theory applications
+probability_pascal:
+  # Binomial processes
+  binomial_processes:
+    enabled: true
+    coin_flipping: true         # Fair coin probability model
+    success_failure_model: true
+    
+  # Central limit theorem
+  clt_applications:
+    enabled: true
+    normal_approximation: true  # Binomial → Normal for large n
+    
+  # Random walks
+  random_walks:
+    enabled: true
+    symmetric_random_walk: true
+    path_probabilities: true
+
+# Scenario adjustments using Pascal properties
+scenario_adjustments:
+  1:  # Friday Night
+    triangle_depth_focus: 10
+    central_coefficient_bonus: 1.4
+    symmetric_preference: true
+    
+  2:  # Saturday Night (creative ultra-rare)  
+    ultra_rare_threshold: 0.0313  # 1/32 = 1/2^5
+    ultra_rare_accept_rate: 0.9969 # 31/32 + boost
+    high_row_coefficients: true
+    
+  3:  # Sunday Night (multi-constraint)
+    multi_binomial_optimization: true
+    vandermonde_identity_application: true
+    combinatorial_balancing: true
+
+# Special sequences from Pascal's triangle
+pascal_sequences:
+  # Famous sequences
+  natural_numbers: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]      # Row 1: 1,1
+  triangular_numbers: [1, 3, 6, 10, 15, 21, 28, 36, 45]  # 2nd diagonal
+  tetrahedral_numbers: [1, 4, 10, 20, 35, 56, 84]        # 3rd diagonal
+  
+  # Central binomial coefficients
+  central_binomial: [1, 2, 6, 20, 70, 252, 924, 3432]
+  
+  # Catalan numbers (related)
+  catalan_relation: true        # C_n = (1/(n+1)) * C(2n,n)
+
+# Computational aspects
+computational_pascal:
+  # Efficient computation
+  dynamic_programming: true     # Build triangle row by row
+  symmetry_exploitation: true   # Compute half, mirror the rest
+  
+  # Memory optimization
+  space_efficient: true         # Only store current and previous row
+  
+  # Overflow handling
+  modular_arithmetic: true      # Use mod p for large coefficients
+  rational_arithmetic: false   # Exact fractions (too expensive)
+  
+  # Special algorithms
+  lucas_theorem_mod_p: true     # Efficient C(n,k) mod p
+
+# Connections to other mathematics
+mathematical_connections:
+  # Analysis
+  stirling_approximation: true  # n! ≈ √(2πn)(n/e)ⁿ
+  asymptotic_analysis: true     # Large n behavior
+  
+  # Algebra
+  polynomial_expansion: true    # Binomial theorem
+  symmetric_functions: false    # More advanced
+  
+  # Geometry
+  simplicial_complexes: false   # Topological applications
+  
+  # Number theory
+  prime_modular_properties: true
+  
+# Advanced Pascal triangle theory
+advanced_theory:
+  # Generalizations
+  multinomial_coefficients: false  # (a+b+c)ⁿ generalization
+  negative_rows: false             # Extended Pascal triangle
+  
+  # q-analogues
+  q_binomial_coefficients: false   # Quantum generalizations
+  
+  # Modular forms
+  binomial_modular_forms: false    # Research level
+  
+# Applications in optimization
+optimization_applications:
+  # Combinatorial optimization
+  subset_selection: true        # Choose k from n objects
+  resource_allocation: true     # Distribute resources optimally
+  
+  # Probability optimization
+  risk_assessment: true         # Binomial probability models
+  expected_value: true          # E[X] for binomial X
+  
+  # Decision theory
+  multi_criteria_decision: true # Weight multiple criteria

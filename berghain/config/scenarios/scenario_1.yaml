@@ -1,0 +1,41 @@
+# Scenario 1: Friday Night
+# Classic Berghain entrance with young and well-dressed requirements
+
+name: "Friday Night"
+description: "Classic Berghain entrance criteria - appeal to young, fashionable crowd"
+scenario_id: 1
+
+# Target constraints that must be met
+constraints:
+  - attribute: "young"
+    min_count: 600
+    description: "At least 600 young people"
+  
+  - attribute: "well_dressed" 
+    min_count: 600
+    description: "At least 600 well-dressed people"
+
+# Expected attribute frequencies (from empirical data)
+expected_frequencies:
+  young: 0.323
+  well_dressed: 0.323
+
+# Expected correlations
+expected_correlations:
+  young:
+    well_dressed: 0.183
+  well_dressed: 
+    young: 0.183
+
+# Strategy hints for this scenario
+strategy_hints:
+  difficulty: "medium"
+  key_challenge: "Both attributes have moderate frequency, requiring ~92% acceptance rate"
+  recommended_approach: "Focus on multi-attribute people early, be extremely selective with non-constraint people"
+  critical_attributes: ["young", "well_dressed"]
+  
+# Scenario-specific parameters
+parameters:
+  target_capacity: 1000
+  max_rejections: 20000
+  success_criteria: "All constraints met within capacity and rejection limits"

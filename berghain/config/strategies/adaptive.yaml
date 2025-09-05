@@ -1,0 +1,89 @@
+# Adaptive Strategy
+# Dynamic approach that adjusts based on real-time game state
+
+name: "Adaptive"
+description: "Smart strategy that adapts thresholds based on constraint progress"
+
+# Base parameters (will be adjusted dynamically)
+parameters:
+  # Rarity detection
+  ultra_rare_threshold: 0.10
+  rare_threshold: 0.25
+  
+  # Base acceptance rates (modified by adaptive logic)
+  base_ultra_rare_rate: 0.97
+  base_rare_rate: 0.80
+  base_common_rate: 0.50
+  base_no_constraint_rate: 0.05
+  
+  # Adaptation sensitivity
+  adaptation_rate: 0.1
+  progress_weight: 0.7
+  urgency_weight: 0.3
+  
+  # Phase thresholds
+  early_game_threshold: 0.30
+  mid_game_threshold: 0.70
+  
+  # Multi-attribute bonuses
+  multi_attr_bonus: 1.4
+  adaptive_bonus_scaling: true
+
+# Adaptive mechanisms
+adaptation:
+  # Progress-based adjustment
+  progress_based:
+    enabled: true
+    behind_threshold: 0.8      # If progress < 80%, increase acceptance
+    ahead_threshold: 1.1       # If progress > 110%, decrease acceptance
+    adjustment_factor: 0.15
+    
+  # Shortage-based adjustment  
+  shortage_based:
+    enabled: true
+    critical_shortage: 100     # If shortage > 100, emergency mode
+    moderate_shortage: 50      # If shortage > 50, increase acceptance
+    shortage_multiplier: 0.2
+    
+  # Time-based adjustment
+  time_based:
+    enabled: true
+    late_game_boost: 0.2       # Increase acceptance in late game
+    panic_mode_boost: 0.5      # Major boost in panic mode
+    
+  # Rejection pressure adjustment
+  rejection_pressure:
+    enabled: true
+    pressure_threshold: 0.7    # Start adjusting at 70% rejections
+    exponential_scaling: true
+
+# Real-time constraint prioritization
+constraint_prioritization:
+  enabled: true
+  priority_factors:
+    - shortage_absolute         # Raw number needed
+    - shortage_relative         # Percentage behind
+    - attribute_rarity         # How rare the attribute is
+    - time_remaining           # How much capacity left
+  
+  recompute_frequency: 50      # Recalculate priorities every 50 decisions
+
+# Learning mechanisms
+learning:
+  enabled: true
+  success_pattern_detection: true
+  failure_pattern_avoidance: true
+  parameter_drift_correction: true
+
+# Scenario-specific adaptations
+scenario_adaptations:
+  1:  # Friday Night
+    focus_dual_attributes: true
+    
+  2:  # Saturday Night  
+    creative_emergency_mode: true
+    ultra_rare_priority: "creative"
+    
+  3:  # Sunday Night
+    multi_constraint_optimization: true
+    complex_balancing: true

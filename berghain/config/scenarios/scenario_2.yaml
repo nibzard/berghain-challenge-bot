@@ -1,0 +1,61 @@
+# Scenario 2: Saturday Night  
+# More complex with rare attributes like "creative"
+
+name: "Saturday Night"
+description: "Complex multi-attribute night with very rare creative people"
+scenario_id: 2
+
+# Target constraints that must be met
+constraints:
+  - attribute: "techno_lover"
+    min_count: 650
+    description: "At least 650 techno music lovers"
+    
+  - attribute: "well_connected"
+    min_count: 450
+    description: "At least 450 well-connected people"
+    
+  - attribute: "creative"
+    min_count: 300
+    description: "At least 300 creative people"
+    
+  - attribute: "berlin_local"
+    min_count: 750
+    description: "At least 750 Berlin locals"
+
+# Expected attribute frequencies (from empirical data)
+expected_frequencies:
+  techno_lover: 0.627
+  well_connected: 0.470
+  creative: 0.062        # ULTRA RARE - this is the killer
+  berlin_local: 0.398
+
+# Expected correlations
+expected_correlations:
+  techno_lover:
+    well_connected: 0.3
+    berlin_local: 0.2
+  well_connected:
+    techno_lover: 0.3
+    berlin_local: 0.4
+  creative:
+    techno_lover: 0.1
+    well_connected: 0.1
+  berlin_local:
+    techno_lover: 0.2
+    well_connected: 0.4
+
+# Strategy hints for this scenario  
+strategy_hints:
+  difficulty: "very_hard"
+  key_challenge: "Creative attribute is only 6.2% but need 30% of admits - nearly impossible"
+  recommended_approach: "Accept 99% of creative people, ruthless elsewhere"
+  critical_attributes: ["creative"]
+  ultra_rare_threshold: 0.1
+  
+# Scenario-specific parameters
+parameters:
+  target_capacity: 1000
+  max_rejections: 20000
+  success_criteria: "All constraints met - focus heavily on creative people"
+  emergency_creative_acceptance: true

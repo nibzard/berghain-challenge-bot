@@ -1,0 +1,66 @@
+# Conservative Strategy
+# Lower risk approach with steady progress
+
+name: "Conservative"
+description: "Steady, risk-averse approach with consistent acceptance criteria"
+
+# Core parameters
+parameters:
+  # Rarity detection
+  ultra_rare_threshold: 0.12
+  rare_threshold: 0.25
+  
+  # Acceptance rates by category
+  ultra_rare_accept_rate: 0.95
+  rare_accept_rate: 0.85
+  common_accept_rate: 0.60
+  no_constraint_accept_rate: 0.08
+  
+  # Phase thresholds
+  early_game_threshold: 0.25
+  mid_game_threshold: 0.70
+  
+  # Multi-attribute bonuses
+  multi_attr_bonus: 1.3
+  dual_rare_bonus: 1.5
+  
+  # Emergency thresholds
+  rejection_panic_threshold: 0.85
+  capacity_panic_threshold: 0.90
+  
+  # Conservative specific
+  phase1_multi_attr_only: false    # Less strict early game
+  deficit_panic_threshold: 0.75    # Earlier panic mode
+
+# Phase-specific behavior
+phases:
+  early:
+    description: "Build solid foundation"
+    multi_attr_preference: true
+    reject_no_constraint: true
+    
+  mid:
+    description: "Maintain steady progress"  
+    focus_lagging_constraints: true
+    moderate_selectivity: true
+    
+  late:
+    description: "Careful completion"
+    constraint_focused: true
+    avoid_unnecessary_risks: true
+    
+  panic:
+    description: "Emergency acceptance"
+    accept_almost_all: true
+
+# Scenario adjustments
+scenario_adjustments:
+  1:  # Friday Night
+    ultra_rare_threshold: 0.15
+    
+  2:  # Saturday Night (has very rare creative)
+    ultra_rare_threshold: 0.08
+    ultra_rare_accept_rate: 0.98
+    
+  3:  # Sunday Night (multiple rare)
+    multi_attr_bonus: 1.4

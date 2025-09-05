@@ -1,0 +1,10 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(python:*)",
+      "Bash(timeout 10 python main.py run:*)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}

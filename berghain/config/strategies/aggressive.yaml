@@ -1,0 +1,78 @@
+# Aggressive Strategy
+# High-risk, high-reward approach with extreme selectivity
+
+name: "Aggressive" 
+description: "Extremely selective early game, optimized for minimal rejections"
+
+# Core parameters
+parameters:
+  # Rarity detection
+  ultra_rare_threshold: 0.08
+  rare_threshold: 0.20
+  
+  # Acceptance rates by category  
+  ultra_rare_accept_rate: 0.99
+  rare_accept_rate: 0.95
+  common_accept_rate: 0.40
+  no_constraint_accept_rate: 0.02    # Very harsh
+  
+  # Phase thresholds
+  early_game_threshold: 0.35         # Longer early phase
+  mid_game_threshold: 0.75
+  
+  # Multi-attribute bonuses
+  multi_attr_bonus: 1.8
+  dual_rare_bonus: 2.0
+  triple_rare_bonus: 2.5
+  
+  # Emergency thresholds
+  rejection_panic_threshold: 0.90    # Later panic
+  capacity_panic_threshold: 0.95
+  
+  # Aggressive specific
+  phase1_multi_attr_only: true       # Ultra strict early
+  deficit_panic_threshold: 0.60      # Earlier constraint panic
+
+# Phase-specific behavior
+phases:
+  early:
+    description: "Ultra-selective foundation building"
+    require_multi_attr: true
+    reject_single_attr: true
+    ultra_harsh_on_no_constraint: true
+    
+  mid:
+    description: "Strategic constraint filling"
+    focus_rarest_first: true
+    calculated_risks: true
+    
+  late:
+    description: "Precision completion"
+    smart_constraint_balancing: true
+    avoid_surplus: true
+    
+  panic:
+    description: "Emergency mode"
+    accept_any_constraint: true
+
+# Advanced features
+advanced:
+  correlation_aware: true
+  deficit_tracking: true
+  rarity_weighted_scoring: true
+  multi_constraint_optimization: true
+
+# Scenario adjustments
+scenario_adjustments:
+  1:  # Friday Night
+    ultra_rare_threshold: 0.10
+    phase1_multi_attr_only: true
+    
+  2:  # Saturday Night (creative challenge)
+    ultra_rare_threshold: 0.06
+    ultra_rare_accept_rate: 0.995     # Near perfect for creative
+    no_constraint_accept_rate: 0.005  # Brutal elsewhere
+    
+  3:  # Sunday Night (complex)
+    multi_attr_bonus: 2.0
+    correlation_bonus: true

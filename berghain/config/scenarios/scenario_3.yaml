@@ -1,0 +1,74 @@
+# Scenario 3: Sunday Night
+# Complex multi-constraint scenario with many rare attributes
+
+name: "Sunday Night" 
+description: "Multi-faceted underground night with diverse requirements"
+scenario_id: 3
+
+# Target constraints that must be met
+constraints:
+  - attribute: "underground_veteran"
+    min_count: 500
+    description: "At least 500 underground scene veterans"
+    
+  - attribute: "international"
+    min_count: 650
+    description: "At least 650 international visitors"
+    
+  - attribute: "fashion_forward"
+    min_count: 550
+    description: "At least 550 fashion-forward people"
+    
+  - attribute: "queer_friendly"
+    min_count: 250
+    description: "At least 250 queer-friendly people"
+    
+  - attribute: "vinyl_collector"
+    min_count: 200
+    description: "At least 200 vinyl collectors"
+    
+  - attribute: "german_speaker"
+    min_count: 800
+    description: "At least 800 German speakers"
+
+# Expected attribute frequencies (estimated from complexity)
+expected_frequencies:
+  underground_veteran: 0.160
+  international: 0.420
+  fashion_forward: 0.180
+  queer_friendly: 0.080    # RARE
+  vinyl_collector: 0.050   # ULTRA RARE
+  german_speaker: 0.450
+
+# Expected correlations
+expected_correlations:
+  underground_veteran:
+    vinyl_collector: 0.3
+    german_speaker: 0.2
+  international:
+    queer_friendly: 0.2
+    german_speaker: -0.1    # Negative correlation
+  fashion_forward:
+    international: 0.2
+    queer_friendly: 0.3
+  queer_friendly:
+    fashion_forward: 0.3
+    vinyl_collector: 0.2
+  vinyl_collector:
+    underground_veteran: 0.3
+    queer_friendly: 0.2
+
+# Strategy hints for this scenario
+strategy_hints:
+  difficulty: "extreme"
+  key_challenge: "Multiple rare attributes create complex optimization problem"
+  recommended_approach: "Prioritize ultra-rare attributes, use multi-constraint bonuses"
+  critical_attributes: ["vinyl_collector", "queer_friendly"]
+  ultra_rare_threshold: 0.08
+  
+# Scenario-specific parameters
+parameters:
+  target_capacity: 1000
+  max_rejections: 20000
+  success_criteria: "Balance multiple constraints with different rarity levels"
+  multi_constraint_bonus: true

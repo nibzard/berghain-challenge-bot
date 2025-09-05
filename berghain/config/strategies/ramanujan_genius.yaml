@@ -1,0 +1,235 @@
+# Ramanujan Genius Strategy
+# Inspired by Srinivasa Ramanujan's extraordinary mathematical insights and infinite series
+
+name: "Ramanujan Genius"  
+description: "Channels Ramanujan's mathematical genius using his remarkable constants, infinite series, and number-theoretic insights"
+
+# Core parameters based on Ramanujan's mathematical constants
+parameters:
+  # Ramanujan-based thresholds using his famous constants
+  ultra_rare_threshold: 0.0588   # 1/17 (Ramanujan's favorite number 1729 = 17×...)
+  rare_threshold: 0.1416         # Ramanujan's π approximation factor
+  
+  # Acceptance rates using Ramanujan's series
+  ultra_rare_accept_rate: 0.9825 # Related to Ramanujan's π series convergence
+  rare_accept_rate: 0.8584       # 1/√2 × Ramanujan factor
+  common_accept_rate: 0.6366     # 2/π (Ramanujan's favorite ratio)
+  no_constraint_accept_rate: 0.0347  # 1/(π√8) ≈ Ramanujan series coefficient
+  
+  # Phase thresholds using his infinite series
+  early_game_threshold: 0.2733   # Related to Ramanujan's Q-series
+  mid_game_threshold: 0.6826     # e^(-π√163) related constant
+  
+  # Ramanujan's mathematical constants
+  ramanujan_constant: 262537412640768744  # e^(π√163)
+  ramanujan_pi_series: 0.3183098861       # 1/π from his famous series
+  ramanujan_tau_constant: 24              # τ(n) function related
+  
+  # Infinite series parameters
+  series_precision: 50                    # Terms in infinite series
+  modular_form_weight: 12                 # Weight for modular forms
+  partition_modulus: 5                    # For partition function
+
+# Ramanujan mathematical mechanics
+ramanujan_mechanics:
+  # Infinite series
+  infinite_series:
+    enabled: true
+    pi_series: true                 # 1/π = (2√2/9801) Σ...
+    hypergeometric_series: true     # ₂F₁ hypergeometric functions
+    
+  # Partition function
+  partition_function:
+    enabled: true
+    p_function: true               # p(n) = number of partitions of n
+    modular_properties: true       # p(5n+4) ≡ 0 (mod 5)
+    
+  # Mock theta functions
+  mock_theta:
+    enabled: true
+    third_order: true              # 3rd order mock theta functions
+    mysterious_properties: true    # Ramanujan's "lost notebook"
+    
+  # Continued fractions
+  continued_fractions:
+    enabled: true
+    rogers_ramanujan: true         # Rogers-Ramanujan identities
+    infinite_nested_radicals: true
+
+# Number theory from Ramanujan
+ramanujan_number_theory:
+  # Highly composite numbers
+  highly_composite:
+    enabled: true
+    superior_highly_composite: true
+    ramanujan_criterion: true      # His definition of "highly composite"
+    
+  # Taxicab numbers
+  taxicab_numbers:
+    enabled: true
+    hardy_ramanujan_1729: true     # 1³ + 12³ = 9³ + 10³ = 1729
+    generalized_taxicab: true      # a³ + b³ = c³ + d³
+    
+  # Sum of squares
+  sum_of_squares:
+    enabled: true
+    jacobi_theta_series: true     # θ₃(q) series
+    four_squares_theorem: true    # Every n = sum of 4 squares
+    
+  # Divisor functions
+  divisor_functions:
+    enabled: true
+    tau_function: true            # τ(n) = σ₁₁(n) - 691σ₁(n)
+    eisenstein_series: true       # Modular forms
+
+# Phase-specific Ramanujan behaviors
+phases:
+  early:
+    description: "Infinite series convergence - build with precision"
+    series_acceleration: true
+    partition_optimization: true
+    highly_composite_preference: true
+    
+  mid:
+    description: "Mock theta mastery - mysterious patterns"
+    mock_theta_application: true
+    modular_form_utilization: true
+    continued_fraction_expansion: true
+    
+  late:
+    description: "Genius convergence - approach infinite precision"
+    asymptotic_formula_application: true
+    ramanujan_hardy_circle_method: true
+    
+  panic:
+    description: "Mathematical emergency - pure genius intuition"
+    emergency_ramanujan_intuition: 0.6366  # 2/π
+    taxicab_fallback: true
+
+# Modular forms and L-functions
+modular_mathematics:
+  # Eisenstein series
+  eisenstein_series:
+    enabled: true
+    weight_4: true                # E₄(τ) series
+    weight_6: true                # E₆(τ) series
+    
+  # Dedekind eta function
+  eta_function:
+    enabled: true
+    product_formula: true         # η(τ) = q^(1/24) Π(1-qⁿ)
+    
+  # Hecke operators
+  hecke_theory: false            # Too advanced for optimization
+  
+  # L-functions
+  l_functions: false             # Research level mathematics
+
+# Ramanujan's famous formulas and identities
+famous_formulas:
+  # Pi formulas
+  pi_series_1914: true           # His 1914 paper series
+  chudnovsky_algorithm: true     # Based on Ramanujan's work
+  
+  # Partition identities
+  rogers_ramanujan_identities: true
+  partition_congruences: true    # p(5n+4) ≡ 0 (mod 5)
+  
+  # Nested radicals
+  nested_radical_identities: true
+  
+  # Continued fraction identities
+  remarkable_continued_fractions: true
+
+# Scenario adjustments using Ramanujan's insights
+scenario_adjustments:
+  1:  # Friday Night
+    partition_function_optimization: true
+    highly_composite_bonus: 1.5
+    ramanujan_pi_precision: 20
+    
+  2:  # Saturday Night (creative ultra-rare)
+    ultra_rare_threshold: 0.0578  # 1/√300 ≈ Ramanujan constant related
+    ultra_rare_accept_rate: 0.9978 # Near perfect like his series
+    mock_theta_emergency: true
+    
+  3:  # Sunday Night (multi-constraint)
+    multi_series_convergence: true
+    ramanujan_hardy_method: true
+    partition_balancing: true
+
+# Mathematical constants from Ramanujan
+ramanujan_constants:
+  # Famous constants
+  ramanujan_soldner_constant: 1.4513692348  # Related to logarithmic integral
+  landau_ramanujan_constant: 0.7642236436   # Sum of reciprocals
+  
+  # Pi-related constants
+  ramanujan_pi_constant: 0.3183098862      # From his π series
+  
+  # Partition-related
+  ramanujan_rho: 1.3247179572               # Related to partition asymptotics
+  
+  # Mock theta constants
+  mock_theta_constant: 0.6909395649        # From 3rd order mock theta
+
+# Computational aspects inspired by Ramanujan
+computational_ramanujan:
+  # Series acceleration
+  series_acceleration:
+    enabled: true
+    shanks_transformation: true
+    richardson_extrapolation: true
+    
+  # High precision arithmetic
+  high_precision:
+    enabled: true
+    arbitrary_precision: false    # Use standard precision
+    error_bounds: true
+    
+  # Modular arithmetic
+  modular_computation:
+    enabled: true
+    efficient_exponentiation: true
+    chinese_remainder_theorem: true
+
+# Ramanujan's legacy and influence
+mathematical_legacy:
+  # Modern developments
+  ramanujan_conjecture: true      # About τ(p)
+  ramanujan_graphs: false        # Graph theory connections
+  
+  # Computational applications
+  pi_computation: true           # Modern π algorithms
+  partition_computation: true    # Efficient partition counting
+  
+  # Physics connections
+  string_theory: false          # Mock modular forms
+  statistical_mechanics: false  # Partition functions
+
+# Special numbers from Ramanujan's work
+special_ramanujan_numbers:
+  # Taxicab numbers
+  ta2_1729: 1729                # 1³ + 12³ = 9³ + 10³
+  ta2_4104: 4104                # 2³ + 16³ = 9³ + 15³
+  
+  # Highly composite numbers
+  hcn_sequence: [1, 2, 4, 6, 12, 24, 36, 48, 60, 120, 180, 240, 360, 720, 840]
+  
+  # Superior highly composite
+  shcn_sequence: [2, 6, 12, 60, 120, 360, 2520, 5040]
+
+# Experimental and advanced features
+experimental_ramanujan:
+  # Lost notebook formulas
+  lost_notebook: true
+  mock_theta_applications: true
+  
+  # Asymptotic formulas
+  partition_asymptotics: true    # p(n) ~ e^(π√(2n/3))/(4n√3)
+  
+  # Quantum modular forms
+  quantum_modular: false        # Too advanced
+  
+  # Machine learning on Ramanujan patterns
+  pattern_recognition: false    # Beyond current scope

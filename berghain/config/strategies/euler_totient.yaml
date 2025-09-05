@@ -1,0 +1,168 @@
+# Euler Totient Strategy
+# Uses Euler's totient function φ(n) for number-theoretic optimization
+
+name: "Euler Totient"
+description: "Applies Euler's totient function φ(n) to count coprime integers and optimize selective acceptance"
+
+# Core parameters based on Euler's φ(n)
+parameters:
+  # Totient-based thresholds
+  ultra_rare_threshold: 0.0666   # φ(15)/15 = 8/15 ≈ 0.533... using φ(100)/100
+  rare_threshold: 0.16           # φ(25)/25 = 20/25 = 0.8 scaled
+  
+  # Acceptance rates using totient ratios
+  ultra_rare_accept_rate: 0.9677 # φ(31) = 30, 30/31 ≈ 0.968
+  rare_accept_rate: 0.8421       # φ(19) = 18, 18/19 ≈ 0.842  
+  common_accept_rate: 0.5714     # φ(21) = 12, 12/21 ≈ 0.571
+  no_constraint_accept_rate: 0.0333  # φ(30)/30 = 8/30 ≈ 0.267 scaled
+  
+  # Phase thresholds using totient density
+  early_game_threshold: 0.2857   # φ(21)/21 = 12/21
+  mid_game_threshold: 0.6667     # φ(15)/15 = 8/15
+  
+  # Euler's constants and ratios
+  euler_constant: 0.5772156649   # Euler-Mascheroni constant γ
+  totient_density_avg: 0.6079    # 6/π² (average density of φ(n)/n)
+  
+  # Multiplicative function parameters
+  coprimality_weight: 1.5
+  gcd_optimization: true
+
+# Euler totient mechanics
+totient_mechanics:
+  # Coprimality testing
+  coprime_preference:
+    enabled: true
+    gcd_calculation: true        # Use gcd(a,b) = 1 for coprimes
+    euclidean_algorithm: true    # Extended Euclidean algorithm
+    
+  # Multiplicative properties
+  multiplicative_function:
+    enabled: true
+    totient_product: true        # φ(mn) = φ(m)φ(n) if gcd(m,n)=1
+    prime_power_formula: true    # φ(p^k) = p^(k-1)(p-1)
+    
+  # Euler's theorem applications
+  euler_theorem:
+    enabled: true
+    fermat_little_extension: true # a^φ(n) ≡ 1 (mod n) if gcd(a,n)=1
+    carmichael_function: true     # λ(n) divides φ(n)
+    
+  # Sum of divisors relationships
+  divisor_sum:
+    enabled: true
+    mobius_inversion: true       # φ(n) via Möbius function
+    ramanujan_sum: true          # c_q(n) applications
+
+# Number theory functions
+multiplicative_functions:
+  # Core functions
+  euler_phi: true              # φ(n) - totient function
+  mobius_mu: true              # μ(n) - Möbius function  
+  divisor_sigma: true          # σ(n) - sum of divisors
+  
+  # Related functions
+  jordan_totient: false        # J_k(n) generalizations
+  carmichael_lambda: true      # λ(n) - Carmichael function
+  
+  # Arithmetic functions
+  liouville_lambda: false     # λ(n) = (-1)^Ω(n)
+  prime_omega: true           # Ω(n) - number of prime factors
+
+# Phase-specific totient behaviors
+phases:
+  early:
+    description: "Coprime foundation - select relatively prime elements"
+    strict_coprimality: true
+    gcd_one_preference: true
+    totient_maximization: true
+    
+  mid:
+    description: "Multiplicative growth - use φ(n) properties"
+    multiplicative_optimization: true
+    euler_theorem_application: true
+    totient_density_targeting: true
+    
+  late:
+    description: "Asymptotic behavior - approach theoretical limits"
+    totient_sum_formula: true   # Σ φ(k) ~ 3n²/π²
+    dirichlet_series: true      # ζ(s-1)/ζ(s) applications
+    
+  panic:
+    description: "Coprime emergency - maintain number theory"
+    emergency_totient: 0.6079  # 6/π²
+    coprime_fallback: true
+
+# Advanced number theory
+advanced_totient:
+  # Analytical properties
+  totient_sum_function: true   # Σ_{k=1}^n φ(k)
+  average_order: true          # ~ 6n²/π²
+  
+  # Dirichlet characters
+  character_theory: false
+  
+  # Modular arithmetic
+  reduced_residue_system: true
+  primitive_roots: true
+
+# Asymptotic and analytical results
+asymptotic_theory:
+  # Prime number theorem connections
+  mertens_theorem: true        # Product over primes
+  
+  # Average values
+  hardy_ramanujan_avg: true    # Normal order of ω(n)
+  
+  # Probabilistic number theory
+  erdos_kac: true             # Central limit theorem for ω(n)
+
+# Scenario adjustments using totient theory
+scenario_adjustments:
+  1:  # Friday Night
+    coprimality_bonus: 1.5
+    totient_density_target: 0.608
+    
+  2:  # Saturday Night (creative ultra-rare)
+    ultra_rare_threshold: 0.0323  # φ(31)/31² for ultra-selectivity
+    prime_totient_mode: true      # φ(p) = p-1 for primes
+    ultra_rare_accept_rate: 0.9967 # φ(307) ≈ 306/307
+    
+  3:  # Sunday Night (multi-constraint)
+    multiplicative_bonus: 2.0
+    jordan_totient_generalization: true
+    totient_product_optimization: true
+
+# Mathematical constants from totient theory
+totient_constants:
+  density_constant: 0.6079271018  # 6/π²
+  euler_mascheroni: 0.5772156649  # γ
+  mertens_constant: 0.2614972128  # B₁
+  
+# Special values and sequences  
+special_totients:
+  # Perfect powers
+  prime_powers: true           # φ(p^k) = p^(k-1)(p-1)
+  
+  # Highly composite numbers
+  superior_highly_composite: false
+  
+  # Carmichael numbers
+  carmichael_totients: false
+  
+  # Practical numbers
+  practical_number_totients: false
+
+# Computational aspects
+computational_totient:
+  # Efficient computation
+  factorization_method: true   # Via prime factorization
+  sieve_method: true          # Sieve for multiple values
+  
+  # Optimization
+  memoization: true
+  lookup_tables: true         # For small values
+  
+  # Special cases
+  prime_detection: true        # φ(p) = p-1 iff p prime
+  perfect_power_detection: true

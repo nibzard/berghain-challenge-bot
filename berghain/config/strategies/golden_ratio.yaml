@@ -1,0 +1,137 @@
+# Golden Ratio Strategy
+# Pure φ (phi) optimization using the divine proportion for perfect balance
+
+name: "Golden Ratio"
+description: "Uses the golden ratio φ = 1.618... for mathematically perfect proportions and aesthetic optimization"
+
+# Core parameters based on φ and its reciprocals
+parameters:
+  # Golden ratio derived thresholds
+  ultra_rare_threshold: 0.0618   # 1/φ²
+  rare_threshold: 0.3820         # 1 - 1/φ
+  
+  # Acceptance rates using φ mathematics
+  ultra_rare_accept_rate: 0.9889 # φ²/φ²+0.01
+  rare_accept_rate: 0.8507       # φ²/π  
+  common_accept_rate: 0.6180     # 1/φ (golden ratio reciprocal)
+  no_constraint_accept_rate: 0.0618  # 1/φ²
+  
+  # Phase thresholds using golden divisions
+  early_game_threshold: 0.3820   # 1 - 1/φ
+  mid_game_threshold: 0.6180     # 1/φ
+  
+  # Divine proportion multipliers
+  phi_factor: 1.6180339887       # φ to high precision
+  phi_squared: 2.6180339887      # φ²
+  phi_cubed: 4.2360679775        # φ³
+  
+  # Golden section parameters
+  golden_mean: 0.6180339887      # 1/φ
+  silver_ratio: 2.4142135624     # 1 + √2
+
+# Golden ratio mechanics
+golden_mechanics:
+  # Divine proportion acceptance
+  divine_proportion:
+    enabled: true
+    phi_scaling: true
+    aesthetic_optimization: true
+    
+  # Golden section search
+  section_search:
+    enabled: true
+    golden_cut: 0.6180339887     # 1/φ
+    optimization_iterations: 13   # Fibonacci number
+    
+  # Pentagonal geometry (φ appears in regular pentagons)
+  pentagonal_harmony:
+    enabled: true
+    pentagon_angles: true        # 72° divisions
+    star_pentagon: true          # Pentagram ratios
+    
+  # Golden rectangle dynamics
+  rectangle_dynamics:
+    enabled: true
+    aspect_ratio: 1.618          # φ
+    recursive_squares: true
+
+# Mathematical properties of φ
+phi_properties:
+  # Algebraic properties
+  phi_equation: true            # φ = (1 + √5)/2
+  continued_fraction: true      # φ = [1; 1, 1, 1, ...]
+  quadratic_formula: true       # φ² = φ + 1
+  
+  # Geometric properties  
+  golden_spiral: true
+  golden_triangle: true
+  golden_gnomon: true
+
+# Phase-specific golden behaviors
+phases:
+  early:
+    description: "Golden foundation - divine proportion start"
+    phi_selectivity: true
+    golden_rectangle_building: true
+    
+  mid:
+    description: "Golden mean - balanced growth"
+    golden_section_optimization: true
+    divine_proportion_scaling: true
+    
+  late:
+    description: "Golden convergence - perfect proportions"
+    phi_convergence: true
+    aesthetic_completion: true
+    
+  panic:
+    description: "Golden emergency - maintain proportion"
+    emergency_phi_ratio: 0.618
+    golden_mean_fallback: true
+
+# Advanced golden mathematics
+advanced_golden:
+  # Metallic means family
+  silver_ratio_backup: true     # 1 + √2
+  bronze_ratio: false           # (3 + √13)/2
+  
+  # Plastic number
+  plastic_constant: false       # Real root of x³ = x + 1
+  
+  # Supergolden ratio
+  super_golden: false           # ψ = (1 + √5)/4
+
+# Art and nature integration
+aesthetic_principles:
+  rule_of_thirds: true          # Photography composition
+  architectural_harmony: true   # Classical proportions  
+  musical_intervals: true       # Golden ratio in music
+  natural_patterns: true        # φ in nature
+
+# Scenario adjustments using φ mathematics
+scenario_adjustments:
+  1:  # Friday Night
+    phi_factor: 1.618
+    golden_mean_threshold: 0.618
+    
+  2:  # Saturday Night (creative challenge)
+    ultra_rare_threshold: 0.0381  # 1/φ³
+    ultra_rare_accept_rate: 0.9962  # φ³/(φ³+0.01)
+    golden_emergency: true
+    
+  3:  # Sunday Night (multi-constraint)
+    phi_cubed_bonus: 4.236       # φ³
+    golden_section_balancing: true
+    divine_proportion_multi: true
+
+# Convergence to φ
+convergence_properties:
+  fibonacci_limit: true         # Fibonacci ratios → φ
+  continued_fraction_convergence: true
+  newton_method_phi: true       # Newton's method for φ
+  
+# Mathematical constants related to φ
+related_constants:
+  euler_phi_relation: false    # e^(πi/φ) 
+  log_phi: 0.4812118250         # ln(φ)
+  phi_reciprocal: 0.6180339887  # 1/φ

@@ -16,7 +16,7 @@ from datetime import datetime
 from berghain.runner.game_executor import GameExecutor
 from berghain.solvers.rl_lstm_solver import create_rl_lstm_solver, create_rl_lstm_hybrid_solver
 from berghain.solvers.ogds_solver import OGDSSolver
-from berghain.analysis.comparison import ComparisonAnalyzer
+# from berghain.analysis.comparison import ComparisonAnalyzer  # Module not available
 
 
 def setup_logging(log_level: str = 'INFO') -> None:

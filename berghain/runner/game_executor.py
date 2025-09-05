@@ -78,7 +78,7 @@ class GameExecutor:
         else:
             # Try additional strategies if available
             try:
-                from ..solvers import BalancedStrategy, GreedyConstraintStrategy, DiversityFirstStrategy, QuotaTrackerStrategy, DualDeficitController, RBCRStrategy, RBCR2Strategy, DVOStrategy, RamanujanStrategy, UltimateStrategy, Ultimate2Strategy, Ultimate3Strategy, Ultimate3HStrategy, OptimalControlStrategy, OptimalControlFinalStrategy, PerfectStrategy, MecStrategy
+                from ..solvers import BalancedStrategy, GreedyConstraintStrategy, DiversityFirstStrategy, QuotaTrackerStrategy, DualDeficitController, RBCRStrategy, RBCR2Strategy, DVOStrategy, RamanujanStrategy, UltimateStrategy, Ultimate2Strategy, Ultimate3Strategy, Ultimate3HStrategy, OptimalControlStrategy, OptimalControlFinalStrategy, OptimalControlSafeStrategy, PerfectStrategy, MecStrategy
                 if name == 'balanced':
                     return BalancedStrategy(base_params)
                 if name == 'greedy':
@@ -109,6 +109,8 @@ class GameExecutor:
                     return OptimalControlStrategy(base_params)
                 if name in ('optimal_final', 'final', 'target', '716'):
                     return OptimalControlFinalStrategy(base_params)
+                if name in ('optimal_safe', 'safe', 'production', 'prod'):
+                    return OptimalControlSafeStrategy(base_params)
                 if name in ('perfect', 'pbo', 'balance'):
                     return PerfectStrategy(base_params)
                 if name in ('mec', 'exact', 'mathematician'):
@@ -201,6 +203,9 @@ class GameExecutor:
         elif name in ('optimal_final', 'final', 'target', '716'):
             from ..solvers import OptimalControlFinalSolver
             solver = OptimalControlFinalSolver(solver_id, api_client=api_client, enable_high_score_check=enable_high_score_check)
+        elif name in ('optimal_safe', 'safe', 'production', 'prod'):
+            from ..solvers import OptimalControlSafeSolver
+            solver = OptimalControlSafeSolver(solver_id, api_client=api_client, enable_high_score_check=enable_high_score_check)
         elif name in ('perfect', 'pbo', 'balance'):
             from ..solvers import PerfectSolver
             solver = PerfectSolver(solver_id, api_client=api_client, enable_high_score_check=enable_high_score_check)

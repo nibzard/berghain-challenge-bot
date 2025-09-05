@@ -152,27 +152,30 @@ class OGDSStrategy(BaseDecisionStrategy):
             urgency = constraint_urgency_w  
             is_lagging = progress_w < progress_y * self.params['lag_bias_threshold']
         
-        # Acceptance probability based on urgency and game phase
-        base_accept_prob = 0.6  # Base 60% acceptance for needed attributes
+        # Be much more aggressive about accepting needed attributes
+        # The goal is to meet constraints first, minimize rejections second
+        base_accept_prob = 0.8  # Base 80% acceptance for needed attributes
         
-        # Increase acceptance probability if urgent or lagging
+        # Increase acceptance probability based on urgency
         if urgency > 0.8:  # Very urgent - need many of this attribute
-            base_accept_prob = 0.9
+            base_accept_prob = 0.95
         elif urgency > 0.5:  # Somewhat urgent
-            base_accept_prob = 0.8
+            base_accept_prob = 0.9
         elif is_lagging:  # This attribute is behind
-            base_accept_prob = 0.75
+            base_accept_prob = 0.85
         
-        # Increase acceptance probability as we get closer to capacity
-        if capacity_pressure > 0.7:  # Getting close to full
-            base_accept_prob = min(1.0, base_accept_prob + 0.2)
-        elif capacity_pressure > 0.5:
+        # Be even more aggressive as we get closer to capacity
+        if capacity_pressure > 0.8:  # Very close to full
+            base_accept_prob = 1.0  # Accept ALL needed attributes
+        elif capacity_pressure > 0.7:  # Getting close to full
             base_accept_prob = min(1.0, base_accept_prob + 0.1)
+        elif capacity_pressure > 0.5:
+            base_accept_prob = min(1.0, base_accept_prob + 0.05)
         
         should_accept = random.random() < base_accept_prob
         
-        # Safety check: only use oracle if we're about to reject and very close to budget
-        if not should_accept and rejections_rem < 100:
+        # Safety check: only use oracle if we're about to reject and extremely close to budget
+        if not should_accept and rejections_rem < 50:  # Only check oracle when very close to budget
             is_safe_to_reject = self.oracle.is_feasible(D_y, D_w, people_to_see_rem - 1)
             if not is_safe_to_reject:
                 return True, "ogds_forced_accept_infeasible_rejection"

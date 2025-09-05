@@ -1,0 +1,40 @@
+name: "OracleGatedDeficitStrategy"
+description: "Maintains high feasibility probability against a target rejection count using an oracle."
+
+parameters:
+  # The target number of rejections the bot aims for. The feasibility calculations
+  # are based on staying within this budget. Aiming slightly below the record (716)
+  # gives a small margin of error.
+  target_rejections: 710
+
+  # The fraction of total capacity (1000) after which the strategy switches
+  # from 'early game' to 'late game' logic. In the late game, it stops
+  # gambling on rejections and accepts any needed person.
+  early_game_cutoff: 0.5
+
+  # A multiplier used to determine if one constraint is significantly lagging
+  # behind another. E.g., a value of 1.05 means it will prioritize an attribute
+  # if the other attribute's progress is 5% greater.
+  lag_bias_threshold: 1.05
+
+  # --- Feasibility Oracle Parameters ---
+  # These must match the observed probabilities of Scenario 1 for the oracle to be accurate.
+
+  # P(young AND well_dressed) - empirically calibrated
+  p_both: 0.1443
+  # P(young AND NOT well_dressed) - empirically calibrated  
+  p_young_only: 0.1787
+  # P(NOT young AND well_dressed) - empirically calibrated
+  p_well_dressed_only: 0.1787
+
+  # The confidence level for the oracle. A delta of 0.05 means the oracle
+  # will only consider a state 'feasible' if the Monte Carlo simulation shows
+  # a >= 95% probability of success.
+  oracle_delta: 0.05
+
+scenario_adjustments:
+  1:
+    # Scenario 1 specific optimization
+    target_rejections: 710    # Optimal budget for scenario 1
+    oracle_delta: 0.03        # More permissive confidence requirement
+    lag_bias_threshold: 1.05  # Balanced approach

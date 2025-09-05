@@ -1,0 +1,72 @@
+# PEC v2 (Improved Predictive Equilibrium Control)
+
+name: "PEC_v2"
+description: "Improved Predictive Equilibrium Control with aggressive early exploration and adaptive balancing"
+
+parameters:
+  # Phase-based operation (like Apex)
+  exploration_phase_cutoff: 0.30   # More aggressive early exploration
+  optimization_phase_cutoff: 0.75  # Balanced optimization phase
+  # Final phase is constraint rush
+  
+  # Exploration phase (0-30% capacity)
+  exploration_dual_rate: 1.0        # Always accept duals
+  exploration_single_rate: 0.65     # Much more aggressive than original
+  exploration_filler_rate: 0.12     # Some filler to maintain acceptance rate
+  
+  # Optimization phase (30-75% capacity)
+  optimization_dual_rate: 1.0       # Still always accept duals
+  optimization_equilibrium_tolerance: 0.025
+  optimization_urgency_boost: 0.4   # Strong urgency adjustments
+  optimization_balance_penalty: 0.3  # Penalty for imbalance
+  optimization_filler_rate: 0.06    # Reduced filler
+  
+  # Constraint rush phase (75-100% capacity)
+  rush_dual_rate: 1.0               # Always accept duals
+  rush_emergency_threshold: 0.88    # Emergency mode earlier
+  rush_deficit_panic_multiplier: 5.0 # Strong panic response
+  rush_filler_cutoff: 0.02          # Minimal filler
+  
+  # Learning and adaptation
+  learning_enabled: true
+  learning_rate: 0.08               # Faster learning like Apex
+  learning_start_decisions: 30      # Start learning earlier
+  
+  # Predictive parameters
+  lookahead_window: 40              # Slightly smaller window
+  confidence_level: 0.90            # High confidence predictions
+  
+  # Balance enforcement
+  balance_check_frequency: 25       # Check balance more frequently
+  max_imbalance_tolerance: 0.05     # Tighter balance control
+  imbalance_correction_strength: 0.4 # Strong corrections
+  
+  # Waste minimization
+  waste_penalty_base: 0.08          # Higher base penalty
+  waste_penalty_growth: 1.2         # Exponential growth
+  max_waste_threshold: 8            # Lower threshold
+  
+  # Emergency overrides
+  emergency_override_enabled: true
+  constraint_violation_penalty: 1000.0
+  panic_mode_deficit: 50            # Panic when 50 short
+  
+  # Updated probability estimates (more aggressive)
+  p_young_initial: 0.325
+  p_well_initial: 0.325
+  p_both_initial: 0.148
+
+scenario_adjustments:
+  1:
+    exploration_single_rate: 0.70    # Even more aggressive for scenario 1
+    exploration_filler_rate: 0.15
+    optimization_urgency_boost: 0.5
+    panic_mode_deficit: 40
+  2:
+    exploration_single_rate: 0.60    # More conservative for rare attributes
+    lookahead_window: 50
+    confidence_level: 0.85
+  3:
+    exploration_single_rate: 0.58    # Most conservative for multiple rare
+    balance_check_frequency: 20
+    max_imbalance_tolerance: 0.03

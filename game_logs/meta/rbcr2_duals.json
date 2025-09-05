@@ -1,10 +1,10 @@
 {
   "scenario_1": {
     "lambda_y": 0.022697804104216127,
-    "lambda_w": 0.028440694601587935,
-    "eta": 0.05598923255856844,
-    "games_played": 13,
-    "last_err_y": 21.0,
-    "last_err_w": 19.0
+    "lambda_w": 0.03188263267312593,
+    "eta": 0.055430739963796716,
+    "games_played": 15,
+    "last_err_y": 0.0,
+    "last_err_w": 23.0
   }
 }

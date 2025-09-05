@@ -1,0 +1,67 @@
+# PEC (Predictive Equilibrium Control)
+
+name: "PEC"
+description: "Predictive Equilibrium Control strategy with lookahead prediction, dynamic equilibrium maintenance, and waste minimization"
+
+parameters:
+  # Core PEC parameters
+  lookahead_window: 50
+  equilibrium_tolerance: 0.02
+  waste_penalty_factor: 0.05
+  
+  # Initial learned probabilities (will be updated online)
+  p_young_initial: 0.323
+  p_well_initial: 0.323
+  p_both_initial: 0.144
+  
+  # Learning parameters
+  learning_rate: 0.05
+  learning_start: 50  # Start learning after this many decisions
+  
+  # Decision thresholds
+  critical_boost: 0.15
+  urgency_high: 0.7
+  urgency_medium: 0.5
+  urgency_high_boost: 0.4
+  urgency_medium_boost: 0.2
+  
+  # Balance adjustment
+  imbalance_threshold: 0.03
+  imbalance_boost: 0.25
+  
+  # Capacity phase adjustments
+  emergency_threshold: 0.92
+  late_threshold: 0.85
+  mid_threshold: 0.75
+  late_penalty: 0.7
+  mid_penalty: 0.85
+  
+  # Filler parameters
+  filler_min_progress: 0.92
+  filler_buffer_threshold: 15
+  filler_max_rate: 0.08
+  filler_target_rate: 0.515
+  
+  # Constraint met penalty
+  surplus_penalty: 0.6
+  
+  # Prediction confidence adjustment
+  high_uncertainty_threshold: 10
+  uncertainty_boost: 0.1
+
+scenario_adjustments:
+  1:
+    lookahead_window: 45
+    equilibrium_tolerance: 0.015
+    learning_rate: 0.06
+    critical_boost: 0.18
+  2:
+    lookahead_window: 60  # More lookahead for creative constraint
+    equilibrium_tolerance: 0.025
+    learning_rate: 0.04
+    waste_penalty_factor: 0.08
+  3:
+    lookahead_window: 55  # Multiple rare attributes
+    equilibrium_tolerance: 0.02
+    learning_rate: 0.045
+    critical_boost: 0.2

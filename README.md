@@ -405,37 +405,53 @@ monitor.add_termination_callback(my_callback)
 
 ## 📊 Algorithm Performance Benchmarks
 
-*Local simulator results (5 runs each, 20 workers, scenario 1):*
+*Complete results from 21 strategies (5 runs each, 20 workers, scenario 1, September 2025):*
 
-| Algorithm | Success Rate | Best Result | Avg Result | Range | Status |
-|-----------|-------------|-------------|------------|-------|--------|
-| **Perfect** | **100%** | **905** | **955** | 905-1045 | ✅ Reliable |
-| **Ultimate3H** | **100%** | **906** | **996** | 906-1071 | ✅ Reliable |
-| **OptimalControlSafe** | **100%** | **950** | **1012** | 950-1072 | ✅ Production Ready |
-| **Ultimate2** | **100%** | **880** | **953** | 880-1004 | ✅ Stable |
-| **MEC** | **100%** | **1077** | **1132** | 1077-1162 | ✅ Conservative |
-| RBCR (Baseline) | 20% | 853 | 868* | 844-923 | ❌ Unreliable |
-| Optimal (Aggressive) | 0% | 574* | 640* | 574-702 | ❌ Constraint Issues |
+| Strategy | Success Rate | Avg Rejections | Performance | Status |
+|----------|-------------|---------------|-------------|--------|
+| **perfect** | **100.0%** (5/5) | **932** | 🥇 **Best Consistent** | ✅ Production Ready |
+| **ultimate3h** | **100.0%** (5/5) | **922** | 🥈 **Excellent** | ✅ Reliable |
+| **dual** | 60.0% (3/5) | 925 | 🥉 **Good** | ⚠️ Moderate Success |
+| **adaptive** | 40.0% (2/5) | 942 | Fair | ⚠️ Inconsistent |
+| **ultimate2** | 40.0% (2/5) | 952 | Fair | ⚠️ Inconsistent |
+| **ultimate3** | 40.0% (2/5) | 909 | Fair | ⚠️ Inconsistent |
+| **rbcr** | 20.0% (1/5) | 845 | Poor | ❌ **Best Single Run** |
+| **optimal_safe** | 20.0% (1/5) | 934 | Poor | ❌ Unreliable |
+| aggressive | 0.0% (0/5) | - | Failed | ❌ Not Working |
+| balanced | 0.0% (0/5) | - | Failed | ❌ Not Working |
+| diversity | 0.0% (0/5) | - | Failed | ❌ Not Working |
+| conservative | 0.0% (0/5) | - | Failed | ❌ Not Working |
+| greedy | 0.0% (0/5) | - | Failed | ❌ Not Working |
+| quota | 0.0% (0/5) | - | Failed | ❌ Not Working |
+| dvo | 0.0% (0/5) | - | Failed | ❌ Not Working |
+| ramanujan | 0.0% (0/5) | - | Failed | ❌ Not Working |
+| ultimate | 0.0% (0/5) | - | Failed | ❌ Not Working |
+| rbcr2 | 0.0% (0/5) | - | Failed | ❌ Not Working |
+| mec | 0.0% (0/5) | - | Failed | ❌ Not Working |
+| optimal | 0.0% (0/5) | - | Failed | ❌ Not Working |
+| optimal_final | 0.0% (0/5) | - | Failed | ❌ Not Working |
 
-*\* Results from successful runs only*
+**🏆 Overall Results:** 21 successful games out of 105 total (20.0% success rate)  
+**⚡ Best Single Result:** 845 rejections (rbcr strategy)  
+**🎯 Target:** 716 rejections (current record)
 
 ### 🎯 **Performance Summary:**
-- **Target:** 716 rejections (Maksim's record)
-- **Best Production Algorithm:** Perfect (905 rejections, 100% success)
-- **Most Reliable:** Ultimate2/Ultimate3H/OptimalControlSafe (100% success)
-- **Baseline (RBCR):** 853 rejections, 20% success rate
+- **Target:** 716 rejections (Maksim's record) 
+- **Best Production Algorithm:** Perfect (932 avg rejections, 100% success)
+- **Most Reliable:** Perfect & Ultimate3H (100% success rate)
+- **Best Single Run:** RBCR (845 rejections, but only 20% success rate)
 
-### 🧠 **Mathematical Breakthroughs:**
-- **Perfect Strategy:** Constraint-first optimization with 905 rejections
-- **Ultimate3H Hybrid:** Dual-mode optimization (906 rejections)
-- **Optimal Control:** Bellman equations + constraint barriers
-- **Progressive Safety:** Multi-level constraint protection systems
+### 🧠 **Key Findings:**
+- **Top Tier Algorithms:** Perfect and Ultimate3H deliver consistent 100% success
+- **Moderate Performers:** Dual (60%), Adaptive/Ultimate2/Ultimate3 (40% each)
+- **Struggling Algorithms:** 13 strategies failed completely (0% success)
+- **Success Rate Crisis:** Only 20% overall success across all runs
 
-### ⚡ **Key Insights:**
-- All advanced algorithms outperform RBCR baseline significantly
-- 100% constraint satisfaction achieved with proper safety mechanisms
-- Mathematical optimization reduces rejections by 100+ compared to baseline
-- Perfect strategy provides best performance with guaranteed reliability
+### ⚡ **Strategic Insights:**
+- **Reliability vs Performance:** Perfect/Ultimate3h trade slightly higher rejection counts for guaranteed success
+- **High-Risk/High-Reward:** RBCR achieved the best single result (845) but failed 80% of the time
+- **Algorithm Maturity:** Most strategies appear to need tuning or debugging
+- **Production Recommendation:** Use Perfect strategy for reliable results
 
 ## 🤝 Contributing
 

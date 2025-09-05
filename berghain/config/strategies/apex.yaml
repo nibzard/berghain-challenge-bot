@@ -1,0 +1,106 @@
+# Apex Algorithm - Superior Hybrid Mathematical Optimization
+#
+# ABOUTME: The ultimate strategy combining Perfect's constraint-first philosophy with Ultimate3H's dual-mode switching
+# ABOUTME: Features triple-mode operation with predictive analytics and adaptive parameter tuning
+
+name: "Apex"
+description: "Superior hybrid algorithm combining Perfect's constraint-first optimization with Ultimate3H's dual-mode switching and predictive analytics."
+
+parameters:
+  # === TRIPLE-MODE OPERATION ===
+  # Mode 1: Exploration (0-30% capacity) - Learn distributions and be selective
+  exploration_capacity_cutoff: 0.30
+  exploration_acceptance_rate: 0.25
+  exploration_dual_bonus: 2.0
+  
+  # Mode 2: Optimization (30-70%) - Minimize rejections with safety
+  optimization_capacity_cutoff: 0.70
+  optimization_dual_priority: 1.5
+  optimization_single_threshold: 0.4
+  optimization_filler_rate: 0.05
+  
+  # Mode 3: Constraint Rush (70-100%) - Guarantee satisfaction
+  constraint_rush_dual_rate: 1.0
+  constraint_rush_single_urgency: 3.0
+  constraint_rush_filler_cutoff: 0.01
+  
+  # === CONSTRAINT SATISFACTION SYSTEM ===
+  # Perfect-style constraint penalties
+  constraint_violation_penalty: 2000.0
+  constraint_emergency_threshold: 0.85
+  constraint_panic_threshold: 0.95
+  deficit_exponential_weight: 4.0
+  
+  # Predictive constraint satisfaction
+  predictive_confidence_level: 0.95
+  binomial_safety_buffer: 1.96  # 95% confidence interval
+  feasibility_lookahead_steps: 50
+  
+  # === DUAL-MODE SWITCHING ===
+  # Ultimate3H-inspired mode switching
+  aggressive_mode_rejection_limit: 750
+  safe_mode_constraint_threshold: 0.75
+  emergency_mode_deficit_limit: 80
+  
+  # Mode transition smoothing
+  mode_switch_hysteresis: 0.05
+  transition_smoothing_factor: 0.8
+  
+  # === LAGRANGE MULTIPLIERS & OPTIMIZATION ===
+  # Mathematical optimization parameters
+  lambda_base_multiplier: 3.0
+  lambda_learning_rate: 0.08
+  lambda_momentum: 0.9
+  lambda_max_value: 15.0
+  
+  # Golden ratio optimization (Perfect-inspired)
+  golden_section_ratio: 0.618034
+  fibonacci_scaling_factor: 1.414
+  
+  # === ADAPTIVE LEARNING SYSTEM ===
+  # Parameter adaptation based on performance
+  adaptive_learning_enabled: true
+  learning_rate_success: 1.05
+  learning_rate_failure: 0.95
+  parameter_adaptation_window: 10
+  
+  # Success/failure tracking
+  success_rate_target: 0.95
+  performance_smoothing_alpha: 0.7
+  
+  # === ADVANCED FEATURES ===
+  # Predictive analytics
+  attribute_correlation_learning: true
+  distribution_adaptation: true
+  real_time_probability_updates: true
+  
+  # Safety mechanisms
+  multiple_safety_nets: true
+  constraint_barrier_strength: 500.0
+  emergency_override_enabled: true
+  
+  # Exploration vs exploitation balance
+  exploration_epsilon: 0.08
+  nash_equilibrium_mixing: 0.03
+  entropy_bonus_weight: 0.1
+  
+  # === SCENARIO SPECIFIC TUNING ===
+  scenario_adjustments:
+    1:
+      # Scenario 1: Friday Night (600 young + 600 well_dressed)
+      exploration_acceptance_rate: 0.22
+      optimization_single_threshold: 0.38
+      constraint_violation_penalty: 1800.0
+      lambda_learning_rate: 0.07
+    2:
+      # Scenario 2: Creative constraint (rare attribute)
+      exploration_acceptance_rate: 0.15
+      optimization_single_threshold: 0.6
+      constraint_violation_penalty: 3000.0
+      lambda_learning_rate: 0.12
+    3:
+      # Scenario 3: Multiple rare attributes
+      exploration_acceptance_rate: 0.18
+      optimization_single_threshold: 0.5
+      constraint_violation_penalty: 2500.0
+      lambda_learning_rate: 0.10

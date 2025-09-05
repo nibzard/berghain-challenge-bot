@@ -17,6 +17,8 @@ from .ultimate_solver import UltimateSolver, UltimateStrategy
 from .ultimate2_solver import Ultimate2Solver, Ultimate2Strategy
 from .ultimate3_solver import Ultimate3Solver, Ultimate3Strategy
 from .ultimate3h_solver import Ultimate3HSolver, Ultimate3HStrategy
+from .optimal_control_solver import OptimalControlSolver, OptimalControlStrategy
+from .optimal_control_final import OptimalControlFinalSolver, OptimalControlFinalStrategy
 from .perfect_solver import PerfectSolver, PerfectStrategy
 from .mec_solver import MecSolver, MecStrategy
 
@@ -42,7 +44,11 @@ __all__ = [
     "Ultimate3Solver", 
     "Ultimate3Strategy",
     "Ultimate3HSolver",
-    "Ultimate3HStrategy", 
+    "Ultimate3HStrategy",
+    "OptimalControlSolver",
+    "OptimalControlStrategy",
+    "OptimalControlFinalSolver",
+    "OptimalControlFinalStrategy",
     "PerfectSolver",
     "PerfectStrategy",
     "MecSolver",

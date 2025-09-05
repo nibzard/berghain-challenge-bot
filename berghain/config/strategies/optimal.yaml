@@ -1,0 +1,52 @@
+# Optimal Control Mathematical Strategy
+
+name: "OptimalControl"
+description: "Theoretical breakthrough using exact Bellman equations and optimal control theory"
+
+parameters:
+  # Exact empirical probabilities (from calibrated data)
+  p_young: 0.323                           # P(young=1) - exact empirical
+  p_well_dressed: 0.323                    # P(well_dressed=1) - exact empirical
+  p_both: 0.144                            # P(both=1) - exact empirical
+  correlation: 0.184                       # Pearson correlation - exact empirical
+  
+  # Optimal control discretization
+  discretization_young: 30                 # Coarse discretization for computational speed
+  discretization_well_dressed: 30
+  discretization_capacity: 25
+  value_iteration_tolerance: 0.000001      # High precision convergence
+  max_value_iterations: 150                # Sufficient iterations
+  discount_factor: 1.0                     # No temporal discounting
+  
+  # Bayesian learning and confidence bounds
+  confidence_level: 0.99                   # 99% confidence in decisions
+  posterior_samples: 500                   # Monte Carlo samples
+  adaptive_learning_rate: 0.03             # Moderate learning rate
+  
+  # Multi-armed bandit exploration
+  exploration_decay: 0.998                 # Slow decay - maintain some exploration
+  ucb_constant: 1.5                        # Conservative UCB constant
+  thompson_sampling_beta: 0.8              # Thompson sampling parameter
+  
+  # Hard constraint enforcement
+  barrier_strength: 8000.0                 # Strong barriers
+  constraint_violation_penalty: 100000000  # Effectively infinite penalty
+  safety_margin: 1                         # Minimal safety margin for optimality
+  
+  # Concentration inequalities
+  martingale_bound: 0.03                   # Martingale concentration
+  chernoff_bound: 0.005                    # Chernoff tail bound
+  hoeffding_confidence: 0.98               # Hoeffding confidence level
+
+scenario_adjustments:
+  1:
+    # Scenario 1 CONSTRAINT-SAFE optimization for target achievement
+    discretization_young: 20               # Slightly coarser for robustness
+    discretization_well_dressed: 20
+    discretization_capacity: 25
+    exploration_decay: 0.9985              # Faster exploration decay for safety
+    ucb_constant: 1.0                      # More conservative exploration
+    adaptive_learning_rate: 0.05           # Faster constraint learning
+    safety_margin: 3                       # Small safety margin for constraint insurance
+    barrier_strength: 15000.0              # Very high barrier strength
+    constraint_violation_penalty: 500000000 # Even higher constraint penalty

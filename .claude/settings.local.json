@@ -2,7 +2,8 @@
   "permissions": {
     "allow": [
       "Bash(python:*)",
-      "Bash(timeout 10 python main.py run:*)"
+      "Bash(timeout 10 python main.py run:*)",
+      "Bash(jq:*)"
     ],
     "deny": [],
     "ask": []

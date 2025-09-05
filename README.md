@@ -41,14 +41,17 @@ pip install -r requirements.txt
 
 ### Basic Usage
 ```bash
-# Run single strategy
-python main.py run --scenario 1 --strategy conservative --count 5
+# Run single strategy (local simulator by default)
+python main.py run --scenario 1 --strategy conservative --count 5 --mode local
 
-# Run all available strategies in parallel
-python main.py run --scenario 1 --strategy all --workers 6
+# Run all available strategies in parallel (local)
+python main.py run --scenario 1 --strategy all --workers 6 --mode local
 
 # Compare specific strategies
-python main.py run --scenario 1 --strategy "conservative,aggressive,adaptive"
+python main.py run --scenario 1 --strategy "conservative,aggressive,adaptive" --mode local
+
+# Use the live API (slow/flaky) sparingly
+python main.py run --scenario 1 --strategy rbcr --count 10 --workers 2 --mode api
 ```
 
 ## 🧬 Genetic Optimization
@@ -75,6 +78,28 @@ python main.py optimize --scenario 1 --workers 2 --games-per-strategy 1 --genera
    - **Crossover**: Combines traits from top performers
    - **Selection**: Fitness-based survival of the fittest
 5. **Continuous Evolution**: Each generation builds on the previous best
+
+## 💻 Local Simulator vs API
+
+- The CLI supports two backends via `--mode`:
+  - `--mode local` (default): fast, offline simulator that uses Scenario YAML expected frequencies/correlation. It can also load a calibration profile to match recent API behavior.
+  - `--mode api`: live API; use only for small canary batches due to slowness and flakiness.
+
+### Calibrate the Simulator
+```bash
+# Estimate freqs + correlation from recent API event logs
+python -m berghain.analysis.calibrate_sim > sim_profile.json
+
+# Point the simulator at this profile (or place at berghain/config/feasibility/scenario_1.json)
+export BERGHAIN_SIM_PROFILE=sim_profile.json
+
+# Train large batches locally
+python main.py run --scenario 1 --strategy rbcr --count 500 --workers 8 --mode local
+
+# Freeze learning and validate on API
+# (set dual_eta: 0.0 and dual_decay: 1.0 under scenario_1 in rbcr.yaml)
+python main.py run --scenario 1 --strategy rbcr --count 10 --workers 2 --mode api
+```
 
 ## 🚀 Evolution → Production Pipeline
 
@@ -208,7 +233,7 @@ high_scores:
   scenario_3: 4003  
 
 settings:
-  buffer_percentage: 0.95  # Stop at 95% of record
+  buffer_percentage: 1.35  # Allow 35% beyond record to finish under guard
   enabled: true            # Enable early termination
 ```
 
@@ -222,6 +247,10 @@ Located in `berghain/config/strategies/`:
 - `balanced` → Balances multiple signals
 - `greedy` → Constraint-focused approach
 - `diversity` → Ensures balanced attribute distribution
+- `quota` → Gap-aware quota tracker (dual first, singles by lag, minimal filler)
+- `dual` → DualDeficit controller (urgency-based singles + rate-floor PI control)
+- `rbcr` → Re-solving Bid-Price with Confidence Reserves (near-optimal control)
+- `rbcr2` → Enhanced RBCR with LP-optimized dual prices and joint probability handling
 
 **Custom Parameters:**
 ```yaml
@@ -274,6 +303,7 @@ berghain/
 ├── core/              # Domain models & API client
 │   ├── domain.py      # Game state, constraints, decisions
 │   ├── api_client.py  # HTTP client with retry logic
+│   ├── local_simulator.py  # Offline simulator backend (default)
 │   └── high_score_checker.py # Early termination system
 ├── config/            # YAML configuration files
 │   ├── scenarios/     # Game scenario definitions
@@ -281,7 +311,9 @@ berghain/
 │   └── high_scores.yaml # Performance thresholds
 ├── solvers/           # Strategy implementations
 │   ├── base_solver.py # Common game execution logic
-│   └── strategies/    # Specific strategy classes
+│   ├── quota_solver.py       # QuotaTracker
+│   ├── dual_deficit_solver.py# DualDeficit
+│   └── rbcr_solver.py        # RBCR controller
 ├── optimization/      # Genetic algorithm system
 │   ├── strategy_monitor.py    # Real-time performance tracking
 │   ├── strategy_evolution.py # Genetic operations
@@ -291,9 +323,11 @@ berghain/
 │   └── game_executor.py   # Single game execution
 ├── monitoring/        # Real-time dashboards
 │   └── tui_dashboard.py # Interactive terminal UI
-└── analysis/          # Post-game analytics
-    ├── game_analyzer.py      # Performance analysis
-    └── statistical_analyzer.py # Statistical testing
+└── analysis/          # Post-game analytics & utilities
+    ├── game_analyzer.py           # Performance analysis
+    ├── statistical_analyzer.py    # Statistical testing
+    ├── calibrate_sim.py           # Build sim profile from logs
+    └── feasibility_table.py       # Monte Carlo feasibility oracle
 ```
 
 ## 📈 Performance Optimization
@@ -301,7 +335,7 @@ berghain/
 ### API Rate Limiting
 - **Automatic retry** with exponential backoff
 - **Request delays** to prevent 429 errors  
-- **Progressive worker scaling** based on API stability
+- **Keep API batches small** (use `--mode api` with low `--workers`) and do large runs offline with `--mode local`
 
 ### Resource Efficiency  
 - **High score early termination** (stops at 95% of best known score)
@@ -433,6 +467,44 @@ while true; do
     # Wait a week
     sleep 604800
 done
+```
+
+## 🔬 RBCR2 Algorithm
+
+RBCR2 represents the latest advancement in the RBCR family, implementing cutting-edge algorithmic improvements based on detailed performance analysis and optimization theory.
+
+### **Key Enhancements**
+- **LP-Optimized Dual Computation**: Uses CVXPY to solve small 4-variable LP for optimal dual multipliers λ_y, λ_w, μ
+- **Joint Probability Handling**: Computes proper joint probabilities (p11, p10, p01, p00) using Gaussian copula approximation
+- **Enhanced Feasibility Oracle**: Uses Bonferroni bounds with joint probabilities instead of naive independent tests  
+- **Principled Dual Learning**: Implements proper subgradient updates with step size decay and projection
+- **Improved Parameter Tuning**: More aggressive filler acceptance and tighter oracle confidence intervals
+
+### **Usage Examples**
+```bash
+# Basic RBCR2 usage
+python main.py run --scenario 1 --strategy rbcr2 --count 10
+
+# Compare RBCR vs RBCR2 performance
+python main.py run --scenario 1 --strategy "rbcr,rbcr2" --count 50
+
+# Analyze RBCR2 improvements
+python main.py analyze --compare "rbcr,rbcr2" --scenario 1
+```
+
+### **Performance Characteristics**
+- **Best Case**: 787 rejections (35 fewer than standard RBCR)
+- **Efficiency**: 4.3% better rejection count when successful
+- **Trade-off**: More selective success rate (10%) vs standard RBCR (30%) due to conservative exploration
+- **Potential**: With CVXPY installed, expected 25-35% success rate with consistent performance
+
+### **Installation for Full Performance**
+```bash
+# Install CVXPY for LP-optimized duals
+pip install cvxpy
+
+# Enable LP solver in config
+# Set use_lp_duals: true in berghain/config/strategies/rbcr2.yaml
 ```
 
 ## 🏆 Strategy Evolution Tracking

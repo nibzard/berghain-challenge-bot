@@ -1,0 +1,47 @@
+# Mathematician's Exact Control (MEC)
+
+name: "MEC"
+description: "Mathematically rigorous exact solution using dynamic programming and constraint optimization"
+
+parameters:
+  # Value function discretization (computational efficiency vs accuracy)
+  young_discretization: 15        # Balance memory usage with precision
+  well_dressed_discretization: 15 
+  capacity_discretization: 20
+  
+  # Constraint enforcement (hard mathematical guarantees)
+  constraint_penalty: 1000000.0   # Infinite penalty for violations
+  barrier_coefficient: 150.0      # Log-barrier strength
+  constraint_buffer: 3            # Safety margin
+  
+  # Empirically calibrated probabilities (from game logs analysis)
+  empirical_p_both: 0.1443        # P(young ∩ well_dressed)
+  empirical_p_young_only: 0.1787  # P(young ∩ ¬well_dressed) 
+  empirical_p_well_dressed_only: 0.1787  # P(¬young ∩ well_dressed)
+  empirical_p_neither: 0.4983     # P(¬young ∩ ¬well_dressed)
+  
+  # Information theory optimization
+  mutual_information_weight: 0.6  # Weight for joint information
+  entropy_bonus: 0.25             # Reward for constraint balancing
+  kl_penalty: 0.08                # Penalty for deviating from optimal
+  
+  # Mathematical optimization parameters
+  discount_factor: 0.9995         # Temporal discounting
+  convergence_tolerance: 0.00000001  # Numerical precision
+  max_iterations: 2000            # Computational budget
+  online_learning_rate: 0.03      # Bayesian update rate
+  
+  # Risk management (uncertainty quantification)
+  risk_aversion: 0.12             # Conservative bias
+  confidence_level: 0.995         # Statistical confidence
+  tail_probability: 0.005         # Worst-case planning
+
+scenario_adjustments:
+  1:
+    # Scenario 1 specific mathematical optimization
+    barrier_coefficient: 200.0    # Stronger constraint enforcement
+    constraint_buffer: 2          # Tighter margins
+    mutual_information_weight: 0.8 # Higher info value
+    risk_aversion: 0.08           # Less conservative (we know the distribution)
+    online_learning_rate: 0.02    # Slower adaptation (stable environment)
+    discount_factor: 0.9998       # More future-oriented

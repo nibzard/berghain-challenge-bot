@@ -1,0 +1,56 @@
+# Ultimate3H Hybrid Optimization Strategy
+
+name: "Ultimate3H"
+description: "Hybrid approach: Ultimate rejection minimization + Ultimate3 constraint safety with smart mode switching"
+
+parameters:
+  # Hybrid mode control (ULTRA-AGGRESSIVE TUNING)
+  mode_switch_rejection_threshold: 650      # Much earlier switch - maximize mode 1 efficiency
+  constraint_risk_switch_threshold: 0.8    # Allow more risk before switching
+  emergency_switch_threshold: 50          # Earlier emergency for safety
+  
+  # Mode 1: Ultimate-style parameters (ULTRA-AGGRESSIVE rejection minimization)
+  ultimate_exploration_epsilon: 0.20       # Higher exploration for maximum efficiency
+  ultimate_nash_mixing: 0.15              # More aggressive mixing
+  ultimate_entropy_threshold: 0.3         # Lower threshold for exploration
+  ultimate_risk_aversion: 0.15            # Lower risk aversion - be more aggressive
+  ultimate_confidence_level: 0.90         # Lower confidence for more acceptance
+  
+  # Mode 2: Ultimate3-style parameters (constraint safety)
+  u3_dual_acceptance_rate: 1.0            # 100% dual acceptance in safety mode
+  u3_phase1_single_threshold: 120         # More aggressive single thresholds
+  u3_phase2_single_threshold: 40
+  u3_phase3_single_threshold: 1
+  u3_filler_acceptance_rate: 0.0          # Never accept filler
+  
+  # Phase management
+  phase1_cutoff: 0.35                     # Balanced phase transitions
+  phase2_cutoff: 0.75
+  
+  # Lagrange multipliers (shared between modes)
+  lambda_response_rate: 6.0               # Moderate response rate
+  deficit_multiplier: 18.0                # Moderate deficit sensitivity
+  learning_momentum: 0.15                 # Small momentum for stability
+  
+  # Safety and barriers
+  barrier_strength: 1200.0                # Strong barriers
+  safety_buffer: 4                        # Tight but not too tight
+  violation_penalty: 800000.0             # High penalty
+  
+  # Mathematical precision
+  convergence_tolerance: 0.0000000001
+  numerical_stability_epsilon: 0.000000000001
+
+scenario_adjustments:
+  1:
+    # Scenario 1 ULTRA-AGGRESSIVE optimization for 716 target
+    mode_switch_rejection_threshold: 600  # VERY early switch for maximum mode 1 time
+    constraint_risk_switch_threshold: 0.85 # Allow even more risk before switching
+    emergency_switch_threshold: 40       # Very early emergency switch
+    ultimate_exploration_epsilon: 0.25   # Maximum exploration in mode 1
+    ultimate_nash_mixing: 0.20           # Maximum mixing for efficiency
+    ultimate_risk_aversion: 0.10         # Minimal risk aversion
+    u3_phase1_single_threshold: 80       # Very aggressive singles in safety mode
+    u3_phase2_single_threshold: 20       # Tight single thresholds
+    lambda_response_rate: 8.0            # Very fast constraint response
+    deficit_multiplier: 22.0             # High sensitivity for quick response

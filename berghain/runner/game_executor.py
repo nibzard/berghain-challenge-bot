@@ -78,7 +78,7 @@ class GameExecutor:
         else:
             # Try additional strategies if available
             try:
-                from ..solvers import BalancedStrategy, GreedyConstraintStrategy, DiversityFirstStrategy, QuotaTrackerStrategy, DualDeficitController, RBCRStrategy
+                from ..solvers import BalancedStrategy, GreedyConstraintStrategy, DiversityFirstStrategy, QuotaTrackerStrategy, DualDeficitController, RBCRStrategy, RBCR2Strategy, DVOStrategy, RamanujanStrategy, UltimateStrategy, Ultimate2Strategy, Ultimate3Strategy, Ultimate3HStrategy, PerfectStrategy, MecStrategy
                 if name == 'balanced':
                     return BalancedStrategy(base_params)
                 if name == 'greedy':
@@ -91,6 +91,24 @@ class GameExecutor:
                     return DualDeficitController(base_params)
                 if name in ('rbcr', 'bidprice', 'bid_price'):
                     return RBCRStrategy(base_params)
+                if name in ('rbcr2', 'rbcr_2', 'enhanced_rbcr', 'lp_rbcr'):
+                    return RBCR2Strategy(base_params)
+                if name in ('dvo', 'dynamic'):
+                    return DVOStrategy(base_params)
+                if name in ('ramanujan', 'rimo', 'mathematical'):
+                    return RamanujanStrategy(base_params)
+                if name in ('ultimate', 'umo', 'optimal'):
+                    return UltimateStrategy(base_params)
+                if name in ('ultimate2', 'ultimate_2', 'u2'):
+                    return Ultimate2Strategy(base_params)
+                if name in ('ultimate3', 'ultimate_3', 'u3'):
+                    return Ultimate3Strategy(base_params)
+                if name in ('ultimate3h', 'ultimate_3h', 'u3h', 'hybrid'):
+                    return Ultimate3HStrategy(base_params)
+                if name in ('perfect', 'pbo', 'balance'):
+                    return PerfectStrategy(base_params)
+                if name in ('mec', 'exact', 'mathematician'):
+                    return MecStrategy(base_params)
             except Exception:
                 pass
             
@@ -156,7 +174,35 @@ class GameExecutor:
             from ..core import BerghainAPIClient as _RealClient
             api_client = _RealClient()
 
-        solver = BaseSolver(strategy, solver_id, enable_high_score_check, api_client=api_client)
+        # Create specialized solver for strategies that need it
+        name = strategy_name.lower()
+        if name in ('mec', 'exact', 'mathematician'):
+            from ..solvers import MecSolver
+            solver = MecSolver(solver_id, api_client=api_client, enable_high_score_check=enable_high_score_check)
+        elif name in ('ultimate', 'umo', 'optimal'):
+            from ..solvers import UltimateSolver
+            solver = UltimateSolver(solver_id, api_client=api_client, enable_high_score_check=enable_high_score_check)
+        elif name in ('ultimate2', 'ultimate_2', 'u2'):
+            from ..solvers import Ultimate2Solver
+            solver = Ultimate2Solver(solver_id, api_client=api_client, enable_high_score_check=enable_high_score_check)
+        elif name in ('ultimate3', 'ultimate_3', 'u3'):
+            from ..solvers import Ultimate3Solver
+            solver = Ultimate3Solver(solver_id, api_client=api_client, enable_high_score_check=enable_high_score_check)
+        elif name in ('ultimate3h', 'ultimate_3h', 'u3h', 'hybrid'):
+            from ..solvers import Ultimate3HSolver
+            solver = Ultimate3HSolver(solver_id, api_client=api_client, enable_high_score_check=enable_high_score_check)
+        elif name in ('perfect', 'pbo', 'balance'):
+            from ..solvers import PerfectSolver
+            solver = PerfectSolver(solver_id, api_client=api_client, enable_high_score_check=enable_high_score_check)
+        elif name in ('dvo', 'dynamic'):
+            from ..solvers import DVOSolver
+            solver = DVOSolver(solver_id, api_client=api_client, enable_high_score_check=enable_high_score_check)
+        elif name in ('ramanujan', 'rimo', 'mathematical'):
+            from ..solvers import RamanujanSolver
+            solver = RamanujanSolver(solver_id, api_client=api_client, enable_high_score_check=enable_high_score_check)
+        else:
+            # Use BaseSolver for strategies that don't have specialized solvers
+            solver = BaseSolver(strategy, solver_id, enable_high_score_check, api_client=api_client)
         
         # Set up streaming with live status file
         solver.stream_callback = live_stream_callback
@@ -165,6 +211,13 @@ class GameExecutor:
             # Execute the game
             result = solver.play_game(scenario_id)
             
+            # Strategy post-run hook (learning/persistence)
+            try:
+                if hasattr(strategy, 'on_game_end') and callable(getattr(strategy, 'on_game_end')):
+                    strategy.on_game_end(result)
+            except Exception:
+                pass
+
             # Save result log
             self._save_game_log(result, scenario_config, strategy_name=strategy.name)
             

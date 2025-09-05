@@ -1,0 +1,53 @@
+# Ultimate3 Aggressive Dual-First Optimization
+
+name: "Ultimate3"
+description: "Breakthrough optimization targeting 716 rejections with 100% dual acceptance and zero filler acceptance"
+
+parameters:
+  # Ultra-aggressive dual strategy (KEY INNOVATION)
+  dual_acceptance_rate: 1.0                  # 100% acceptance rate for dual-attribute people
+  dual_override_all_phases: true            # Override all other logic for duals
+  
+  # Refined single-attribute thresholds (PHASE-BASED PRECISION)
+  phase1_single_deficit_threshold: 150      # Phase 1: Only accept singles if deficit > 150
+  phase2_single_deficit_threshold: 50       # Phase 2: Accept singles if deficit > 50
+  phase3_single_deficit_threshold: 1        # Phase 3: Accept singles for any deficit
+  
+  # Tighter phase management
+  phase1_cutoff: 0.25                       # Earlier transition to phase 2 (from 0.30)
+  phase2_cutoff: 0.80                       # Longer mid-phase (from 0.70)
+  phase3_cutoff: 1.0                        # Final phase
+  
+  # Tighter safety and risk management
+  safety_buffer: 3                          # Reduced from 8 to 3
+  barrier_strength: 800.0                   # Reduced barrier strength
+  constraint_risk_threshold: 0.5            # Risk when deficit > 50% capacity
+  
+  # Tuned Lagrange multiplier dynamics
+  lambda_response_rate: 4.0                 # Reduced from 8.0
+  deficit_multiplier: 15.0                  # Reduced from 25.0
+  learning_momentum: 0.0                    # No momentum
+  
+  # Complete filler elimination (ZERO WASTE STRATEGY)
+  filler_acceptance_rate: 0.0               # NEVER accept filler people
+  filler_override_all: true                 # Hard override - no exceptions
+  
+  # Constraint enforcement (slightly reduced for efficiency)
+  constraint_priority_weight: 500000.0      # High but not infinite
+  violation_penalty: 500000.0               # Still very high penalty
+  feasibility_threshold: 0.999              # 99.9% constraint satisfaction
+  
+  # Mathematical precision
+  convergence_tolerance: 0.0000000001       # Ultra-high precision
+  numerical_stability_epsilon: 0.000000000001
+
+scenario_adjustments:
+  1:
+    # Scenario 1 specific Ultimate3 optimization
+    phase1_single_deficit_threshold: 180    # Even more selective in phase 1
+    phase2_single_deficit_threshold: 40     # Tighter phase 2 threshold
+    safety_buffer: 2                        # Ultra-tight safety margins
+    lambda_response_rate: 3.5               # Even more conservative multiplier response
+    deficit_multiplier: 12.0                # Reduced deficit sensitivity
+    phase1_cutoff: 0.20                     # Super early phase transition
+    phase2_cutoff: 0.85                     # Even longer mid-phase

@@ -1,0 +1,47 @@
+# Perfect Balance Optimization (PBO)
+
+name: "Perfect"
+description: "Mathematically perfect balance between constraint satisfaction and rejection minimization"
+
+parameters:
+  # Constraint priority system
+  constraint_penalty_weight: 1500.0
+  constraint_satisfaction_threshold: 0.96
+  hard_constraint_mode_trigger: 0.88
+  
+  # Mathematical optimization
+  lagrange_multiplier_base: 2.8
+  capacity_shadow_price: 1.5
+  learning_rate: 0.06
+  gradient_momentum: 0.90
+  
+  # Constraint balancing
+  deficit_exponential_weight: 3.2
+  balance_importance: 0.30
+  emergency_threshold: 80
+  
+  # Efficiency optimization
+  efficiency_weight: 1.2
+  risk_aversion: 0.32
+  exploration_rate: 0.015
+  
+  # Phase management
+  early_phase_cutoff: 0.25
+  mid_phase_cutoff: 0.65
+  late_phase_cutoff: 0.88
+  
+  # Perfect balance parameters
+  golden_section: 0.618034
+  fibonacci_scaling: 1.732
+  convergence_tolerance: 0.00000001
+
+scenario_adjustments:
+  1:
+    # Scenario 1 perfect optimization
+    constraint_penalty_weight: 2000.0
+    hard_constraint_mode_trigger: 0.90
+    emergency_threshold: 60
+    lagrange_multiplier_base: 3.1
+    learning_rate: 0.08
+    late_phase_cutoff: 0.90
+    risk_aversion: 0.28

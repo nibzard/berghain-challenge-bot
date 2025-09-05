@@ -183,7 +183,8 @@ class GameResult:
     
     @property
     def success(self) -> bool:
-        return self.game_state.status == GameStatus.COMPLETED
+        return (self.game_state.status == GameStatus.COMPLETED and 
+                self.game_state.are_all_constraints_satisfied())
     
     @property
     def total_decisions(self) -> int:

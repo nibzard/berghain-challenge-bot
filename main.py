@@ -11,10 +11,11 @@ from berghain.monitoring import TUIDashboard, GameLogWatcher
 from berghain.analysis import GameAnalyzer, StatisticalAnalyzer
 from berghain.config import ConfigManager
 from berghain.core import BerghainAPIClient
+from berghain.optimization import DynamicStrategyRunner, DynamicRunConfig
 
 
 def run_games(args):
-    """Run games with specified strategy and scenario."""
+    """Run games with specified strategy/strategies and scenario."""
     config_manager = ConfigManager()
     api_client = BerghainAPIClient()
     
@@ -24,29 +25,66 @@ def run_games(args):
         print(f"❌ Scenario {args.scenario} not found")
         return
     
-    # Get strategy configuration
-    strategy_config = config_manager.get_strategy_config(args.strategy)
-    if not strategy_config:
-        print(f"❌ Strategy '{args.strategy}' not found")
-        return
+    # Parse strategies (comma-separated, single, or "all")
+    if args.strategy.lower() == "all":
+        strategies = config_manager.list_available_strategies()
+        if not strategies:
+            print(f"❌ No strategies found in config directory")
+            return
+        print(f"🎯 Using all available strategies: {', '.join(strategies)}")
+    elif isinstance(args.strategy, list):
+        strategies = args.strategy
+    else:
+        strategies = [s.strip() for s in args.strategy.split(',')]
     
-    print(f"🎯 Running {args.count} games - Scenario {args.scenario} with {args.strategy} strategy")
+    # Validate all strategies exist
+    strategy_configs = {}
+    for strategy in strategies:
+        config = config_manager.get_strategy_config(strategy)
+        if not config:
+            print(f"❌ Strategy '{strategy}' not found")
+            return
+        strategy_configs[strategy] = config
+    
+    total_games = args.count * len(strategies)
+    if len(strategies) > 1:
+        print(f"🎯 Running {total_games} games - Scenario {args.scenario} with {len(strategies)} strategies: {', '.join(strategies)}")
+    else:
+        print(f"🎯 Running {args.count} games - Scenario {args.scenario} with {strategies[0]} strategy")
+    
+    # Show high score checking status
+    enable_high_score_check = not args.no_high_score_check
+    if enable_high_score_check:
+        config_manager = ConfigManager()
+        threshold = config_manager.get_high_score_threshold(args.scenario)
+        if threshold:
+            buffer_pct = config_manager.get_buffer_percentage()
+            effective_threshold = int(threshold * buffer_pct)
+            print(f"🏆 High score checking enabled: will stop at {effective_threshold} rejections ({buffer_pct*100:.0f}% of record {threshold})")
+        else:
+            print(f"🏆 High score checking enabled but no threshold found for scenario {args.scenario}")
+    else:
+        print(f"⏭️  High score checking disabled")
     
     # Set up parallel runner
     runner = ParallelRunner(
         max_workers=args.workers
     )
     
-    # Create game tasks
+    # Create game tasks for each strategy
     from berghain.runner.parallel_runner import GameTask
     tasks = []
-    for i in range(args.count):
-        tasks.append(GameTask(
-            scenario_id=args.scenario,
-            strategy_name=args.strategy,
-            solver_id=f"{args.strategy}_{i:03d}",
-            strategy_params=strategy_config
-        ))
+    enable_high_score_check = not args.no_high_score_check
+    for strategy in strategies:
+        for i in range(args.count):
+            tasks.append(GameTask(
+                scenario_id=args.scenario,
+                strategy_name=strategy,
+                solver_id=f"{strategy}_{i:03d}",
+                strategy_params=strategy_configs[strategy],
+                enable_high_score_check=enable_high_score_check,
+                mode=args.mode
+            ))
     
     # Run games
     batch_result = runner.run_batch(tasks)
@@ -55,10 +93,28 @@ def run_games(args):
     print(f"\n📊 Batch Complete:")
     print(f"   Total games: {len(batch_result.results)}")
     print(f"   Successful: {batch_result.successful_count} ({batch_result.success_rate*100:.1f}%)")
-    print(f"   Duration: {batch_result.duration:.1f}s")
+    print(f"   Duration: {batch_result.total_duration:.1f}s")
     
     if batch_result.best_result:
         print(f"   Best result: {batch_result.best_result.game_state.rejected_count} rejections")
+    
+    # Show per-strategy breakdown if multiple strategies
+    if len(strategies) > 1:
+        print(f"\n📈 Per-Strategy Results:")
+        from collections import defaultdict
+        strategy_results = defaultdict(list)
+        
+        for result in batch_result.results:
+            strategy_name = result.solver_id.rsplit('_', 1)[0]  # Extract strategy from solver_id
+            strategy_results[strategy_name].append(result)
+        
+        for strategy in strategies:
+            results = strategy_results[strategy]
+            if results:
+                successful = sum(1 for r in results if r.success)
+                success_rate = successful / len(results) if results else 0
+                avg_rejections = sum(r.game_state.rejected_count for r in results if r.success) / max(1, successful)
+                print(f"   {strategy}: {success_rate:.1%} success ({successful}/{len(results)}), avg {avg_rejections:.0f} rejections")
 
 
 async def monitor_games(args):
@@ -208,6 +264,28 @@ def generate_report(args):
             print(f"   ➡️  Stable performance")
 
 
+async def optimize_strategies(args):
+    """Run dynamic strategy optimization with evolution."""
+    print(f"🧬 Starting strategy optimization for scenario {args.scenario}")
+    print(f"   Workers: {args.workers}")
+    print(f"   Generations: {args.generations}")
+    print(f"   Games per strategy: {args.games_per_strategy}")
+    
+    config = DynamicRunConfig(
+        scenario_id=args.scenario,
+        max_concurrent_games=args.workers,
+        max_generations=args.generations,
+        min_games_per_strategy=args.games_per_strategy,
+        target_success_rate=args.target_success_rate / 100.0
+    )
+    
+    runner = DynamicStrategyRunner(config)
+    await runner.run_dynamic_optimization()
+    
+    print(f"\n🎉 Strategy optimization completed!")
+    print(f"   Check berghain/config/strategies/evolved/ for new strategies")
+
+
 def main():
     # Configure logging
     logging.basicConfig(
@@ -222,9 +300,11 @@ def main():
     # Run command
     run_parser = subparsers.add_parser('run', help='Run games')
     run_parser.add_argument('--scenario', type=int, default=1, help='Scenario ID (default: 1)')
-    run_parser.add_argument('--strategy', default='conservative', help='Strategy name (default: conservative)')
-    run_parser.add_argument('--count', type=int, default=10, help='Number of games to run (default: 10)')
+    run_parser.add_argument('--strategy', default='conservative', help='Strategy name(s) - comma-separated for multiple, or "all" for all available (default: conservative)')
+    run_parser.add_argument('--count', type=int, default=10, help='Number of games per strategy (default: 10)')
     run_parser.add_argument('--workers', type=int, default=3, help='Parallel workers (default: 3)')
+    run_parser.add_argument('--no-high-score-check', action='store_true', help='Disable high score checking for early termination')
+    run_parser.add_argument('--mode', choices=['local','api'], default='local', help='Backend mode: local simulator or live API (default: local)')
     
     # Monitor command
     monitor_parser = subparsers.add_parser('monitor', help='Start monitoring dashboard')
@@ -242,6 +322,14 @@ def main():
     report_parser = subparsers.add_parser('report', help='Generate performance report')
     report_parser.add_argument('--days', type=int, default=7, help='Days to include (default: 7)')
     
+    # Optimize command
+    optimize_parser = subparsers.add_parser('optimize', help='Run dynamic strategy optimization')
+    optimize_parser.add_argument('--scenario', type=int, default=1, help='Scenario ID (default: 1)')
+    optimize_parser.add_argument('--workers', type=int, default=6, help='Concurrent games (default: 6)')
+    optimize_parser.add_argument('--generations', type=int, default=5, help='Number of generations (default: 5)')
+    optimize_parser.add_argument('--games-per-strategy', type=int, default=3, help='Games per strategy (default: 3)')
+    optimize_parser.add_argument('--target-success-rate', type=float, default=80, help='Target success rate percentage (default: 80)')
+    
     args = parser.parse_args()
     
     if not args.command:
@@ -256,6 +344,8 @@ def main():
         analyze_games(args)
     elif args.command == 'report':
         generate_report(args)
+    elif args.command == 'optimize':
+        asyncio.run(optimize_strategies(args))
 
 
 if __name__ == "__main__":

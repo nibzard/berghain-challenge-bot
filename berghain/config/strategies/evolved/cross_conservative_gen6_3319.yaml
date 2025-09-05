@@ -1,0 +1,26 @@
+evolved_from: &id001
+- diversity
+- conservative
+fitness_score: 0.042333333333333334
+generation: 6
+name: cross_conservative_gen6_3319
+parameters:
+  capacity_panic_threshold: 0.9
+  common_accept_rate: 0.6
+  common_reject_rate: 0.08
+  deficit_panic_threshold: 0.75
+  diversity_emphasis: 1.5
+  dual_rare_bonus: 1.5
+  early_game_threshold: 0.3
+  mid_game_threshold: 0.7
+  min_diversity_ratio: 0.6
+  multi_attr_bonus: 1.2
+  no_constraint_accept_rate: 0.08
+  phase1_multi_attr_only: false
+  rare_accept_rate: 0.85
+  rare_threshold: 0.25
+  rejection_panic_threshold: 0.85
+  ultra_rare_accept_rate: 0.95
+  ultra_rare_threshold: 0.12
+parent_ids: *id001
+type: conservative

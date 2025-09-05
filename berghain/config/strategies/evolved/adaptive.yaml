@@ -1,0 +1,20 @@
+evolved_from: &id001 []
+fitness_score: 0.17350000000000002
+generation: 0
+name: adaptive
+parameters:
+  adaptation_rate: 0.1
+  adaptive_bonus_scaling: true
+  base_common_rate: 0.5
+  base_no_constraint_rate: 0.05
+  base_rare_rate: 0.8
+  base_ultra_rare_rate: 0.97
+  early_game_threshold: 0.3
+  mid_game_threshold: 0.7
+  multi_attr_bonus: 1.4
+  progress_weight: 0.7
+  rare_threshold: 0.25
+  ultra_rare_threshold: 0.1
+  urgency_weight: 0.3
+parent_ids: *id001
+type: adaptive

@@ -1,0 +1,22 @@
+evolved_from: &id001 []
+fitness_score: 0.044
+generation: 0
+name: conservative
+parameters:
+  capacity_panic_threshold: 0.9
+  common_accept_rate: 0.6
+  common_reject_rate: 0.08
+  deficit_panic_threshold: 0.75
+  dual_rare_bonus: 1.5
+  early_game_threshold: 0.25
+  mid_game_threshold: 0.7
+  multi_attr_bonus: 1.3
+  no_constraint_accept_rate: 0.08
+  phase1_multi_attr_only: false
+  rare_accept_rate: 0.85
+  rare_threshold: 0.25
+  rejection_panic_threshold: 0.85
+  ultra_rare_accept_rate: 0.95
+  ultra_rare_threshold: 0.12
+parent_ids: *id001
+type: conservative

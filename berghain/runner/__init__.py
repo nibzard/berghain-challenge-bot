@@ -2,9 +2,10 @@
 # ABOUTME: Provides parallel and single game execution capabilities
 
 from .game_executor import GameExecutor
-from .parallel_runner import ParallelRunner
+from .parallel_runner import ParallelRunner, GameTask
 
 __all__ = [
     "GameExecutor",
-    "ParallelRunner"
+    "ParallelRunner",
+    "GameTask"
 ]

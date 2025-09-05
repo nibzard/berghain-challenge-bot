@@ -38,20 +38,50 @@ class ConfigManager:
             return None
     
     def get_strategy_config(self, strategy_name: str) -> Optional[Dict[str, Any]]:
-        """Load strategy configuration by name."""
-        strategy_file = self.strategies_dir / f"{strategy_name}.yaml"
-        
-        if not strategy_file.exists():
-            return None
-        
-        try:
-            with open(strategy_file, 'r') as f:
-                config = yaml.safe_load(f)
-            
-            return config
-            
-        except (yaml.YAMLError, FileNotFoundError):
-            return None
+        """Load strategy configuration by name.
+
+        Supports:
+        - Top-level names (e.g., "conservative")
+        - Relative subpaths (e.g., "evolved/conservative")
+        - Name lookup across all subfolders (matches on filename stem)
+        """
+        # 1) If a relative subpath is provided, resolve directly under strategies_dir
+        try_paths = []
+        rel_path = Path(strategy_name)
+        if not rel_path.is_absolute() and len(rel_path.parts) > 1:
+            # Allow specifying subfolders, with or without .yaml
+            if rel_path.suffix == '.yaml':
+                try_paths.append(self.strategies_dir / rel_path)
+            else:
+                try_paths.append(self.strategies_dir / (rel_path.as_posix() + '.yaml'))
+
+        # 2) Top-level file (default behavior)
+        try_paths.append(self.strategies_dir / f"{strategy_name}.yaml")
+
+        # 3) Search by stem name across subdirectories
+        # Defer this search until direct paths fail
+        def _load_yaml(p: Path) -> Optional[Dict[str, Any]]:
+            try:
+                with open(p, 'r') as f:
+                    return yaml.safe_load(f)
+            except (yaml.YAMLError, FileNotFoundError):
+                return None
+
+        for p in try_paths:
+            if p.exists():
+                cfg = _load_yaml(p)
+                if cfg is not None:
+                    return cfg
+
+        # Fall back to rglob search by stem
+        target_stem = strategy_name.rsplit('.', 1)[0]
+        for file in self.strategies_dir.rglob('*.yaml'):
+            if file.stem == target_stem:
+                cfg = _load_yaml(file)
+                if cfg is not None:
+                    return cfg
+
+        return None
     
     def list_available_scenarios(self) -> List[int]:
         """List all available scenario IDs."""
@@ -68,9 +98,27 @@ class ConfigManager:
         return sorted(scenario_ids)
     
     def list_available_strategies(self) -> List[str]:
-        """List all available strategy names."""
-        strategy_files = list(self.strategies_dir.glob("*.yaml"))
-        return [f.stem for f in strategy_files]
+        """List available strategy names (top-level + subfolders, deduplicated)."""
+        names: List[str] = []
+        seen = set()
+
+        # Prefer top-level names first for stable ordering
+        for f in sorted(self.strategies_dir.glob('*.yaml')):
+            stem = f.stem
+            if stem not in seen:
+                seen.add(stem)
+                names.append(stem)
+
+        # Then include subdirectories
+        for f in sorted(self.strategies_dir.rglob('*.yaml')):
+            if f.parent == self.strategies_dir:
+                continue  # already handled top-level
+            stem = f.stem
+            if stem not in seen:
+                seen.add(stem)
+                names.append(stem)
+
+        return names
     
     def validate_scenario_config(self, config: Dict[str, Any]) -> bool:
         """Validate scenario configuration structure."""
@@ -91,6 +139,46 @@ class ConfigManager:
                 return False
         
         return True
+    
+    def get_high_scores_config(self) -> Optional[Dict[str, Any]]:
+        """Load high scores configuration."""
+        high_scores_file = self.config_dir / "high_scores.yaml"
+        
+        if not high_scores_file.exists():
+            return None
+        
+        try:
+            with open(high_scores_file, 'r') as f:
+                return yaml.safe_load(f)
+        except (yaml.YAMLError, FileNotFoundError):
+            return None
+    
+    def get_high_score_threshold(self, scenario_id: int) -> Optional[int]:
+        """Get the high score threshold for a scenario."""
+        config = self.get_high_scores_config()
+        if not config:
+            return None
+        
+        high_scores = config.get('high_scores', {})
+        return high_scores.get(f'scenario_{scenario_id}')
+    
+    def is_high_score_checking_enabled(self) -> bool:
+        """Check if high score checking is enabled."""
+        config = self.get_high_scores_config()
+        if not config:
+            return False
+        
+        settings = config.get('settings', {})
+        return settings.get('enabled', True)
+    
+    def get_buffer_percentage(self) -> float:
+        """Get the buffer percentage for high score checking."""
+        config = self.get_high_scores_config()
+        if not config:
+            return 1.0
+        
+        settings = config.get('settings', {})
+        return settings.get('buffer_percentage', 0.95)
     
     def validate_strategy_config(self, config: Dict[str, Any]) -> bool:
         """Validate strategy configuration structure."""

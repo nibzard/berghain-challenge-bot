@@ -1,0 +1,19 @@
+# RBCR (Re-solving Bid-Price with Confidence Reserves)
+
+name: "RBCR"
+description: "Recompute dual-like urgencies; accept duals/singles; safe filler via oracle."
+
+parameters:
+  resolve_every: 50
+  rate_floor: 0.54
+  filler_base: 0.02
+  filler_max: 0.12
+  pi_kp: 0.6
+  pi_ki: 0.08
+  oracle_delta: 0.01
+
+scenario_adjustments:
+  1:
+    resolve_every: 40
+    rate_floor: 0.555
+    oracle_delta: 0.008

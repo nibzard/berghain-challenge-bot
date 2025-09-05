@@ -1,0 +1,24 @@
+# QuotaTracker Strategy
+# Explicit, gap-aware control for Scenario 1 type constraints.
+
+name: "QuotaTracker"
+description: "Always accept duals; favor lagging single; minimal filler late."
+
+parameters:
+  filler_prob: 0.03
+  filler_unlock_progress: 0.90
+  lag_bias_threshold: 0.02
+  always_accept_singles_until: 0.75
+  acc_rate_target: 0.52
+  acc_rate_margin: 0.02
+  filler_prob_max: 0.12
+
+scenario_adjustments:
+  1:
+    filler_prob: 0.03
+    filler_unlock_progress: 0.90
+    lag_bias_threshold: 0.02
+    always_accept_singles_until: 0.80
+    acc_rate_target: 0.52
+    acc_rate_margin: 0.02
+    filler_prob_max: 0.12

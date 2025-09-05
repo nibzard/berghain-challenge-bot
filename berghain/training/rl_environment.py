@@ -8,7 +8,7 @@ from dataclasses import dataclass
 import copy
 
 from ..core import GameState, Person, Decision, BerghainAPIClient, GameResult, GameStatus
-from ..core.local_simulator import LocalGameSimulator
+from ..core.local_simulator import LocalSimulatorClient
 from .lstm_policy import StateEncoder
 
 logger = logging.getLogger(__name__)
@@ -47,7 +47,7 @@ class BerghainRLEnvironment:
         self.use_simulator = use_simulator
         
         if use_simulator:
-            self.simulator = LocalGameSimulator(scenario)
+            self.simulator = LocalSimulatorClient()
             self.api_client = None
         else:
             self.api_client = api_client or BerghainAPIClient()
@@ -82,8 +82,8 @@ class BerghainRLEnvironment:
         """
         try:
             if self.use_simulator:
-                self.game_state = self.simulator.start_new_game()
-                self.current_person = self.simulator.get_next_person(0)
+                self.game_state = self.simulator.start_new_game(self.scenario)
+                self.current_person = self.simulator.get_next_person(self.game_state, 0)
             else:
                 self.game_state = self.api_client.start_new_game(self.scenario)
                 self.current_person = self.api_client.get_next_person(self.game_state, 0)
@@ -133,7 +133,7 @@ class BerghainRLEnvironment:
         # Execute action and get next person
         try:
             if self.use_simulator:
-                response = self.simulator.submit_decision(self.current_person, accept)
+                response = self.simulator.submit_decision(self.game_state, self.current_person, accept)
                 self.game_state.update_decision(decision)
                 
                 if response["status"] == "running" and "nextPerson" in response:

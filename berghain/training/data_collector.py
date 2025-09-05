@@ -307,13 +307,15 @@ class ExpertDataCollector:
     
     def _extract_strategy_name(self, log_file: Path, game_log: Dict[str, Any]) -> str:
         """Extract strategy name from filename or log metadata."""
-        # Try to get from game log metadata
+        # Try to get from game log metadata (new format)
+        if "strategy_name" in game_log:
+            return game_log["strategy_name"].lower()
         if "strategy_params" in game_log and "strategy_name" in game_log["strategy_params"]:
             return game_log["strategy_params"]["strategy_name"]
         
         # Try to parse from filename
         filename = log_file.stem
-        for strategy in ["ogds", "ultimate", "rbcr", "pec", "greedy", "adaptive", "balanced"]:
+        for strategy in ["apex", "ogds", "ultimate", "rbcr", "pec", "greedy", "adaptive", "balanced"]:
             if strategy in filename.lower():
                 return strategy
         

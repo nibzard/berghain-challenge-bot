@@ -1,0 +1,46 @@
+# RBCR2 (Enhanced RBCR with LP-based duals and improved joint probability handling)
+
+name: "RBCR2"
+description: "Enhanced RBCR with LP-optimized dual prices, proper joint probability handling, and improved feasibility checks."
+
+parameters:
+  resolve_every: 30
+  # Dynamic rate floor schedule (match original RBCR closely)
+  rate_floor_early: 0.585
+  rate_floor_mid: 0.565
+  rate_floor_late: 0.545
+  rate_cut_early: 0.40
+  rate_cut_mid: 0.70
+  # Filler parameters - more aggressive than original
+  filler_base: 0.025
+  filler_max: 0.15
+  # PI controller gains (less aggressive than initial)
+  pi_kp: 0.8
+  pi_ki: 0.10
+  # Oracle parameters (less conservative)
+  oracle_delta: 0.015
+  oracle_samples: 4000
+  # Dual learning parameters
+  dual_eta: 0.05
+  dual_decay: 0.995
+  # Emergency mode threshold
+  emergency_threshold: 0.96
+  # LP solver parameters
+  use_lp_duals: true  # Disable LP until CVXPY is available
+  lp_solver_timeout: 1.0
+  dual_clamp_max: 10.0  # Lower clamp for ratio-based method
+
+scenario_adjustments:
+  1:
+    resolve_every: 30
+    oracle_delta: 0.006
+    dual_eta: 0.07
+    rate_floor_early: 0.575
+  2:
+    resolve_every: 25  # More frequent updates for creative constraint
+    oracle_delta: 0.005
+    dual_eta: 0.08
+  3:
+    resolve_every: 25  # Multiple rare attributes need frequent updates
+    oracle_delta: 0.007
+    dual_eta: 0.075

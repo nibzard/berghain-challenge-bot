@@ -2,6 +2,7 @@
 # ABOUTME: Mimics BerghainAPIClient interface for start/get/submit/close
 
 import uuid
+import os
 import random
 import logging
 from typing import Dict, Optional, Any, Tuple
@@ -26,6 +27,13 @@ class LocalSimulatorClient:
         self.random = random.Random(seed)
         self._sessions: Dict[str, Dict[str, Any]] = {}
         self.config = ConfigManager()
+        # Optional sim profile
+        self._profile_env = os.getenv('BERGHAIN_SIM_PROFILE')
+        try:
+            from pathlib import Path as _P
+            self._profile_dir = _P('berghain/config/feasibility')
+        except Exception:
+            self._profile_dir = None
 
     # --- Public API surface (mirror BerghainAPIClient) ---
     def start_new_game(self, scenario: int) -> GameState:
@@ -34,8 +42,21 @@ class LocalSimulatorClient:
             raise ValueError(f"Scenario config not found for id={scenario}")
 
         name = scenario_config.get('name', f'Scenario {scenario}')
-        ef = scenario_config.get('expected_frequencies', {})
-        ec = scenario_config.get('expected_correlations', {})
+        ef = dict(scenario_config.get('expected_frequencies', {}))
+        ec = dict(scenario_config.get('expected_correlations', {}))
+
+        # Attempt to load sim profile overrides
+        prof = self._load_profile(scenario)
+        if prof:
+            try:
+                p_y = float(prof.get('p_young', ef.get('young', 0.0)))
+                p_w = float(prof.get('p_well_dressed', ef.get('well_dressed', 0.0)))
+                rho = float(prof.get('corr_young_well_dressed', ec.get('young', {}).get('well_dressed', 0.0)))
+                ef['young'] = p_y
+                ef['well_dressed'] = p_w
+                ec = {'young': {'well_dressed': rho}, 'well_dressed': {'young': rho}}
+            except Exception:
+                pass
         constraints_cfg = scenario_config.get('constraints', [])
 
         # Build constraints and statistics
@@ -62,6 +83,26 @@ class LocalSimulatorClient:
 
         logger.info(f"[Local] Started new game {game_id[:8]} for scenario {scenario} ({name})")
         return game_state
+
+    def _load_profile(self, scenario: int) -> Optional[dict]:
+        import json
+        # Priority: env path
+        paths = []
+        if self._profile_env:
+            paths.append(self._profile_env)
+        # Scenario-specific profile in config dir
+        if self._profile_dir is not None:
+            paths.append(str(self._profile_dir / f"scenario_{scenario}.json"))
+        # Root sim_profile.json as fallback
+        paths.append('sim_profile.json')
+        for p in paths:
+            try:
+                if p and os.path.exists(p):
+                    with open(p, 'r') as f:
+                        return json.load(f)
+            except Exception:
+                continue
+        return None
 
     def get_next_person(self, game_state: GameState, person_index: int) -> Optional[Person]:
         sess = self._sessions.get(game_state.game_id)
@@ -176,4 +217,3 @@ class LocalSimulatorClient:
                 return {a: True, b: True}
 
         return sample
-

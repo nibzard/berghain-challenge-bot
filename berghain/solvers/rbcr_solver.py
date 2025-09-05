@@ -10,21 +10,33 @@ Heuristic, near-optimal controller:
 
 import random
 from typing import Tuple
+from pathlib import Path
 from ..core import GameState, Person
 from ..core.strategy import BaseDecisionStrategy
-from ..analysis.feasibility_table import FeasibilityOracle
+try:
+    from ..analysis.feasibility_table import FeasibilityOracle  # optional
+except Exception:
+    FeasibilityOracle = None  # type: ignore
 
 
 class RBCRStrategy(BaseDecisionStrategy):
     def __init__(self, strategy_params: dict = None):
         defaults = {
             'resolve_every': 50,
-            'rate_floor': 0.54,
+            # Dynamic rate floor schedule
+            'rate_floor_early': 0.575,
+            'rate_floor_mid': 0.56,
+            'rate_floor_late': 0.545,
+            'rate_cut_early': 0.40,   # capacity ratio threshold
+            'rate_cut_mid': 0.70,
             'filler_base': 0.02,
-            'filler_max': 0.12,
-            'pi_kp': 0.6,
-            'pi_ki': 0.08,
-            'oracle_delta': 0.01,
+            'filler_max': 0.14,
+            'pi_kp': 0.9,
+            'pi_ki': 0.12,
+            'oracle_delta': 0.012,
+            # Dual-learning across runs
+            'dual_eta': 0.05,
+            'dual_decay': 0.995,
         }
         if strategy_params:
             defaults.update(strategy_params)
@@ -34,13 +46,15 @@ class RBCRStrategy(BaseDecisionStrategy):
         self._lambda_w = 0.0
         self._acc_int_err = 0.0
         self._oracle: FeasibilityOracle | None = None
+        self._duals_path = Path('game_logs/meta/rbcr_duals.json')
+        self._duals = self._load_duals()
 
     @property
     def name(self) -> str:
         return "RBCR"
 
     def _ensure_oracle(self, gs: GameState):
-        if self._oracle is not None:
+        if self._oracle is not None or FeasibilityOracle is None:
             return
         keys = [c.attribute for c in gs.constraints]
         if len(keys) < 2:
@@ -83,8 +97,12 @@ class RBCRStrategy(BaseDecisionStrategy):
         # p(help_y)=p_y, p(help_w)=p_w
         qy = max(1e-6, p_y)
         qw = max(1e-6, p_w)
-        self._lambda_y = min(10.0, dy / (s * qy))
-        self._lambda_w = min(10.0, dw / (s * qw))
+        # Initialize from learned duals if available
+        key = f"scenario_{gs.scenario}"
+        lam_y0 = float(self._duals.get(key, {}).get('lambda_y', 0.0))
+        lam_w0 = float(self._duals.get(key, {}).get('lambda_w', 0.0))
+        self._lambda_y = max(lam_y0, min(10.0, dy / (s * qy)))
+        self._lambda_w = max(lam_w0, min(10.0, dw / (s * qw)))
         self._since_resolve = 0
 
     def should_accept(self, person: Person, game_state: GameState) -> Tuple[bool, str]:
@@ -99,10 +117,16 @@ class RBCRStrategy(BaseDecisionStrategy):
         keys = [c.attribute for c in game_state.constraints]
         a_y, a_w = (keys + [None, None])[:2]
 
-        # acceptance rate PI controller
+        # acceptance rate PI controller with dynamic schedule
         total_dec = max(1, game_state.admitted_count + game_state.rejected_count)
         acc_rate = game_state.admitted_count / total_dec
-        floor_r = float(self.params.get('rate_floor', 0.54))
+        cr = game_state.capacity_ratio
+        r_e = float(self.params.get('rate_floor_early', 0.575))
+        r_m = float(self.params.get('rate_floor_mid', 0.56))
+        r_l = float(self.params.get('rate_floor_late', 0.545))
+        c_e = float(self.params.get('rate_cut_early', 0.40))
+        c_m = float(self.params.get('rate_cut_mid', 0.70))
+        floor_r = r_e if cr < c_e else (r_m if cr < c_m else r_l)
         err = floor_r - acc_rate
         self._acc_int_err = max(-0.5, min(0.5, self._acc_int_err + err))
         kp = float(self.params.get('pi_kp', 0.6))
@@ -114,10 +138,11 @@ class RBCRStrategy(BaseDecisionStrategy):
             p = max(0.0, min(float(self.params.get('filler_max', 0.12)), p))
             if p <= 0.0:
                 return False, "rbcr_filler_zero"
-            # Allow filler freely until strong base exists; gate with oracle later
+            # Allow filler freely when rate is below target OR until strong base exists;
+            # only gate with oracle when rate is healthy and progress is high.
             progress = game_state.constraint_progress()
             min_prog = min(progress.values()) if progress else 0.0
-            if min_prog < 0.85 or self._feasible_after(game_state, False, False):
+            if err > 0.0 or min_prog < 0.90 or self._feasible_after(game_state, False, False):
                 return random.random() < p, "rbcr_filler"
             return False, "rbcr_filler_block_oracle"
 
@@ -140,8 +165,9 @@ class RBCRStrategy(BaseDecisionStrategy):
             return True, "rbcr_single_w"
 
         # If tie or mild, allow with small probability if feasibility safe
-        if self._feasible_after(game_state, is_y, is_w):
-            return random.random() < 0.2, "rbcr_single_soft"
+        # If acceptance is lagging, don't gate soft singles; otherwise use oracle
+        if err > 0.0 or self._feasible_after(game_state, is_y, is_w):
+            return random.random() < 0.35, "rbcr_single_soft"
         return False, "rbcr_single_block_oracle"
 
     def _feasible_after(self, gs: GameState, accept_y: bool, accept_w: bool) -> bool:
@@ -182,3 +208,35 @@ class RBCRStrategy(BaseDecisionStrategy):
         delta = float(self.params.get('oracle_delta', 0.01))
         tail = 0.5 * (1 - math.erf(z / math.sqrt(2)))
         return tail <= delta
+
+    # --- Dual learning persistence ---
+    def _load_duals(self):
+        try:
+            if self._duals_path.exists():
+                import json
+                return json.load(open(self._duals_path, 'r'))
+        except Exception:
+            pass
+        return {}
+
+    def on_game_end(self, result) -> None:
+        try:
+            key = f"scenario_{result.game_state.scenario}"
+            ca = result.game_state.admitted_attributes
+            # assume two constraints
+            attrs = [c.attribute for c in result.game_state.constraints]
+            y, w = attrs[0], attrs[1]
+            err_y = max(0, 600 - ca.get(y, 0))
+            err_w = max(0, 600 - ca.get(w, 0))
+            eta = float(self.params.get('dual_eta', 0.05))
+            decay = float(self.params.get('dual_decay', 0.995))
+            prev = self._duals.get(key, {'lambda_y': 0.0, 'lambda_w': 0.0, 'eta': eta})
+            lam_y = max(0.0, float(prev['lambda_y']) + prev.get('eta', eta) * err_y / 600.0)
+            lam_w = max(0.0, float(prev['lambda_w']) + prev.get('eta', eta) * err_w / 600.0)
+            new_eta = max(0.001, prev.get('eta', eta) * decay)
+            self._duals[key] = {'lambda_y': lam_y, 'lambda_w': lam_w, 'eta': new_eta}
+            self._duals_path.parent.mkdir(parents=True, exist_ok=True)
+            import json
+            json.dump(self._duals, open(self._duals_path, 'w'), indent=2)
+        except Exception:
+            pass

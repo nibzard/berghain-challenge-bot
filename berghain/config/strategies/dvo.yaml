@@ -1,0 +1,34 @@
+# Dynamic Value-Based Optimization (DVO)
+
+name: "DVO"
+description: "Dynamic programming approach with optimal stopping theory and constraint-aware value functions"
+
+parameters:
+  # Core optimization parameters
+  constraint_weight: 1200.0
+  urgency_exponent: 2.1
+  deficit_scaling: 2.5
+  
+  # Thresholds
+  early_selectivity: 0.88
+  late_panic_threshold: 0.94
+  critical_deficit_threshold: 40
+  
+  # Value function
+  dual_bonus: 0.4
+  single_base_value: 0.15
+  filler_max_rate: 0.06
+  
+  # Algorithm parameters
+  bellman_iterations: 8
+  state_discretization: 25
+
+scenario_adjustments:
+  1:
+    # Scenario 1 optimizations
+    constraint_weight: 1500.0
+    urgency_exponent: 2.3
+    critical_deficit_threshold: 35
+    filler_max_rate: 0.05
+    early_selectivity: 0.90
+    late_panic_threshold: 0.95

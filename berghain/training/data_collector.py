@@ -57,13 +57,16 @@ class ExpertDataCollector:
         """
         # Extract basic game info
         game_id = game_log["game_id"]
-        scenario = game_log["scenario"]
+        # Handle both old format (scenario) and new format (scenario_id)
+        scenario = game_log.get("scenario") or game_log.get("scenario_id")
         
         # Reconstruct constraints
         constraints = []
         for constraint_data in game_log["constraints"]:
+            # Handle both old format (minCount) and new format (min_count)
+            min_count = constraint_data.get("minCount") or constraint_data.get("min_count")
             constraints.append(
-                Constraint(constraint_data["attribute"], constraint_data["minCount"])
+                Constraint(constraint_data["attribute"], min_count)
             )
         
         # Reconstruct statistics
@@ -80,16 +83,19 @@ class ExpertDataCollector:
             statistics=statistics
         )
         
+        # Handle both old format (people) and new format (decisions)
+        people_data = game_log.get("people") or game_log.get("decisions", [])
+        
         # Replay decisions up to step_index to reconstruct state
         for i in range(step_index):
-            person_data = game_log["people"][i]
+            person_data = people_data[i]
             person = Person(person_data["person_index"], person_data["attributes"])
             decision = Decision(person, person_data["decision"], "expert_replay")
             game_state.update_decision(decision)
         
         # Get current person
-        if step_index < len(game_log["people"]):
-            person_data = game_log["people"][step_index]
+        if step_index < len(people_data):
+            person_data = people_data[step_index]
             current_person = Person(person_data["person_index"], person_data["attributes"])
         else:
             # End of game
@@ -107,18 +113,20 @@ class ExpertDataCollector:
         Returns:
             List of Experience objects representing the trajectory
         """
-        if not game_log["people"]:
+        # Handle both old format (people) and new format (decisions)
+        people_data = game_log.get("people") or game_log.get("decisions", [])
+        if not people_data:
             return None
         
         trajectory = []
         
-        for step_index in range(len(game_log["people"])):
+        for step_index in range(len(people_data)):
             try:
                 # Reconstruct game state at this step
                 game_state, person = self.reconstruct_game_state(game_log, step_index)
                 
                 # Get decision made by expert
-                person_data = game_log["people"][step_index]
+                person_data = people_data[step_index]
                 expert_action = 1 if person_data["decision"] else 0
                 
                 # Encode state
@@ -128,7 +136,7 @@ class ExpertDataCollector:
                 reward = self._calculate_expert_reward(person, game_state, expert_action)
                 
                 # Determine if this is the last step
-                is_done = (step_index == len(game_log["people"]) - 1)
+                is_done = (step_index == len(people_data) - 1)
                 
                 # Create next state if not done
                 if not is_done:
@@ -313,17 +321,22 @@ class ExpertDataCollector:
     
     def _is_successful_game(self, game_log: Dict[str, Any]) -> bool:
         """Check if a game was successful based on the log."""
-        # Check final status if available
+        # Check status field (new format) or final_status (old format)
+        if "status" in game_log:
+            return game_log["status"] == "completed"
         if "final_status" in game_log:
             return game_log["final_status"] == "completed"
         
+        # Handle both old format (people) and new format (decisions)
+        people_data = game_log.get("people") or game_log.get("decisions", [])
+        
         # Try to infer success from constraints and game outcome
-        if "constraints" not in game_log or "people" not in game_log:
+        if "constraints" not in game_log or not people_data:
             return False
         
         # Count final admitted attributes
         final_counts = {}
-        for person_data in game_log["people"]:
+        for person_data in people_data:
             if person_data["decision"]:  # Was accepted
                 for attr, value in person_data["attributes"].items():
                     if value:
@@ -332,7 +345,8 @@ class ExpertDataCollector:
         # Check if all constraints were satisfied
         for constraint in game_log["constraints"]:
             attr = constraint["attribute"]
-            required = constraint["minCount"]
+            # Handle both old format (minCount) and new format (min_count)
+            required = constraint.get("minCount") or constraint.get("min_count")
             actual = final_counts.get(attr, 0)
             if actual < required:
                 return False

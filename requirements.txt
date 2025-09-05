@@ -21,3 +21,18 @@ websockets>=11.0.0
 # Plotting and visualization (optional - for future analysis features)
 matplotlib>=3.0.0
 seaborn>=0.11.0
+
+# Machine Learning and RL Dependencies
+torch>=2.1.0
+torchvision>=0.16.0  # Often required with torch
+torchaudio>=2.1.0    # Often installed with torch
+
+# Experiment tracking and monitoring (optional but recommended)
+wandb>=0.16.0
+
+# Additional ML utilities
+scikit-learn>=1.3.0  # For additional analysis tools
+
+# Development and debugging tools (optional)
+tensorboard>=2.14.0  # Alternative to wandb for experiment tracking
+tqdm>=4.66.0         # Progress bars for training loops

@@ -123,11 +123,18 @@ async def monitor_games(args):
     
     if args.file_watch:
         # File-based monitoring
-        log_watcher = GameLogWatcher(logs_directory="game_logs")
-        await log_watcher.start_watching()
+        log_watcher = GameLogWatcher(
+            logs_directory="game_logs", 
+            process_existing=getattr(args, 'process_existing', False),
+            max_existing_files=getattr(args, 'max_existing', 20)
+        )
+        log_watcher.start_watching()
     else:
         # TUI dashboard
-        dashboard = TUIDashboard()
+        dashboard = TUIDashboard(
+            process_existing=getattr(args, 'process_existing', False),
+            max_existing_files=getattr(args, 'max_existing', 20)
+        )
         await dashboard.run()
 
 
@@ -309,6 +316,8 @@ def main():
     # Monitor command
     monitor_parser = subparsers.add_parser('monitor', help='Start monitoring dashboard')
     monitor_parser.add_argument('--file-watch', action='store_true', help='Use file watching instead of TUI')
+    monitor_parser.add_argument('--process-existing', action='store_true', help='Process existing log files on startup (slower but shows historical games)')
+    monitor_parser.add_argument('--max-existing', type=int, default=20, help='Maximum existing files to process (default: 20)')
     
     # Analyze command
     analyze_parser = subparsers.add_parser('analyze', help='Analyze game results')

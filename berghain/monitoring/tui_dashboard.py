@@ -43,13 +43,18 @@ class GameDisplayInfo:
 class TUIDashboard:
     """Clean TUI dashboard for monitoring game progress."""
     
-    def __init__(self, logs_directory: str = "game_logs", refresh_rate: float = 1.0):
+    def __init__(self, logs_directory: str = "game_logs", refresh_rate: float = 1.0, 
+                 process_existing: bool = False, max_existing_files: int = 20):
         self.console = Console()
         self.refresh_rate = refresh_rate
         self.running = False
         
-        # Data sources
-        self.file_watcher = GameLogWatcher(logs_directory)
+        # Data sources - skip existing files for faster startup
+        self.file_watcher = GameLogWatcher(
+            logs_directory, 
+            process_existing=process_existing, 
+            max_existing_files=max_existing_files
+        )
         self.active_games: Dict[str, GameDisplayInfo] = {}
         self.completed_games: List[GameDisplayInfo] = []
         self.max_completed_display = 5

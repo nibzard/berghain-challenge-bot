@@ -173,9 +173,12 @@ class BerghainAPIClient:
             else:
                 game_state.complete_game(GameStatus.FAILED)
         
-        # Special handling for capacity edge case
-        elif game_state.admitted_count >= game_state.target_capacity:
-            logger.info(f"Hit capacity ({game_state.admitted_count}/{game_state.target_capacity}) but API still shows running")
+        # Special handling for capacity edge cases - both 999 and 1000
+        elif game_state.admitted_count >= 999:
+            if game_state.admitted_count >= game_state.target_capacity:
+                logger.info(f"Hit target capacity ({game_state.admitted_count}/{game_state.target_capacity}) but API still shows running")
+            else:
+                logger.info(f"At 999 admissions but API still shows running - potential completion state")
         
         return response
     
@@ -199,6 +202,24 @@ class BerghainAPIClient:
         """Get current game status without making a decision."""
         # Use the make_decision method without an accept parameter to get status only
         return self.make_decision(game_state, 0)  # personIndex 0 is just for status check
+    
+    def is_game_effectively_complete(self, game_state: GameState) -> bool:
+        """Check if game is effectively complete (handles 999 edge case)."""
+        try:
+            # If we're at 999 or 1000, make a status check to see if game is really done
+            if game_state.admitted_count >= 999:
+                response = self.get_game_status(game_state)
+                # If API says running but provides no next person, game is effectively done
+                if response.get("status") == "running" and "nextPerson" not in response:
+                    return True
+                # If API explicitly says completed or failed
+                if response.get("status") in ["completed", "failed"]:
+                    return True
+            return False
+        except Exception as e:
+            logger.warning(f"Could not check if game is effectively complete: {e}")
+            # Default to false to avoid false positives
+            return False
     
     def close(self):
         """Clean up resources."""

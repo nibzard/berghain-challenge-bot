@@ -78,7 +78,7 @@ class GameExecutor:
         else:
             # Try additional strategies if available
             try:
-                from ..solvers import BalancedStrategy, GreedyConstraintStrategy, DiversityFirstStrategy, QuotaTrackerStrategy, DualDeficitController, RBCRStrategy, RBCR2Strategy, DVOStrategy, RamanujanStrategy, UltimateStrategy, Ultimate2Strategy, Ultimate3Strategy, Ultimate3HStrategy, OptimalControlStrategy, OptimalControlFinalStrategy, OptimalControlSafeStrategy, PerfectStrategy, MecStrategy, OGDSStrategy, OGDSSimpleStrategy, ApexStrategy, PECStrategy, PECv2Strategy
+                from ..solvers import BalancedStrategy, GreedyConstraintStrategy, DiversityFirstStrategy, QuotaTrackerStrategy, DualDeficitController, RBCRStrategy, RBCR2Strategy, DVOStrategy, RamanujanStrategy, UltimateStrategy, Ultimate2Strategy, Ultimate3Strategy, Ultimate3HStrategy, OptimalControlStrategy, OptimalControlFinalStrategy, OptimalControlSafeStrategy, PerfectStrategy, MecStrategy, OGDSStrategy, OGDSSimpleStrategy, ApexStrategy, PECStrategy, PECv2Strategy, LagrangianAdmissionStrategy
                 if name == 'balanced':
                     return BalancedStrategy(base_params)
                 if name == 'greedy':
@@ -125,6 +125,20 @@ class GameExecutor:
                     return PECStrategy(base_params)
                 if name in ('pec_v2', 'pec2', 'predictive_v2', 'improved_pec'):
                     return PECv2Strategy(base_params)
+                if name in ('lagrangian_admission', 'lagrangian', 'dual_pricing', 'bid_price_theory', 'admission_control'):
+                    return LagrangianAdmissionStrategy(base_params)
+                # RL LSTM Strategy
+                if name in ('rl_lstm', 'lstm', 'reinforcement', 'neural', 'ai'):
+                    try:
+                        from ..solvers import RLLSTMStrategy
+                        return RLLSTMStrategy(
+                            model_path=base_params.get('model_path', 'models/lstm_supervised_best.pth'),
+                            device=base_params.get('device', 'cpu'),
+                            fallback_strategy=base_params.get('fallback_strategy', 'greedy')
+                        )
+                    except Exception as e:
+                        logger.error(f"Failed to create RL LSTM strategy: {e}")
+                        logger.info("Falling back to RarityWeighted strategy")
             except Exception:
                 pass
             

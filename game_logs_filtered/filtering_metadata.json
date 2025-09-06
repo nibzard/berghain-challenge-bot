@@ -1,0 +1,36 @@
+{
+  "filtering_config": {
+    "min_rejections_threshold": 850,
+    "preferred_strategies": [
+      "optimal",
+      "apex",
+      "ultimate3",
+      "ultimate3h",
+      "ultimate2",
+      "perfect",
+      "dual",
+      "ultimate"
+    ],
+    "max_games_per_strategy": 50
+  },
+  "quality_stats": {
+    "elite": 0,
+    "excellent": 0,
+    "good": 7,
+    "average": 79,
+    "poor": 372,
+    "failed": 1165
+  },
+  "strategy_counts": {
+    "optimal": 0,
+    "apex": 2,
+    "ultimate3": 1,
+    "ultimate3h": 0,
+    "ultimate2": 1,
+    "perfect": 1,
+    "dual": 1,
+    "ultimate": 0
+  },
+  "total_original_games": 1623,
+  "total_filtered_games": 6
+}

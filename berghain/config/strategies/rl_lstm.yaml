@@ -3,7 +3,7 @@ description: "LSTM-based reinforcement learning strategy trained with PPO"
 
 parameters:
   # Model configuration
-  model_path: "models/berghain_rl_best.pth"  # Path to trained model
+  model_path: "models/enhanced_lstm_best.pth"  # Path to trained model
   device: "cpu"  # Device for inference ('cpu' or 'cuda')
   fallback_strategy: "greedy"  # Fallback when model unavailable
   
@@ -11,10 +11,10 @@ parameters:
   deterministic: true  # Use deterministic policy for evaluation
   
   # Model architecture (for reference)
-  input_dim: 8
-  hidden_dim: 128
-  lstm_layers: 2
-  dropout: 0.1
+  input_dim: 15
+  hidden_dim: 256
+  lstm_layers: 3
+  dropout: 0.2
 
 # Strategy metadata
 strategy_type: "reinforcement_learning"

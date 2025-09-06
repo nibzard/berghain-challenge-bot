@@ -164,7 +164,30 @@ class BaseSolver:
             if game_state.admitted_count >= game_state.target_capacity:
                 if game_state.status == GameStatus.RUNNING:
                     logger.info(f"🏁 [{self.solver_id}] Capacity reached: {game_state.admitted_count}/{game_state.target_capacity}")
-                    game_state.complete_game(GameStatus.COMPLETED)
+                    
+                    # Make a final API call to synchronize the game completion status
+                    try:
+                        logger.info(f"🔄 [{self.solver_id}] Making final status check to synchronize game completion")
+                        final_response = self.api_client.get_game_status(game_state)
+                        
+                        # Update status from final API response
+                        final_status = final_response.get("status", "running")
+                        if final_status != "running":
+                            if final_status == "completed":
+                                game_state.complete_game(GameStatus.COMPLETED)
+                                logger.info(f"✅ [{self.solver_id}] Game completion confirmed by API")
+                            else:
+                                game_state.complete_game(GameStatus.FAILED)
+                                logger.info(f"❌ [{self.solver_id}] Game marked as failed by API")
+                        else:
+                            # API still shows running even though we're at capacity - force completion locally
+                            game_state.complete_game(GameStatus.COMPLETED)
+                            logger.warning(f"⚠️ [{self.solver_id}] Forced local completion - API still shows running at capacity")
+                            
+                    except Exception as e:
+                        logger.warning(f"⚠️ [{self.solver_id}] Final status check failed: {e} - completing locally")
+                        game_state.complete_game(GameStatus.COMPLETED)
+                
                 person = None
             
             # Periodic progress logging

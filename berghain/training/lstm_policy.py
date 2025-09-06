@@ -139,6 +139,14 @@ class LSTMPolicyNetwork(nn.Module):
         log_prob = torch.log(policy.squeeze(1).gather(1, action.unsqueeze(1))).squeeze(1)
         
         return action, log_prob, value.squeeze(-1).squeeze(1), hidden_new
+    
+    def set_training_history(self, history_dict: dict) -> None:
+        """Set training history for the model."""
+        self.training_history = history_dict
+    
+    def get_training_history(self) -> dict:
+        """Get training history from the model."""
+        return getattr(self, 'training_history', {})
 
 
 class StateEncoder:
@@ -419,4 +427,14 @@ def train_model(
             )
     
     logger.info(f"Training completed. Best validation loss: {best_val_loss:.4f}")
+    
+    # Add training history to the model
+    model.training_history = {
+        'train_losses': train_losses,
+        'val_losses': val_losses,
+        'epochs': list(range(1, len(train_losses) + 1)),
+        'best_val_loss': best_val_loss,
+        'total_epochs': epochs
+    }
+    
     return model

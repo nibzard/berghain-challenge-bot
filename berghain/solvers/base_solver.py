@@ -96,6 +96,8 @@ class BaseSolver:
         # Main game loop with safety counter
         max_iterations = 25000  # Safety limit to prevent infinite loops
         iteration_count = 0
+        consecutive_999_count = 0  # Track how long we've been stuck at 999
+        rollback_detected_count = 0  # Track total API rollbacks
         
         while person and game_state.can_continue() and iteration_count < max_iterations:
             iteration_count += 1
@@ -126,8 +128,35 @@ class BaseSolver:
                 game_state.complete_game(GameStatus.FAILED)
                 break
             
+            # Handle API rollback detection
+            if response.get("rollback_detected", False):
+                rollback_detected_count += 1
+                logger.warning(f"⚠️ [{self.solver_id}] API rollback #{rollback_detected_count} detected at person {person.index}")
+            
             # Update game state
             game_state.update_decision(decision)
+            
+            # Check for constraint satisfaction (needed for early checks)
+            constraints_satisfied = all(
+                game_state.admitted_attributes.get(constraint.attribute, 0) >= constraint.min_count
+                for constraint in game_state.constraints
+            )
+            
+            # Track if we're stuck at 999 admissions 
+            if game_state.admitted_count == 999:
+                consecutive_999_count += 1
+                if consecutive_999_count > 50:  # Stuck at 999 for more than 50 iterations
+                    logger.warning(f"🔄 [{self.solver_id}] Stuck at 999 admissions for {consecutive_999_count} iterations")
+                    if consecutive_999_count > 200:  # Force completion after 200 iterations at 999
+                        if constraints_satisfied:
+                            logger.info(f"🏁 [{self.solver_id}] Force completing game stuck at 999 - constraints satisfied")
+                            game_state.complete_game(GameStatus.COMPLETED)
+                        else:
+                            logger.warning(f"🏁 [{self.solver_id}] Force completing game stuck at 999 - constraints NOT satisfied")
+                            game_state.complete_game(GameStatus.FAILED)
+                        break
+            else:
+                consecutive_999_count = 0  # Reset counter if we're not at 999
 
             # Stream API response snapshot (post-update row for append-only logs)
             try:
@@ -144,11 +173,34 @@ class BaseSolver:
             except Exception:
                 pass
             
-            # Check high score threshold after each decision
+            
+            # Check high score threshold after each decision  
             if self.high_score_checker and self.high_score_checker.should_terminate(game_state.rejected_count):
                 reason = self.high_score_checker.get_termination_reason(game_state.rejected_count)
-                logger.info(f"🏁 [{self.solver_id}] Early termination: {reason}")
-                game_state.complete_game(GameStatus.ABORTED_HIGH_SCORE)
+                
+                if constraints_satisfied:
+                    logger.info(f"🏁 [{self.solver_id}] Early termination with SUCCESS: {reason} (constraints satisfied)")
+                    game_state.complete_game(GameStatus.COMPLETED)
+                else:
+                    logger.info(f"🏁 [{self.solver_id}] Early termination with FAILURE: {reason} (constraints not satisfied)")
+                    game_state.complete_game(GameStatus.ABORTED_HIGH_SCORE)
+                
+                # Make final API call to synchronize termination status
+                try:
+                    logger.info(f"🔄 [{self.solver_id}] Making final status check to sync termination")
+                    final_response = self.api_client.get_game_status(game_state)
+                    final_status = final_response.get("status", "running")
+                    logger.info(f"📡 [{self.solver_id}] API status after termination sync: {final_status}")
+                    
+                    # Update our status based on API response if different
+                    if final_status != "running":
+                        logger.info(f"✅ [{self.solver_id}] API confirmed game ended with status: {final_status}")
+                    else:
+                        logger.warning(f"⚠️ [{self.solver_id}] API still shows running after termination")
+                        
+                except Exception as e:
+                    logger.warning(f"⚠️ [{self.solver_id}] Could not sync termination status: {e}")
+                
                 person = None
             elif response["status"] == "running" and "nextPerson" in response:
                 person_data = response["nextPerson"]

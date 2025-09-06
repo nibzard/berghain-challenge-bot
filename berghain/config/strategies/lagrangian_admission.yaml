@@ -1,0 +1,33 @@
+# Lagrangian Admission Control Strategy Configuration
+# Theoretically optimal online resource allocation
+
+solver_class: "LagrangianAdmissionSolver"
+description: "Dual pricing control using Lagrangian optimization theory"
+
+parameters:
+  # Policy variant selection  
+  policy_variant: "bid_price"  # Options: 'bid_price', 'prob_failure', 'hybrid'
+  
+  # Bid-price policy parameters
+  lambda_update_frequency: 15        # Update dual multipliers every N decisions
+  lambda_learning_rate: 0.03         # Conservative gradient step for stability  
+  lambda_momentum: 0.85              # Momentum for smoother multiplier updates
+  value_epsilon: 0.02                # Small threshold for bid-price acceptance
+  
+  # Probability-of-failure policy parameters
+  safety_alpha: 0.01                 # Very safe threshold (99% confidence)
+  binomial_approx_threshold: 5       # Use normal approx when n*p > threshold
+  
+  # Type enumeration and probabilities
+  estimate_types_online: true        # Learn type probabilities from arrivals
+  type_smoothing_factor: 0.92        # Conservative exponential smoothing
+  min_samples_for_estimation: 30     # Min arrivals before trusting estimates
+  
+  # Capacity management
+  early_capacity_conservatism: 1.15  # Be extra conservative early
+  late_capacity_adjustment: 0.85     # Be more aggressive late  
+  capacity_transition_point: 0.65    # Earlier transition point
+  
+  # Hybrid policy parameters (for policy_variant: 'hybrid')
+  hybrid_bid_price_weight: 0.6       # Weight for bid-price component
+  hybrid_safety_check_weight: 0.4    # Weight for safety check component

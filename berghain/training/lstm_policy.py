@@ -154,11 +154,20 @@ class StateEncoder:
     Encodes game state and person attributes into neural network input format.
     """
     
-    def __init__(self):
-        self.feature_names = [
-            'well_dressed', 'young', 'constraint_progress_y', 'constraint_progress_w',
-            'capacity_ratio', 'rejection_ratio', 'game_phase', 'person_index_norm'
-        ]
+    def __init__(self, enhanced_features: bool = False):
+        self.enhanced_features = enhanced_features
+        if enhanced_features:
+            self.feature_names = [
+                'well_dressed', 'young', 'constraint_progress_young', 'constraint_progress_well_dressed',
+                'capacity_ratio', 'rejection_ratio', 'remaining_capacity', 'remaining_rejections',
+                'game_phase', 'person_index_norm', 'constraint_urgency_young', 'constraint_urgency_well_dressed',
+                'accept_rate_recent', 'multi_attribute_bonus', 'strategic_value'
+            ]
+        else:
+            self.feature_names = [
+                'well_dressed', 'young', 'constraint_progress_y', 'constraint_progress_w',
+                'capacity_ratio', 'rejection_ratio', 'game_phase', 'person_index_norm'
+            ]
     
     def encode_state(self, person, game_state) -> np.ndarray:
         """
@@ -171,6 +180,13 @@ class StateEncoder:
         Returns:
             np.ndarray: Feature vector of shape (input_dim,)
         """
+        if self.enhanced_features:
+            return self._encode_enhanced_state(person, game_state)
+        else:
+            return self._encode_basic_state(person, game_state)
+    
+    def _encode_basic_state(self, person, game_state) -> np.ndarray:
+        """Basic feature encoding (original method)."""
         # Person attributes
         well_dressed = float(person.has_attribute('well_dressed'))
         young = float(person.has_attribute('young'))
@@ -200,6 +216,63 @@ class StateEncoder:
             capacity_ratio, rejection_ratio, game_phase, person_index_norm
         ], dtype=np.float32)
     
+    def _encode_enhanced_state(self, person, game_state) -> np.ndarray:
+        """Enhanced feature encoding with strategic features."""
+        # Basic person attributes
+        well_dressed = float(person.has_attribute('well_dressed'))
+        young = float(person.has_attribute('young'))
+        
+        # Constraint progress
+        constraint_progress = game_state.constraint_progress()
+        constraint_progress_y = constraint_progress.get('young', 0.0)
+        constraint_progress_w = constraint_progress.get('well_dressed', 0.0)
+        
+        # Game resource usage
+        capacity_ratio = game_state.capacity_ratio
+        rejection_ratio = game_state.rejection_ratio
+        
+        # Remaining resources (normalized)
+        remaining_capacity = max(1000 - game_state.admitted_count, 0) / 1000.0
+        remaining_rejections = max(20000 - game_state.rejected_count, 0) / 20000.0
+        
+        # Game phase (more granular)
+        total_decisions = game_state.admitted_count + game_state.rejected_count
+        game_phase = min(total_decisions / 2000, 1.0)
+        
+        # Person index normalized
+        person_index_norm = min(person.index / 25000, 1.0)
+        
+        # Constraint urgency (simplified calculation)
+        deficit_y = max(600 - game_state.young_admitted, 0) if hasattr(game_state, 'young_admitted') else 0
+        deficit_w = max(600 - game_state.well_dressed_admitted, 0) if hasattr(game_state, 'well_dressed_admitted') else 0
+        remaining_cap = max(1000 - game_state.admitted_count, 0)
+        
+        constraint_urgency_y = min(deficit_y / max(remaining_cap, 1), 1.0) if deficit_y > 0 else 0.0
+        constraint_urgency_w = min(deficit_w / max(remaining_cap, 1), 1.0) if deficit_w > 0 else 0.0
+        
+        # Recent accept rate (simplified - use current ratio)
+        accept_rate_recent = game_state.admitted_count / max(total_decisions, 1) if total_decisions > 0 else 0.5
+        
+        # Multi-attribute bonus
+        multi_attribute_bonus = 1.0 if (well_dressed and young) else 0.0
+        
+        # Strategic value
+        strategic_value = 0.0
+        if young and constraint_progress_y < 1.0:
+            strategic_value += 0.4 * (1.0 - constraint_progress_y)
+        if well_dressed and constraint_progress_w < 1.0:
+            strategic_value += 0.4 * (1.0 - constraint_progress_w)
+        if multi_attribute_bonus:
+            strategic_value += 0.3
+        strategic_value = min(strategic_value, 1.0)
+        
+        return np.array([
+            well_dressed, young, constraint_progress_y, constraint_progress_w,
+            capacity_ratio, rejection_ratio, remaining_capacity, remaining_rejections,
+            game_phase, person_index_norm, constraint_urgency_y, constraint_urgency_w,
+            accept_rate_recent, multi_attribute_bonus, strategic_value
+        ], dtype=np.float32)
+    
     def encode_sequence(self, decisions_history) -> np.ndarray:
         """
         Encode a sequence of decisions into input format for training.
@@ -226,9 +299,31 @@ class PolicyInference:
     def __init__(self, model_path: str, device: str = 'cpu'):
         self.device = torch.device(device)
         self.model = LSTMPolicyNetwork()
-        self.model.load_state_dict(torch.load(model_path, map_location=self.device))
+        
+        # Load checkpoint and extract model state dict
+        checkpoint = torch.load(model_path, map_location=self.device)
+        if 'model_state_dict' in checkpoint:
+            # Check if this is an enhanced model
+            if checkpoint.get('model_class') == 'EnhancedLSTMPolicyNetwork':
+                # Import the enhanced model class
+                from train_enhanced_lstm import EnhancedLSTMPolicyNetwork
+                self.model = EnhancedLSTMPolicyNetwork(
+                    input_dim=checkpoint.get('config', {}).get('input_dim', 15),
+                    hidden_dim=checkpoint.get('config', {}).get('hidden_dim', 256),
+                    lstm_layers=checkpoint.get('config', {}).get('lstm_layers', 3),
+                    dropout=checkpoint.get('config', {}).get('dropout', 0.2)
+                )
+            # Checkpoint format from training
+            self.model.load_state_dict(checkpoint['model_state_dict'])
+        else:
+            # Direct model state dict
+            self.model.load_state_dict(checkpoint)
+        
         self.model.eval()
-        self.encoder = StateEncoder()
+        
+        # Detect if this is an enhanced model and use enhanced features
+        is_enhanced = checkpoint.get('model_class') == 'EnhancedLSTMPolicyNetwork'
+        self.encoder = StateEncoder(enhanced_features=is_enhanced)
         self.hidden_state = None
         
     def reset(self):
@@ -253,9 +348,13 @@ class PolicyInference:
         x = torch.tensor(features, dtype=torch.float32, device=self.device).unsqueeze(0).unsqueeze(0)
         
         with torch.no_grad():
-            action, log_prob, value, self.hidden_state = self.model.get_action_and_value(
-                x, self.hidden_state, deterministic=deterministic
-            )
+            policy, value, self.hidden_state = self.model(x, self.hidden_state)
+            # Get action from policy (deterministic = argmax, stochastic = sample)
+            if deterministic:
+                action = torch.argmax(policy, dim=-1)
+            else:
+                dist = torch.distributions.Categorical(policy.squeeze(1))
+                action = dist.sample()
         
         accept = bool(action.item() == 1)
         

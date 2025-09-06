@@ -77,12 +77,12 @@ class GameDataPreprocessor:
         well_dressed_admitted = 0
         
         for i, decision in enumerate(decisions):
-            person_attrs = decision['person']['attributes']
+            person_attrs = decision['attributes']
             decision_made = decision['decision']
             
             # Person attributes
-            well_dressed = 1.0 if 'well_dressed' in person_attrs else 0.0
-            young = 1.0 if 'young' in person_attrs else 0.0
+            well_dressed = 1.0 if person_attrs.get('well_dressed', False) else 0.0
+            young = 1.0 if person_attrs.get('young', False) else 0.0
             
             # Constraint progress
             constraint_progress_y = min(young_admitted / young_target, 1.0) if young_target > 0 else 1.0
@@ -116,9 +116,9 @@ class GameDataPreprocessor:
             # Update game state for next iteration
             if decision_made:
                 admitted_count += 1
-                if 'young' in person_attrs:
+                if person_attrs.get('young', False):
                     young_admitted += 1
-                if 'well_dressed' in person_attrs:
+                if person_attrs.get('well_dressed', False):
                     well_dressed_admitted += 1
             else:
                 rejected_count += 1

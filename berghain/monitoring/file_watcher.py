@@ -163,10 +163,14 @@ class GameLogHandler(FileSystemEventHandler):
 class GameLogWatcher:
     """Watches game log directory for real-time updates."""
     
-    def __init__(self, logs_directory: str = "game_logs"):
+    def __init__(self, logs_directory: str = "game_logs", 
+                 process_existing: bool = True, 
+                 max_existing_files: int = 50):
         self.logs_directory = Path(logs_directory)
         self.observer: Optional[Observer] = None
         self.update_callbacks: List[Callable] = []
+        self.process_existing = process_existing
+        self.max_existing_files = max_existing_files
         
         # Ensure directory exists
         self.logs_directory.mkdir(exist_ok=True)
@@ -196,8 +200,11 @@ class GameLogWatcher:
         self.observer.start()
         logger.info(f"Started watching {self.logs_directory}")
         
-        # Process existing files
-        self._process_existing_files(handler)
+        # Process existing files only if requested
+        if self.process_existing:
+            self._process_existing_files(handler)
+        else:
+            logger.info("Skipping existing log files - monitoring new files only")
     
     def stop_watching(self):
         """Stop watching the logs directory."""
@@ -210,13 +217,21 @@ class GameLogWatcher:
     def _process_existing_files(self, handler: GameLogHandler):
         """Process files that already exist in the directory."""
         json_files = list(self.logs_directory.glob("*.json"))
-        logger.info(f"Processing {len(json_files)} existing log files")
         
-        for json_file in json_files:
-            try:
-                handler._process_new_file(json_file)
-            except Exception as e:
-                logger.debug(f"Could not process existing file {json_file}: {e}")
+        # Sort by modification time (newest first) and limit the number
+        json_files.sort(key=lambda f: f.stat().st_mtime, reverse=True)
+        json_files = json_files[:self.max_existing_files]
+        
+        if json_files:
+            logger.info(f"Processing {len(json_files)} most recent existing log files")
+            
+            for json_file in json_files:
+                try:
+                    handler._process_new_file(json_file)
+                except Exception as e:
+                    logger.debug(f"Could not process existing file {json_file}: {e}")
+        else:
+            logger.info("No existing log files found")
     
     def get_recent_games(self, limit: int = 10) -> List[Dict[str, Any]]:
         """Get recent game data from log files."""

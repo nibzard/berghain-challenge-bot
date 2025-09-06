@@ -93,8 +93,12 @@ class BaseSolver:
         # Get first person
         person = self.api_client.get_next_person(game_state, 0)
         
-        # Main game loop
-        while person and game_state.can_continue():
+        # Main game loop with safety counter
+        max_iterations = 25000  # Safety limit to prevent infinite loops
+        iteration_count = 0
+        
+        while person and game_state.can_continue() and iteration_count < max_iterations:
+            iteration_count += 1
             # Make decision using strategy
             accept, reasoning = self.strategy.should_accept(person, game_state)
             
@@ -114,7 +118,13 @@ class BaseSolver:
             })
             
             # Submit decision and get next person
-            response = self.api_client.submit_decision(game_state, person, accept)
+            try:
+                response = self.api_client.submit_decision(game_state, person, accept)
+            except Exception as e:
+                logger.error(f"❌ [{self.solver_id}] API error during decision submission: {e}")
+                # If API fails, mark game as failed and exit
+                game_state.complete_game(GameStatus.FAILED)
+                break
             
             # Update game state
             game_state.update_decision(decision)
@@ -150,12 +160,25 @@ class BaseSolver:
                     status_map = {"completed": GameStatus.COMPLETED, "failed": GameStatus.FAILED}
                     game_state.complete_game(status_map.get(response["status"], GameStatus.FAILED))
             
+            # Additional check for capacity reached (defensive programming)
+            if game_state.admitted_count >= game_state.target_capacity:
+                if game_state.status == GameStatus.RUNNING:
+                    logger.info(f"🏁 [{self.solver_id}] Capacity reached: {game_state.admitted_count}/{game_state.target_capacity}")
+                    game_state.complete_game(GameStatus.COMPLETED)
+                person = None
+            
             # Periodic progress logging
             if person and person.index % 100 == 0:
                 progress_str = ', '.join(f"{k}: {v:.1%}" for k,v in game_state.constraint_progress().items())
                 phase = getattr(self.strategy, 'get_game_phase', lambda gs: 'unknown')(game_state)
                 logger.debug(f"👥 P{person.index} [{phase}]: A{game_state.admitted_count}, "
                            f"R{game_state.rejected_count} | {progress_str}")
+        
+        # Check if loop ended due to iteration limit (safety measure)
+        if iteration_count >= max_iterations:
+            logger.warning(f"⚠️ [{self.solver_id}] Game ended due to iteration limit ({max_iterations}) - possible infinite loop")
+            if game_state.status == GameStatus.RUNNING:
+                game_state.complete_game(GameStatus.FAILED)
         
         # Game ended - create result
         result = GameResult(

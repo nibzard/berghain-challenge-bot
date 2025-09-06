@@ -1,0 +1,64 @@
+# Transformer Model Configuration for Berghain Challenge
+
+# Model Architecture
+model:
+  type: "decision_transformer"  # Options: "decision_transformer", "standard_transformer"
+  state_dim: 128
+  action_dim: 2
+  n_layers: 6
+  n_heads: 8
+  d_model: 256
+  d_ff: 1024
+  dropout: 0.1
+  max_seq_length: 100
+
+# Training Configuration
+training:
+  batch_size: 32
+  learning_rate: 1e-4
+  weight_decay: 1e-4
+  warmup_steps: 1000
+  max_grad_norm: 1.0
+  num_epochs: 50
+  early_stopping_patience: 10
+  save_frequency: 5
+  
+  # Data configuration
+  data:
+    seq_length: 100
+    stride: 50
+    train_split: 0.9
+    elite_only: true  # Use only elite games for behavioral cloning
+    scenario: 1
+
+# Inference Configuration
+inference:
+  temperature: 1.0  # Controls randomness (1.0 = neutral, <1.0 = more greedy, >1.0 = more random)
+  top_k: 1  # Number of top actions to sample from (1 = greedy)
+  device: "cuda"  # Use "cpu" if no GPU available
+
+# Evaluation Configuration
+evaluation:
+  num_games: 20
+  num_workers: 4
+  temperature_sweep: [0.5, 0.7, 0.9, 1.0, 1.2, 1.5]
+  games_per_temperature: 5
+
+# API Configuration
+api:
+  url: "https://berghain-trainer-production.up.railway.app"
+  scenario: 1
+
+# Paths
+paths:
+  game_logs: "../game_logs"
+  elite_games: "../elite_games"
+  models_dir: "./models"
+  results_dir: "./results"
+  checkpoints_dir: "./checkpoints"
+
+# Experiment tracking
+wandb:
+  enabled: false
+  project: "berghain-transformer"
+  entity: null  # Set your wandb entity if using teams

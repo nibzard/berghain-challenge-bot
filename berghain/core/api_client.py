@@ -144,11 +144,24 @@ class BerghainAPIClient:
     
     def submit_decision(self, game_state: GameState, person: Person, accept: bool) -> Dict[str, Any]:
         """Submit a decision about a person."""
+        # Track previous count to detect rollbacks
+        previous_admitted_count = game_state.admitted_count
+        
         response = self.make_decision(game_state, person.index, accept)
         
         # Update game state counters from API response
+        rollback_detected = False
         if "admittedCount" in response:
-            game_state.admitted_count = response["admittedCount"]
+            new_admitted_count = response["admittedCount"]
+            
+            # Check for API rollback behavior (count went down despite accepting)
+            if accept and new_admitted_count < previous_admitted_count:
+                logger.warning(f"⚠️ API rollback detected! Accepted person {person.index} but count went from {previous_admitted_count} to {new_admitted_count}")
+                rollback_detected = True
+                response["rollback_detected"] = True
+            
+            game_state.admitted_count = new_admitted_count
+            
         if "rejectedCount" in response:
             game_state.rejected_count = response["rejectedCount"]
         

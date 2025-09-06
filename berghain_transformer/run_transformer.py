@@ -98,6 +98,7 @@ def run_game(config: dict, args):
     solver = TransformerSolver(
         model_path=model_path,
         encoder_path=encoder_path,
+        config=config,
         scenario=args.scenario or config['api']['scenario'],
         temperature=args.temperature or config['inference']['temperature'],
         top_k=args.top_k or config['inference']['top_k'],

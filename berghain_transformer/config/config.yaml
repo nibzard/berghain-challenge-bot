@@ -36,6 +36,16 @@ inference:
   temperature: 1.0  # Controls randomness (1.0 = neutral, <1.0 = more greedy, >1.0 = more random)
   top_k: 1  # Number of top actions to sample from (1 = greedy)
   device: "cuda"  # Use "cpu" if no GPU available
+  max_seq_length: 100  # Maximum sequence length for inference buffer
+  recent_decisions_history: 10  # Number of recent decisions to track
+  
+  # Game state limits for normalization
+  max_admitted: 1000
+  max_rejected: 20000
+  
+  # Decision confidence thresholds
+  uncertainty_threshold: 0.6  # Below this confidence, use uncertainty-aware logic
+  dropout_samples: 10  # Number of forward passes for uncertainty estimation
 
 # Evaluation Configuration
 evaluation:

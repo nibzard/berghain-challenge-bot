@@ -157,12 +157,22 @@ class BerghainTransformer(nn.Module):
 class DecisionTransformer(BerghainTransformer):
     """Decision Transformer variant for offline RL."""
     
-    def __init__(self, *args, **kwargs):
-        kwargs['use_value_head'] = False  # DT doesn't use value function
+    def __init__(self, *args, use_learned_rtg=True, **kwargs):
+        kwargs['use_value_head'] = use_learned_rtg  # Enable value head for RTG estimation
         super().__init__(*args, **kwargs)
         
         # Additional return-to-go embedding
         self.rtg_embedding = nn.Linear(1, self.d_model)
+        self.use_learned_rtg = use_learned_rtg
+        
+        # Lightweight RTG estimator
+        if use_learned_rtg:
+            self.rtg_estimator = nn.Sequential(
+                nn.Linear(self.d_model, self.d_model // 2),
+                nn.GELU(),
+                nn.Dropout(0.1),
+                nn.Linear(self.d_model // 2, 1)
+            )
         
     def forward(
         self,
@@ -170,7 +180,8 @@ class DecisionTransformer(BerghainTransformer):
         actions: Optional[torch.Tensor] = None,
         rewards: Optional[torch.Tensor] = None,
         returns_to_go: Optional[torch.Tensor] = None,
-        attention_mask: Optional[torch.Tensor] = None
+        attention_mask: Optional[torch.Tensor] = None,
+        return_rtg_estimates: bool = False
     ) -> torch.Tensor:
         batch_size, seq_len = states.shape[:2]
         device = states.device
@@ -217,5 +228,13 @@ class DecisionTransformer(BerghainTransformer):
             state_hidden = hidden
         
         action_logits = self.action_head(state_hidden)
+        
+        # Estimate returns-to-go if requested
+        rtg_estimates = None
+        if return_rtg_estimates and self.use_learned_rtg:
+            rtg_estimates = self.rtg_estimator(state_hidden).squeeze(-1)
+        
+        if return_rtg_estimates:
+            return action_logits, rtg_estimates
         
         return action_logits

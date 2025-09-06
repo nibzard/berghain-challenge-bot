@@ -4,8 +4,13 @@
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
-from typing import Tuple, Optional, Dict, Any
+import torch.optim as optim
+from torch.utils.data import DataLoader, Dataset
+from typing import Tuple, Optional, Dict, Any, List
 import numpy as np
+import logging
+
+logger = logging.getLogger(__name__)
 
 
 class LSTMPolicyNetwork(nn.Module):
@@ -264,3 +269,154 @@ class PolicyInference:
         reasoning = "_".join(reasoning_parts)
         
         return accept, reasoning
+
+
+class SequenceDataset(Dataset):
+    """Dataset class for sequence training data."""
+    
+    def __init__(self, data_tuples: List[Tuple[torch.Tensor, torch.Tensor]]):
+        self.sequences = [item[0] for item in data_tuples]
+        self.labels = [item[1] for item in data_tuples]
+    
+    def __len__(self):
+        return len(self.sequences)
+    
+    def __getitem__(self, idx):
+        return self.sequences[idx], self.labels[idx]
+
+
+def train_model(
+    train_data: List[Tuple[torch.Tensor, torch.Tensor]],
+    val_data: List[Tuple[torch.Tensor, torch.Tensor]],
+    epochs: int = 50,
+    batch_size: int = 32,
+    learning_rate: float = 0.001,
+    hidden_size: int = 128,
+    num_layers: int = 2,
+    device: str = 'cpu'
+) -> LSTMPolicyNetwork:
+    """
+    Train LSTM policy network using supervised learning on historical decisions.
+    
+    Args:
+        train_data: List of (sequence_features, sequence_labels) tuples
+        val_data: List of validation data tuples
+        epochs: Number of training epochs
+        batch_size: Training batch size
+        learning_rate: Learning rate for optimizer
+        hidden_size: LSTM hidden dimension
+        num_layers: Number of LSTM layers
+        device: Device to train on ('cpu' or 'cuda')
+        
+    Returns:
+        Trained LSTMPolicyNetwork model
+    """
+    device = torch.device(device)
+    logger.info(f"Training on device: {device}")
+    
+    # Create datasets and dataloaders
+    train_dataset = SequenceDataset(train_data)
+    val_dataset = SequenceDataset(val_data)
+    
+    train_loader = DataLoader(train_dataset, batch_size=batch_size, shuffle=True)
+    val_loader = DataLoader(val_dataset, batch_size=batch_size, shuffle=False)
+    
+    # Initialize model
+    model = LSTMPolicyNetwork(
+        input_dim=8,
+        hidden_dim=hidden_size,
+        lstm_layers=num_layers
+    ).to(device)
+    
+    # Optimizer and loss function
+    optimizer = optim.Adam(model.parameters(), lr=learning_rate)
+    criterion = nn.CrossEntropyLoss()
+    
+    # Training loop
+    best_val_loss = float('inf')
+    train_losses = []
+    val_losses = []
+    
+    for epoch in range(epochs):
+        # Training phase
+        model.train()
+        train_loss = 0.0
+        train_correct = 0
+        train_total = 0
+        
+        for batch_sequences, batch_labels in train_loader:
+            batch_sequences = batch_sequences.to(device)
+            batch_labels = batch_labels.to(device)
+            
+            optimizer.zero_grad()
+            
+            # Forward pass - only use policy head for supervised learning
+            policy, _, _ = model(batch_sequences)
+            
+            # Reshape for loss calculation
+            policy_flat = policy.view(-1, 2)  # (batch * seq_len, 2)
+            labels_flat = batch_labels.view(-1)  # (batch * seq_len,)
+            
+            # Calculate loss
+            loss = criterion(policy_flat, labels_flat)
+            
+            # Backward pass
+            loss.backward()
+            torch.nn.utils.clip_grad_norm_(model.parameters(), max_norm=1.0)
+            optimizer.step()
+            
+            # Track metrics
+            train_loss += loss.item()
+            _, predicted = torch.max(policy_flat, 1)
+            train_total += labels_flat.size(0)
+            train_correct += (predicted == labels_flat).sum().item()
+        
+        # Validation phase
+        model.eval()
+        val_loss = 0.0
+        val_correct = 0
+        val_total = 0
+        
+        with torch.no_grad():
+            for batch_sequences, batch_labels in val_loader:
+                batch_sequences = batch_sequences.to(device)
+                batch_labels = batch_labels.to(device)
+                
+                policy, _, _ = model(batch_sequences)
+                
+                # Reshape for loss calculation
+                policy_flat = policy.view(-1, 2)
+                labels_flat = batch_labels.view(-1)
+                
+                loss = criterion(policy_flat, labels_flat)
+                val_loss += loss.item()
+                
+                _, predicted = torch.max(policy_flat, 1)
+                val_total += labels_flat.size(0)
+                val_correct += (predicted == labels_flat).sum().item()
+        
+        # Calculate averages
+        avg_train_loss = train_loss / len(train_loader)
+        avg_val_loss = val_loss / len(val_loader)
+        train_accuracy = 100 * train_correct / train_total
+        val_accuracy = 100 * val_correct / val_total
+        
+        train_losses.append(avg_train_loss)
+        val_losses.append(avg_val_loss)
+        
+        # Save best model
+        if avg_val_loss < best_val_loss:
+            best_val_loss = avg_val_loss
+        
+        # Log progress
+        if epoch % 10 == 0 or epoch == epochs - 1:
+            logger.info(
+                f"Epoch {epoch+1}/{epochs} | "
+                f"Train Loss: {avg_train_loss:.4f} | "
+                f"Val Loss: {avg_val_loss:.4f} | "
+                f"Train Acc: {train_accuracy:.2f}% | "
+                f"Val Acc: {val_accuracy:.2f}%"
+            )
+    
+    logger.info(f"Training completed. Best validation loss: {best_val_loss:.4f}")
+    return model

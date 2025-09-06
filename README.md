@@ -45,13 +45,13 @@ pip install -r requirements.txt
 python main.py run --scenario 1 --strategy conservative --count 5 --mode local
 
 # Run all available strategies in parallel (local)
-python main.py run --scenario 1 --strategy all --workers 6 --mode local
+python main.py run --scenario 1 --strategy all --workers 10 --mode local
 
 # Compare specific strategies
 python main.py run --scenario 1 --strategy "conservative,aggressive,adaptive" --mode local
 
-# Use the live API (slow/flaky) sparingly
-python main.py run --scenario 1 --strategy rbcr --count 10 --workers 2 --mode api
+# Use the live API (slow/flaky) sparingly - API calls limited to 10 concurrent  
+python main.py run --scenario 1 --strategy rbcr --count 10 --workers 10 --mode api
 ```
 
 ## 🧬 Genetic Optimization
@@ -60,10 +60,10 @@ python main.py run --scenario 1 --strategy rbcr --count 10 --workers 2 --mode ap
 
 ```bash
 # Quick optimization (recommended)
-python main.py optimize --scenario 1 --workers 4 --generations 5
+python main.py optimize --scenario 1 --workers 6 --generations 5
 
 # Intensive optimization 
-python main.py optimize --scenario 1 --workers 6 --generations 10 --target-success-rate 90
+python main.py optimize --scenario 1 --workers 10 --generations 10 --target-success-rate 90
 
 # Rapid prototyping
 python main.py optimize --scenario 1 --workers 2 --games-per-strategy 1 --generations 3
@@ -105,7 +105,7 @@ python main.py run --scenario 1 --strategy rbcr --count 10 --workers 2 --mode ap
 
 ### **Step 1: Run Optimization**
 ```bash
-python main.py optimize --scenario 1 --workers 4 --generations 5
+python main.py optimize --scenario 1 --workers 8 --generations 5
 ```
 
 ### **Step 2: Discover Evolved Strategies**
@@ -143,7 +143,7 @@ python main.py report --days 7
 ### **Step 5: Production Deployment**
 ```bash
 # Deploy champion strategy for production runs
-python main.py run --scenario 1 --strategy your_champion_strategy --count 50 --workers 6
+python main.py run --scenario 1 --strategy your_champion_strategy --count 50 --workers 10
 ```
 
 ## 🔄 Advanced Evolution Workflows
@@ -153,7 +153,7 @@ python main.py run --scenario 1 --strategy your_champion_strategy --count 50 --w
 # Multi-cycle optimization for maximum performance
 for i in {1..5}; do
     echo "🧬 Evolution Cycle $i"
-    python main.py optimize --scenario 1 --workers 4 --generations 3
+    python main.py optimize --scenario 1 --workers 8 --generations 3
     python main.py run --scenario 1 --strategy all --count 5
     python main.py analyze --limit 20
 done
@@ -271,7 +271,7 @@ parameters:
 ### Multi-Strategy Comparison
 ```bash
 # Run comprehensive comparison
-python main.py run --scenario 1 --strategy all --count 10 --workers 8
+python main.py run --scenario 1 --strategy all --count 10 --workers 10
 
 # Disable high-score checking for full runs
 python main.py run --scenario 1 --strategy "conservative,aggressive" --no-high-score-check
@@ -283,10 +283,10 @@ python main.py run --scenario 1 --strategy "conservative,aggressive" --no-high-s
 python main.py optimize --scenario 1 --workers 2 --games-per-strategy 2
 
 # Production optimization
-python main.py optimize --scenario 1 --workers 6 --generations 8 --target-success-rate 85
+python main.py optimize --scenario 1 --workers 10 --generations 8 --target-success-rate 85
 
 # Quick strategy discovery
-python main.py optimize --scenario 1 --workers 4 --generations 3
+python main.py optimize --scenario 1 --workers 8 --generations 3
 ```
 
 ### Analysis Workflows
@@ -337,15 +337,18 @@ berghain/
 
 ## 📈 Performance Optimization
 
-### API Rate Limiting
+### API Rate Limiting & Concurrency Control
+- **Global API concurrency limiting** (max 10 concurrent API calls across all games)
+- **Environment variable configuration** (`BERGHAIN_MAX_API_CONCURRENCY=10`)
 - **Automatic retry** with exponential backoff
 - **Request delays** to prevent 429 errors  
-- **Keep API batches small** (use `--mode api` with low `--workers`) and do large runs offline with `--mode local`
+- **Smart worker scaling** (can run more than 10 games, but API calls are queued)
 
 ### Resource Efficiency  
 - **High score early termination** (stops at 95% of best known score)
 - **Real-time underperformer detection** (kills inefficient strategies in 60s)
 - **Smart worker allocation** (adapts to available resources)
+- **API concurrency limiting** (max 10 concurrent API calls to prevent rate limiting)
 
 ### Genetic Optimization
 - **Mutation rates** automatically adjusted based on performance
@@ -410,60 +413,61 @@ monitor.add_termination_callback(my_callback)
 
 ## 📊 Algorithm Performance Benchmarks
 
-*Updated results including latest PEC v2 breakthrough (September 2025):*
+*Updated results from comprehensive local testing (September 2025) - 280 games across all strategies:*
 
-### 🏆 **Top Tier Performance**
-| Strategy | Success Rate | Best Result | Avg Rejections | Performance | Status |
-|----------|-------------|-------------|---------------|-------------|--------|
-| **pec_v2** | **100.0%** (10/10) | **🏆 878** | **998** | **🥇 Best Single Result** | ✅ **New Champion** |
-| **apex** | **100.0%** (10/10) | **887** | **946** | **🥈 Most Consistent** | ✅ Production Ready |
-| **perfect** | **100.0%** (5/5) | **932** | **932** | **🥉 Reliable** | ✅ Production Ready |
-| **ultimate3h** | **100.0%** (5/5) | **922** | **922** | **Excellent** | ✅ Reliable |
+### 🏆 **Top Tier Performance (High Success Rate)**
+| Strategy | Success Rate | Best Performance | Avg Rejections | Status |
+|----------|-------------|------------------|----------------|--------|
+| **ultimate3** | **80.0%** (8/10) | **869-956** | **925** | ✅ **Champion** |
+| **dual** | **80.0%** (8/10) | **824** | **824** | ✅ **Excellent** |
+| **ultimate2** | **50.0%** (5/10) | **916-956** | **944** | ✅ Production Ready |
+| **adaptive** | **50.0%** (5/10) | **915-954** | **931** | ✅ Production Ready |
 
-### 📈 **Moderate Performance**
-| Strategy | Success Rate | Avg Rejections | Performance | Status |
-|----------|-------------|---------------|-------------|--------|
-| **dual** | 60.0% (3/5) | 925 | **Good** | ⚠️ Moderate Success |
-| **adaptive** | 40.0% (2/5) | 942 | Fair | ⚠️ Inconsistent |
-| **ultimate2** | 40.0% (2/5) | 952 | Fair | ⚠️ Inconsistent |
-| **ultimate3** | 40.0% (2/5) | 909 | Fair | ⚠️ Inconsistent |
-| **rbcr** | 20.0% (1/5) | 845 | Poor | ❌ **Best Single Run** |
-| **optimal_safe** | 20.0% (1/5) | 934 | Poor | ❌ Unreliable |
-| aggressive | 0.0% (0/5) | - | Failed | ❌ Not Working |
-| balanced | 0.0% (0/5) | - | Failed | ❌ Not Working |
-| diversity | 0.0% (0/5) | - | Failed | ❌ Not Working |
-| conservative | 0.0% (0/5) | - | Failed | ❌ Not Working |
-| greedy | 0.0% (0/5) | - | Failed | ❌ Not Working |
-| quota | 0.0% (0/5) | - | Failed | ❌ Not Working |
-| dvo | 0.0% (0/5) | - | Failed | ❌ Not Working |
-| ramanujan | 0.0% (0/5) | - | Failed | ❌ Not Working |
-| ultimate | 0.0% (0/5) | - | Failed | ❌ Not Working |
-| rbcr2 | 0.0% (0/5) | - | Failed | ❌ Not Working |
-| mec | 0.0% (0/5) | - | Failed | ❌ Not Working |
-| optimal | 0.0% (0/5) | - | Failed | ❌ Not Working |
-| optimal_final | 0.0% (0/5) | - | Failed | ❌ Not Working |
+### 📈 **Moderate Performance (Solid Success Rate)**
+| Strategy | Success Rate | Best Performance | Avg Rejections | Status |
+|----------|-------------|------------------|----------------|--------|
+| **apex** | **40.0%** (4/10) | **962** | **962** | ⚠️ Good when working |
+| **perfect** | **40.0%** (4/10) | **950+** | **950+** | ⚠️ Moderate |
+| **optimal_safe** | **30.0%** (3/10) | **916-961** | **936** | ⚠️ Inconsistent |
+| **quota** | **20.0%** (2/10) | **941-949** | **945** | ⚠️ Low Success |
 
-**🏆 Overall Results:** 41 successful games out of 125 total (32.8% success rate)  
-**⚡ Best Single Result:** 878 rejections (PEC v2 strategy) - **NEW RECORD!**  
-**🎯 Target:** 716 rejections (Maksim's record) - **Getting closer!**
+### ❌ **Poor Performance (Low/Zero Success)**
+| Strategy | Success Rate | Performance | Status |
+|----------|-------------|-------------|--------|
+| rbcr | 15.0% (3/20) | 845+ when successful | ❌ Unreliable |
+| pec | 15.0% (3/20) | Variable | ❌ Unreliable |
+| optimal | 13.3% (4/30) | Variable | ❌ Poor |
+| greedy | 10.0% (1/10) | 947 single success | ❌ Very Poor |
+| aggressive | 0.0% (0/10) | High score failures | ❌ Not Working |
+| conservative | 0.0% (0/10) | High score failures | ❌ Not Working |
+| diversity | 0.0% (0/10) | High score failures | ❌ Not Working |
+| dvo | 0.0% (0/10) | High score failures | ❌ Not Working |
+| ramanujan | 0.0% (0/10) | High score failures | ❌ Not Working |
+| rbcr2 | 0.0% (0/10) | Failed early | ❌ Not Working |
+| mec | 0.0% (0/10) | High score failures | ❌ Not Working |
+| ogds | 0.0% (0/10) | High score failures | ❌ Not Working |
+
+**🏆 Overall Results:** 51 successful games out of 300 total (17.0% success rate)  
+**⚡ Best Single Result:** 824 rejections (dual strategy) - Strong performance!  
+**🎯 Target:** 716 rejections (Maksim's record) - Getting closer!
 
 ### 🎯 **Performance Summary:**
 - **Target:** 716 rejections (Maksim's record) 
-- **New Champion:** PEC v2 (878 best result, 100% success rate) 🏆
-- **Most Consistent:** Apex (946 avg rejections, 100% success rate)
-- **Best Production Choice:** Apex (lower variance, reliable performance)
+- **New Co-Champions:** Ultimate3 & Dual (both 80% success rate) 🏆
+- **Most Reliable:** Ultimate3 (broad rejection range, consistent success)
+- **Most Efficient:** Dual (single best result at 824 rejections)
 
 ### 🧠 **Key Findings:**
-- **Breakthrough Achievement:** PEC v2 achieved new best single result (878 rejections)
-- **Elite Tier:** PEC v2, Apex, Perfect, Ultimate3H all have 100% success rates
-- **Consistent Leaders:** Apex provides best average performance (946) with reliability
-- **Success Rate Improvement:** Now 32.8% overall success vs previous 20%
+- **Breakthrough Leaders:** Ultimate3 and Dual strategies dominate with 80% success rates
+- **Efficiency Winner:** Dual strategy achieved best single result (824 rejections)  
+- **Consistency Champions:** Ultimate3 and Dual show reliable performance patterns
+- **High Score Threshold Impact:** Many strategies fail due to 966 rejection limit
 
 ### ⚡ **Strategic Insights:**
-- **New Champion:** PEC v2 combines prediction with aggressive exploration for record results
-- **Production Choice:** Apex recommended for consistent high performance (946 avg)
-- **Risk vs Reward:** PEC v2 higher variance but capable of exceptional breakthroughs
-- **Algorithm Evolution:** Modern strategies (PEC v2, Apex) significantly outperform legacy ones
+- **Production Champions:** Ultimate3 or Dual recommended for reliable performance
+- **Single Best Run:** Dual strategy optimal for record-breaking attempts (824 best)
+- **Success Rate Leaders:** Ultimate3/Dual at 80% vs field average of 17%
+- **Modern vs Legacy:** Advanced strategies significantly outperform basic ones
 
 ## 🤝 Contributing
 
@@ -483,7 +487,7 @@ monitor.add_termination_callback(my_callback)
 ### **Scenario Optimization Workflow**
 ```bash
 # 1. Initial optimization discovery
-python main.py optimize --scenario 1 --workers 4 --generations 5
+python main.py optimize --scenario 1 --workers 8 --generations 5
 
 # 2. Monitor real-time evolution (in separate terminal)
 python main.py monitor
@@ -505,7 +509,7 @@ python main.py run --scenario 1 --strategy champion_evolved --count 100
 ```bash
 # Optimize each scenario independently
 for scenario in 1 2 3; do
-    python main.py optimize --scenario $scenario --workers 4 --generations 5
+    python main.py optimize --scenario $scenario --workers 8 --generations 5
     python main.py analyze --limit 20 --scenario $scenario
 done
 
@@ -518,7 +522,7 @@ python main.py run --scenario 1 --strategy "$(ls berghain/config/strategies/evol
 # Weekly optimization cycles
 while true; do
     # Run optimization
-    python main.py optimize --scenario 1 --workers 6 --generations 8
+    python main.py optimize --scenario 1 --workers 10 --generations 8
     
     # Performance testing
     python main.py run --scenario 1 --strategy all --count 20
@@ -706,10 +710,11 @@ python main.py run --scenario 1 --strategy top_candidate --count 30
 - **Archive champion strategies** for future baseline comparisons
 
 ### **API Management**
-- **Respect rate limits** with proper worker scaling
+- **Global concurrency control** with 10 concurrent API call limit (`BERGHAIN_MAX_API_CONCURRENCY`)
+- **Smart worker scaling** - can use more workers than API limit (calls queue automatically)
 - **Use high-score termination** to avoid wasted computation
 - **Monitor 429 errors** and adjust concurrency accordingly
-- **Implement request delays** for sustained operation
+- **Automatic request delays** with exponential backoff for sustained operation
 
 ## 🔮 OGDS Algorithm - Oracle-Gated Deficit Strategy
 

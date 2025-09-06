@@ -6,6 +6,7 @@ import requests
 import logging
 import time
 import random
+import threading
 from typing import Dict, Optional, Any
 from .domain import GameState, Person, Constraint, AttributeStatistics, GameStatus
 
@@ -20,6 +21,10 @@ class BerghainAPIError(Exception):
 
 class BerghainAPIClient:
     """Clean API client with single responsibility."""
+    
+    # Global semaphore to limit concurrent API calls across all instances
+    _api_concurrency_limit = int(os.getenv("BERGHAIN_MAX_API_CONCURRENCY", "10"))
+    _api_semaphore = threading.Semaphore(_api_concurrency_limit)
     
     def __init__(self, base_url: str = "https://berghain.challenges.listenlabs.ai", 
                  player_id: str = "3f60a32b-8232-4b52-a11d-31a82aaa0c61", 
@@ -52,7 +57,13 @@ class BerghainAPIClient:
                 # Backoff: 2s, 4s, 8s, 12s, 16s, 20s (+jitter)
                 delay = 2.0 * attempt
                 time.sleep(delay + random.uniform(0, 0.5))
-                resp = requests.get(url, params=params, headers=self.default_headers, timeout=(10, self.timeout))
+                
+                # Use semaphore to limit concurrent API calls
+                logger.debug(f"Acquiring API semaphore for start_new_game (attempt {attempt})")
+                with self._api_semaphore:
+                    logger.debug(f"API semaphore acquired for start_new_game")
+                    resp = requests.get(url, params=params, headers=self.default_headers, timeout=(10, self.timeout))
+                    
                 if resp.status_code == 429:
                     ra = resp.headers.get("Retry-After")
                     if ra:
@@ -149,6 +160,10 @@ class BerghainAPIClient:
             else:
                 game_state.complete_game(GameStatus.FAILED)
         
+        # Special handling for capacity edge case
+        elif game_state.admitted_count >= game_state.target_capacity:
+            logger.info(f"Hit capacity ({game_state.admitted_count}/{game_state.target_capacity}) but API still shows running")
+        
         return response
     
     def play_turn(self, game_state: GameState, person_index: int, accept: bool) -> Optional[Person]:
@@ -167,6 +182,11 @@ class BerghainAPIClient:
         
         return None
     
+    def get_game_status(self, game_state: GameState) -> Dict[str, Any]:
+        """Get current game status without making a decision."""
+        # Use the make_decision method without an accept parameter to get status only
+        return self.make_decision(game_state, 0)  # personIndex 0 is just for status check
+    
     def close(self):
         """Clean up resources."""
         self.session.close()
@@ -179,7 +199,13 @@ class BerghainAPIClient:
             try:
                 if attempt > 1:
                     time.sleep(min(10.0, attempt * 1.5) + random.uniform(0, 0.5))
-                resp = requests.get(url, params=params, headers=self.default_headers, timeout=(10, self.timeout))
+                
+                # Use semaphore to limit concurrent API calls
+                logger.debug(f"Acquiring API semaphore for decision API call (attempt {attempt})")
+                with self._api_semaphore:
+                    logger.debug(f"API semaphore acquired for decision API call")
+                    resp = requests.get(url, params=params, headers=self.default_headers, timeout=(10, self.timeout))
+                    
                 if resp.status_code == 429:
                     ra = resp.headers.get("Retry-After")
                     if ra:

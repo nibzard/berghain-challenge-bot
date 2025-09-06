@@ -309,7 +309,7 @@ def main():
     run_parser.add_argument('--scenario', type=int, default=1, help='Scenario ID (default: 1)')
     run_parser.add_argument('--strategy', default='conservative', help='Strategy name(s) - comma-separated for multiple, or "all" for all available (default: conservative)')
     run_parser.add_argument('--count', type=int, default=10, help='Number of games per strategy (default: 10)')
-    run_parser.add_argument('--workers', type=int, default=3, help='Parallel workers (default: 3)')
+    run_parser.add_argument('--workers', type=int, default=10, help='Parallel workers (default: 10, API calls limited to 10 concurrent)')
     run_parser.add_argument('--no-high-score-check', action='store_true', help='Disable high score checking for early termination')
     run_parser.add_argument('--mode', choices=['local','api'], default='local', help='Backend mode: local simulator or live API (default: local)')
     
@@ -334,7 +334,7 @@ def main():
     # Optimize command
     optimize_parser = subparsers.add_parser('optimize', help='Run dynamic strategy optimization')
     optimize_parser.add_argument('--scenario', type=int, default=1, help='Scenario ID (default: 1)')
-    optimize_parser.add_argument('--workers', type=int, default=6, help='Concurrent games (default: 6)')
+    optimize_parser.add_argument('--workers', type=int, default=10, help='Concurrent games (default: 10, API calls limited to 10 concurrent)')
     optimize_parser.add_argument('--generations', type=int, default=5, help='Number of generations (default: 5)')
     optimize_parser.add_argument('--games-per-strategy', type=int, default=3, help='Games per strategy (default: 3)')
     optimize_parser.add_argument('--target-success-rate', type=float, default=80, help='Target success rate percentage (default: 80)')

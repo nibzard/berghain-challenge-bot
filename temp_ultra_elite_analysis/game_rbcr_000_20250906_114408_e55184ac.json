@@ -1,0 +1,1418 @@
+{
+  "solver_id": "rbcr_000",
+  "game_id": "e55184ac-22ba-403f-acfd-acd81c34e353",
+  "scenario_id": 1,
+  "scenario_name": "Friday Night",
+  "start_time": "2025-09-06T11:43:07.334584",
+  "end_time": "2025-09-06T11:44:08.093578",
+  "duration_seconds": 60.758994,
+  "strategy_name": "RBCR",
+  "strategy_params": {
+    "resolve_every": 30,
+    "rate_floor_early": 0.585,
+    "rate_floor_mid": 0.565,
+    "rate_floor_late": 0.545,
+    "rate_cut_early": 0.4,
+    "rate_cut_mid": 0.7,
+    "filler_base": 0.02,
+    "filler_max": 0.12,
+    "pi_kp": 0.6,
+    "pi_ki": 0.08,
+    "oracle_delta": 0.01,
+    "dual_eta": 0.05,
+    "dual_decay": 0.995,
+    "rate_floor": 0.54
+  },
+  "constraints": [
+    {
+      "attribute": "young",
+      "min_count": 600
+    },
+    {
+      "attribute": "well_dressed",
+      "min_count": 600
+    }
+  ],
+  "attribute_frequencies": {
+    "well_dressed": 0.3225,
+    "young": 0.3225
+  },
+  "attribute_correlations": {
+    "well_dressed": {
+      "well_dressed": 1,
+      "young": 0.18304299322062992
+    },
+    "young": {
+      "well_dressed": 0.18304299322062992,
+      "young": 1
+    }
+  },
+  "status": "failed",
+  "success": false,
+  "admitted_count": 72,
+  "rejected_count": 62,
+  "total_decisions": 134,
+  "acceptance_rate": 0.5373134328358209,
+  "final_admitted_attributes": {
+    "well_dressed": 41,
+    "young": 45
+  },
+  "constraint_satisfaction": {
+    "young": {
+      "current": 45,
+      "required": 600,
+      "satisfied": false,
+      "progress": 0.075,
+      "shortage": 555
+    },
+    "well_dressed": {
+      "current": 41,
+      "required": 600,
+      "satisfied": false,
+      "progress": 0.06833333333333333,
+      "shortage": 559
+    }
+  },
+  "decisions": [
+    {
+      "person_index": 0,
+      "attributes": {
+        "well_dressed": false,
+        "young": false
+      },
+      "decision": false,
+      "reasoning": "rbcr_filler",
+      "timestamp": "2025-09-06T11:43:07.534212"
+    },
+    {
+      "person_index": 1,
+      "attributes": {
+        "well_dressed": false,
+        "young": false
+      },
+      "decision": false,
+      "reasoning": "rbcr_filler",
+      "timestamp": "2025-09-06T11:43:07.832535"
+    },
+    {
+      "person_index": 2,
+      "attributes": {
+        "well_dressed": true,
+        "young": false
+      },
+      "decision": true,
+      "reasoning": "rbcr_single_need_w",
+      "timestamp": "2025-09-06T11:43:08.031646"
+    },
+    {
+      "person_index": 3,
+      "attributes": {
+        "well_dressed": false,
+        "young": false
+      },
+      "decision": true,
+      "reasoning": "rbcr_filler",
+      "timestamp": "2025-09-06T11:43:08.291918"
+    },
+    {
+      "person_index": 4,
+      "attributes": {
+        "well_dressed": false,
+        "young": true
+      },
+      "decision": true,
+      "reasoning": "rbcr_single_need_y",
+      "timestamp": "2025-09-06T11:43:08.495939"
+    },
+    {
+      "person_index": 5,
+      "attributes": {
+        "well_dressed": true,
+        "young": false
+      },
+      "decision": true,
+      "reasoning": "rbcr_single_need_w",
+      "timestamp": "2025-09-06T11:43:08.689666"
+    },
+    {
+      "person_index": 6,
+      "attributes": {
+        "well_dressed": false,
+        "young": false
+      },
+      "decision": false,
+      "reasoning": "rbcr_filler_zero",
+      "timestamp": "2025-09-06T11:43:08.886835"
+    },
+    {
+      "person_index": 7,
+      "attributes": {
+        "well_dressed": true,
+        "young": true
+      },
+      "decision": true,
+      "reasoning": "rbcr_dual",
+      "timestamp": "2025-09-06T11:43:09.255116"
+    },
+    {
+      "person_index": 8,
+      "attributes": {
+        "well_dressed": false,
+        "young": false
+      },
+      "decision": false,
+      "reasoning": "rbcr_filler_zero",
+      "timestamp": "2025-09-06T11:43:09.471508"
+    },
+    {
+      "person_index": 9,
+      "attributes": {
+        "well_dressed": true,
+        "young": true
+      },
+      "decision": true,
+      "reasoning": "rbcr_dual",
+      "timestamp": "2025-09-06T11:43:09.672808"
+    },
+    {
+      "person_index": 10,
+      "attributes": {
+        "well_dressed": true,
+        "young": true
+      },
+      "decision": true,
+      "reasoning": "rbcr_dual",
+      "timestamp": "2025-09-06T11:43:09.880459"
+    },
+    {
+      "person_index": 11,
+      "attributes": {
+        "well_dressed": false,
+        "young": false
+      },
+      "decision": false,
+      "reasoning": "rbcr_filler_zero",
+      "timestamp": "2025-09-06T11:43:10.105440"
+    },
+    {
+      "person_index": 12,
+      "attributes": {
+        "well_dressed": false,
+        "young": true
+      },
+      "decision": true,
+      "reasoning": "rbcr_single_need_y",
+      "timestamp": "2025-09-06T11:43:10.297258"
+    },
+    {
+      "person_index": 13,
+      "attributes": {
+        "well_dressed": false,
+        "young": false
+      },
+      "decision": false,
+      "reasoning": "rbcr_filler",
+      "timestamp": "2025-09-06T11:43:10.504058"
+    },
+    {
+      "person_index": 14,
+      "attributes": {
+        "well_dressed": true,
+        "young": true
+      },
+      "decision": true,
+      "reasoning": "rbcr_dual",
+      "timestamp": "2025-09-06T11:43:10.714844"
+    },
+    {
+      "person_index": 15,
+      "attributes": {
+        "well_dressed": false,
+        "young": false
+      },
+      "decision": false,
+      "reasoning": "rbcr_filler",
+      "timestamp": "2025-09-06T11:43:10.918267"
+    },
+    {
+      "person_index": 16,
+      "attributes": {
+        "well_dressed": false,
+        "young": false
+      },
+      "decision": true,
+      "reasoning": "rbcr_filler",
+      "timestamp": "2025-09-06T11:43:11.122638"
+    },
+    {
+      "person_index": 17,
+      "attributes": {
+        "well_dressed": false,
+        "young": true
+      },
+      "decision": true,
+      "reasoning": "rbcr_single_need_y",
+      "timestamp": "2025-09-06T11:43:11.326804"
+    },
+    {
+      "person_index": 18,
+      "attributes": {
+        "well_dressed": false,
+        "young": true
+      },
+      "decision": true,
+      "reasoning": "rbcr_single_need_y",
+      "timestamp": "2025-09-06T11:43:11.529661"
+    },
+    {
+      "person_index": 19,
+      "attributes": {
+        "well_dressed": true,
+        "young": false
+      },
+      "decision": true,
+      "reasoning": "rbcr_single_need_w",
+      "timestamp": "2025-09-06T11:43:11.741197"
+    },
+    {
+      "person_index": 20,
+      "attributes": {
+        "well_dressed": false,
+        "young": false
+      },
+      "decision": false,
+      "reasoning": "rbcr_filler_zero",
+      "timestamp": "2025-09-06T11:43:11.953763"
+    },
+    {
+      "person_index": 21,
+      "attributes": {
+        "well_dressed": false,
+        "young": true
+      },
+      "decision": true,
+      "reasoning": "rbcr_single_need_y",
+      "timestamp": "2025-09-06T11:43:12.172721"
+    },
+    {
+      "person_index": 22,
+      "attributes": {
+        "well_dressed": false,
+        "young": false
+      },
+      "decision": false,
+      "reasoning": "rbcr_filler_zero",
+      "timestamp": "2025-09-06T11:43:12.398736"
+    },
+    {
+      "person_index": 23,
+      "attributes": {
+        "well_dressed": false,
+        "young": false
+      },
+      "decision": true,
+      "reasoning": "rbcr_filler",
+      "timestamp": "2025-09-06T11:43:12.606148"
+    },
+    {
+      "person_index": 24,
+      "attributes": {
+        "well_dressed": true,
+        "young": true
+      },
+      "decision": true,
+      "reasoning": "rbcr_dual",
+      "timestamp": "2025-09-06T11:43:12.809608"
+    },
+    {
+      "person_index": 25,
+      "attributes": {
+        "well_dressed": true,
+        "young": false
+      },
+      "decision": true,
+      "reasoning": "rbcr_single_need_w",
+      "timestamp": "2025-09-06T11:43:13.041424"
+    },
+    {
+      "person_index": 26,
+      "attributes": {
+        "well_dressed": false,
+        "young": false
+      },
+      "decision": false,
+      "reasoning": "rbcr_filler_zero",
+      "timestamp": "2025-09-06T11:43:13.243590"
+    },
+    {
+      "person_index": 27,
+      "attributes": {
+        "well_dressed": true,
+        "young": false
+      },
+      "decision": true,
+      "reasoning": "rbcr_single_need_w",
+      "timestamp": "2025-09-06T11:43:13.484076"
+    },
+    {
+      "person_index": 28,
+      "attributes": {
+        "well_dressed": false,
+        "young": false
+      },
+      "decision": false,
+      "reasoning": "rbcr_filler_zero",
+      "timestamp": "2025-09-06T11:43:13.714316"
+    },
+    {
+      "person_index": 29,
+      "attributes": {
+        "well_dressed": true,
+        "young": true
+      },
+      "decision": true,
+      "reasoning": "rbcr_dual",
+      "timestamp": "2025-09-06T11:43:14.124168"
+    },
+    {
+      "person_index": 30,
+      "attributes": {
+        "well_dressed": false,
+        "young": false
+      },
+      "decision": false,
+      "reasoning": "rbcr_filler_zero",
+      "timestamp": "2025-09-06T11:43:14.336939"
+    },
+    {
+      "person_index": 31,
+      "attributes": {
+        "well_dressed": false,
+        "young": true
+      },
+      "decision": true,
+      "reasoning": "rbcr_single_need_y",
+      "timestamp": "2025-09-06T11:43:14.560753"
+    },
+    {
+      "person_index": 32,
+      "attributes": {
+        "well_dressed": false,
+        "young": false
+      },
+      "decision": false,
+      "reasoning": "rbcr_filler_zero",
+      "timestamp": "2025-09-06T11:43:14.759660"
+    },
+    {
+      "person_index": 33,
+      "attributes": {
+        "well_dressed": false,
+        "young": false
+      },
+      "decision": false,
+      "reasoning": "rbcr_filler_zero",
+      "timestamp": "2025-09-06T11:43:14.979485"
+    },
+    {
+      "person_index": 34,
+      "attributes": {
+        "well_dressed": false,
+        "young": true
+      },
+      "decision": true,
+      "reasoning": "rbcr_single_need_y",
+      "timestamp": "2025-09-06T11:43:15.173030"
+    },
+    {
+      "person_index": 35,
+      "attributes": {
+        "well_dressed": true,
+        "young": false
+      },
+      "decision": true,
+      "reasoning": "rbcr_single_need_w",
+      "timestamp": "2025-09-06T11:43:15.397837"
+    },
+    {
+      "person_index": 36,
+      "attributes": {
+        "well_dressed": false,
+        "young": true
+      },
+      "decision": true,
+      "reasoning": "rbcr_single_need_y",
+      "timestamp": "2025-09-06T11:43:15.621746"
+    },
+    {
+      "person_index": 37,
+      "attributes": {
+        "well_dressed": false,
+        "young": false
+      },
+      "decision": false,
+      "reasoning": "rbcr_filler_zero",
+      "timestamp": "2025-09-06T11:43:15.835266"
+    },
+    {
+      "person_index": 38,
+      "attributes": {
+        "well_dressed": false,
+        "young": false
+      },
+      "decision": false,
+      "reasoning": "rbcr_filler_zero",
+      "timestamp": "2025-09-06T11:43:16.053569"
+    },
+    {
+      "person_index": 39,
+      "attributes": {
+        "well_dressed": false,
+        "young": true
+      },
+      "decision": true,
+      "reasoning": "rbcr_single_need_y",
+      "timestamp": "2025-09-06T11:43:16.260916"
+    },
+    {
+      "person_index": 40,
+      "attributes": {
+        "well_dressed": false,
+        "young": false
+      },
+      "decision": false,
+      "reasoning": "rbcr_filler_zero",
+      "timestamp": "2025-09-06T11:43:16.468799"
+    },
+    {
+      "person_index": 41,
+      "attributes": {
+        "well_dressed": false,
+        "young": false
+      },
+      "decision": false,
+      "reasoning": "rbcr_filler_zero",
+      "timestamp": "2025-09-06T11:43:16.670567"
+    },
+    {
+      "person_index": 42,
+      "attributes": {
+        "well_dressed": true,
+        "young": true
+      },
+      "decision": true,
+      "reasoning": "rbcr_dual",
+      "timestamp": "2025-09-06T11:43:16.891180"
+    },
+    {
+      "person_index": 43,
+      "attributes": {
+        "well_dressed": true,
+        "young": true
+      },
+      "decision": true,
+      "reasoning": "rbcr_dual",
+      "timestamp": "2025-09-06T11:43:17.095145"
+    },
+    {
+      "person_index": 44,
+      "attributes": {
+        "well_dressed": false,
+        "young": true
+      },
+      "decision": true,
+      "reasoning": "rbcr_single_need_y",
+      "timestamp": "2025-09-06T11:43:17.288008"
+    },
+    {
+      "person_index": 45,
+      "attributes": {
+        "well_dressed": true,
+        "young": false
+      },
+      "decision": true,
+      "reasoning": "rbcr_single_need_w",
+      "timestamp": "2025-09-06T11:43:17.491120"
+    },
+    {
+      "person_index": 46,
+      "attributes": {
+        "well_dressed": false,
+        "young": false
+      },
+      "decision": false,
+      "reasoning": "rbcr_filler_zero",
+      "timestamp": "2025-09-06T11:43:17.712549"
+    },
+    {
+      "person_index": 47,
+      "attributes": {
+        "well_dressed": false,
+        "young": true
+      },
+      "decision": true,
+      "reasoning": "rbcr_single_need_y",
+      "timestamp": "2025-09-06T11:43:17.912473"
+    },
+    {
+      "person_index": 48,
+      "attributes": {
+        "well_dressed": true,
+        "young": true
+      },
+      "decision": true,
+      "reasoning": "rbcr_dual",
+      "timestamp": "2025-09-06T11:43:18.124923"
+    },
+    {
+      "person_index": 49,
+      "attributes": {
+        "well_dressed": true,
+        "young": false
+      },
+      "decision": true,
+      "reasoning": "rbcr_single_need_w",
+      "timestamp": "2025-09-06T11:43:18.356601"
+    },
+    {
+      "person_index": 50,
+      "attributes": {
+        "well_dressed": true,
+        "young": false
+      },
+      "decision": true,
+      "reasoning": "rbcr_single_need_w",
+      "timestamp": "2025-09-06T11:43:18.565267"
+    },
+    {
+      "person_index": 51,
+      "attributes": {
+        "well_dressed": false,
+        "young": false
+      },
+      "decision": false,
+      "reasoning": "rbcr_filler_zero",
+      "timestamp": "2025-09-06T11:43:18.769301"
+    },
+    {
+      "person_index": 52,
+      "attributes": {
+        "well_dressed": false,
+        "young": false
+      },
+      "decision": false,
+      "reasoning": "rbcr_filler_zero",
+      "timestamp": "2025-09-06T11:43:18.993961"
+    },
+    {
+      "person_index": 53,
+      "attributes": {
+        "well_dressed": true,
+        "young": true
+      },
+      "decision": true,
+      "reasoning": "rbcr_dual",
+      "timestamp": "2025-09-06T11:43:19.184574"
+    },
+    {
+      "person_index": 54,
+      "attributes": {
+        "well_dressed": false,
+        "young": false
+      },
+      "decision": false,
+      "reasoning": "rbcr_filler_zero",
+      "timestamp": "2025-09-06T11:43:19.383260"
+    },
+    {
+      "person_index": 55,
+      "attributes": {
+        "well_dressed": false,
+        "young": true
+      },
+      "decision": true,
+      "reasoning": "rbcr_single_need_y",
+      "timestamp": "2025-09-06T11:43:19.594667"
+    },
+    {
+      "person_index": 56,
+      "attributes": {
+        "well_dressed": false,
+        "young": false
+      },
+      "decision": false,
+      "reasoning": "rbcr_filler_zero",
+      "timestamp": "2025-09-06T11:43:19.798260"
+    },
+    {
+      "person_index": 57,
+      "attributes": {
+        "well_dressed": false,
+        "young": false
+      },
+      "decision": false,
+      "reasoning": "rbcr_filler_zero",
+      "timestamp": "2025-09-06T11:43:20.025615"
+    },
+    {
+      "person_index": 58,
+      "attributes": {
+        "well_dressed": false,
+        "young": true
+      },
+      "decision": true,
+      "reasoning": "rbcr_single_need_y",
+      "timestamp": "2025-09-06T11:43:20.229520"
+    },
+    {
+      "person_index": 59,
+      "attributes": {
+        "well_dressed": true,
+        "young": false
+      },
+      "decision": true,
+      "reasoning": "rbcr_single_need_w",
+      "timestamp": "2025-09-06T11:43:20.430088"
+    },
+    {
+      "person_index": 60,
+      "attributes": {
+        "well_dressed": false,
+        "young": false
+      },
+      "decision": false,
+      "reasoning": "rbcr_filler_zero",
+      "timestamp": "2025-09-06T11:43:20.632146"
+    },
+    {
+      "person_index": 61,
+      "attributes": {
+        "well_dressed": false,
+        "young": false
+      },
+      "decision": false,
+      "reasoning": "rbcr_filler_zero",
+      "timestamp": "2025-09-06T11:43:20.830820"
+    },
+    {
+      "person_index": 62,
+      "attributes": {
+        "well_dressed": false,
+        "young": true
+      },
+      "decision": true,
+      "reasoning": "rbcr_single_need_y",
+      "timestamp": "2025-09-06T11:43:21.039663"
+    },
+    {
+      "person_index": 63,
+      "attributes": {
+        "well_dressed": true,
+        "young": true
+      },
+      "decision": true,
+      "reasoning": "rbcr_dual",
+      "timestamp": "2025-09-06T11:43:21.245584"
+    },
+    {
+      "person_index": 64,
+      "attributes": {
+        "well_dressed": false,
+        "young": true
+      },
+      "decision": true,
+      "reasoning": "rbcr_single_need_y",
+      "timestamp": "2025-09-06T11:43:21.459764"
+    },
+    {
+      "person_index": 65,
+      "attributes": {
+        "well_dressed": false,
+        "young": true
+      },
+      "decision": true,
+      "reasoning": "rbcr_single_need_y",
+      "timestamp": "2025-09-06T11:43:21.802448"
+    },
+    {
+      "person_index": 66,
+      "attributes": {
+        "well_dressed": false,
+        "young": false
+      },
+      "decision": false,
+      "reasoning": "rbcr_filler_zero",
+      "timestamp": "2025-09-06T11:43:22.001855"
+    },
+    {
+      "person_index": 67,
+      "attributes": {
+        "well_dressed": true,
+        "young": true
+      },
+      "decision": true,
+      "reasoning": "rbcr_dual",
+      "timestamp": "2025-09-06T11:43:22.190273"
+    },
+    {
+      "person_index": 68,
+      "attributes": {
+        "well_dressed": false,
+        "young": true
+      },
+      "decision": true,
+      "reasoning": "rbcr_single_need_y",
+      "timestamp": "2025-09-06T11:43:22.403015"
+    },
+    {
+      "person_index": 69,
+      "attributes": {
+        "well_dressed": false,
+        "young": false
+      },
+      "decision": false,
+      "reasoning": "rbcr_filler_zero",
+      "timestamp": "2025-09-06T11:43:22.614673"
+    },
+    {
+      "person_index": 70,
+      "attributes": {
+        "well_dressed": false,
+        "young": false
+      },
+      "decision": false,
+      "reasoning": "rbcr_filler_zero",
+      "timestamp": "2025-09-06T11:43:22.822643"
+    },
+    {
+      "person_index": 71,
+      "attributes": {
+        "well_dressed": true,
+        "young": false
+      },
+      "decision": true,
+      "reasoning": "rbcr_single_need_w",
+      "timestamp": "2025-09-06T11:43:23.042925"
+    },
+    {
+      "person_index": 72,
+      "attributes": {
+        "well_dressed": false,
+        "young": false
+      },
+      "decision": false,
+      "reasoning": "rbcr_filler_zero",
+      "timestamp": "2025-09-06T11:43:23.265875"
+    },
+    {
+      "person_index": 73,
+      "attributes": {
+        "well_dressed": false,
+        "young": false
+      },
+      "decision": false,
+      "reasoning": "rbcr_filler_zero",
+      "timestamp": "2025-09-06T11:43:23.571862"
+    },
+    {
+      "person_index": 74,
+      "attributes": {
+        "well_dressed": false,
+        "young": true
+      },
+      "decision": true,
+      "reasoning": "rbcr_single_need_y",
+      "timestamp": "2025-09-06T11:43:23.790686"
+    },
+    {
+      "person_index": 75,
+      "attributes": {
+        "well_dressed": true,
+        "young": false
+      },
+      "decision": true,
+      "reasoning": "rbcr_single_need_w",
+      "timestamp": "2025-09-06T11:43:23.995759"
+    },
+    {
+      "person_index": 76,
+      "attributes": {
+        "well_dressed": false,
+        "young": false
+      },
+      "decision": false,
+      "reasoning": "rbcr_filler_zero",
+      "timestamp": "2025-09-06T11:43:24.208423"
+    },
+    {
+      "person_index": 77,
+      "attributes": {
+        "well_dressed": false,
+        "young": false
+      },
+      "decision": false,
+      "reasoning": "rbcr_filler_zero",
+      "timestamp": "2025-09-06T11:43:24.503487"
+    },
+    {
+      "person_index": 78,
+      "attributes": {
+        "well_dressed": false,
+        "young": true
+      },
+      "decision": true,
+      "reasoning": "rbcr_single_need_y",
+      "timestamp": "2025-09-06T11:43:24.729190"
+    },
+    {
+      "person_index": 79,
+      "attributes": {
+        "well_dressed": false,
+        "young": false
+      },
+      "decision": false,
+      "reasoning": "rbcr_filler_zero",
+      "timestamp": "2025-09-06T11:43:24.953418"
+    },
+    {
+      "person_index": 80,
+      "attributes": {
+        "well_dressed": false,
+        "young": false
+      },
+      "decision": false,
+      "reasoning": "rbcr_filler_zero",
+      "timestamp": "2025-09-06T11:43:25.155535"
+    },
+    {
+      "person_index": 81,
+      "attributes": {
+        "well_dressed": false,
+        "young": false
+      },
+      "decision": false,
+      "reasoning": "rbcr_filler_zero",
+      "timestamp": "2025-09-06T11:43:25.368099"
+    },
+    {
+      "person_index": 82,
+      "attributes": {
+        "well_dressed": false,
+        "young": false
+      },
+      "decision": false,
+      "reasoning": "rbcr_filler",
+      "timestamp": "2025-09-06T11:43:25.578238"
+    },
+    {
+      "person_index": 83,
+      "attributes": {
+        "well_dressed": false,
+        "young": false
+      },
+      "decision": false,
+      "reasoning": "rbcr_filler",
+      "timestamp": "2025-09-06T11:43:25.782423"
+    },
+    {
+      "person_index": 84,
+      "attributes": {
+        "well_dressed": false,
+        "young": false
+      },
+      "decision": false,
+      "reasoning": "rbcr_filler",
+      "timestamp": "2025-09-06T11:43:25.979870"
+    },
+    {
+      "person_index": 85,
+      "attributes": {
+        "well_dressed": true,
+        "young": false
+      },
+      "decision": true,
+      "reasoning": "rbcr_single_need_w",
+      "timestamp": "2025-09-06T11:43:26.192346"
+    },
+    {
+      "person_index": 86,
+      "attributes": {
+        "well_dressed": false,
+        "young": false
+      },
+      "decision": false,
+      "reasoning": "rbcr_filler",
+      "timestamp": "2025-09-06T11:43:26.407155"
+    },
+    {
+      "person_index": 87,
+      "attributes": {
+        "well_dressed": true,
+        "young": true
+      },
+      "decision": true,
+      "reasoning": "rbcr_dual",
+      "timestamp": "2025-09-06T11:43:26.603932"
+    },
+    {
+      "person_index": 88,
+      "attributes": {
+        "well_dressed": false,
+        "young": true
+      },
+      "decision": true,
+      "reasoning": "rbcr_single_need_y",
+      "timestamp": "2025-09-06T11:43:26.801107"
+    },
+    {
+      "person_index": 89,
+      "attributes": {
+        "well_dressed": true,
+        "young": false
+      },
+      "decision": true,
+      "reasoning": "rbcr_single_need_w",
+      "timestamp": "2025-09-06T11:43:27.004228"
+    },
+    {
+      "person_index": 90,
+      "attributes": {
+        "well_dressed": false,
+        "young": true
+      },
+      "decision": true,
+      "reasoning": "rbcr_single_need_y",
+      "timestamp": "2025-09-06T11:43:27.255458"
+    },
+    {
+      "person_index": 91,
+      "attributes": {
+        "well_dressed": false,
+        "young": false
+      },
+      "decision": false,
+      "reasoning": "rbcr_filler",
+      "timestamp": "2025-09-06T11:43:27.461459"
+    },
+    {
+      "person_index": 92,
+      "attributes": {
+        "well_dressed": false,
+        "young": false
+      },
+      "decision": false,
+      "reasoning": "rbcr_filler",
+      "timestamp": "2025-09-06T11:43:27.702261"
+    },
+    {
+      "person_index": 93,
+      "attributes": {
+        "well_dressed": true,
+        "young": false
+      },
+      "decision": true,
+      "reasoning": "rbcr_single_need_w",
+      "timestamp": "2025-09-06T11:43:27.907500"
+    },
+    {
+      "person_index": 94,
+      "attributes": {
+        "well_dressed": false,
+        "young": false
+      },
+      "decision": false,
+      "reasoning": "rbcr_filler",
+      "timestamp": "2025-09-06T11:43:28.103160"
+    },
+    {
+      "person_index": 95,
+      "attributes": {
+        "well_dressed": false,
+        "young": false
+      },
+      "decision": false,
+      "reasoning": "rbcr_filler",
+      "timestamp": "2025-09-06T11:43:28.301944"
+    },
+    {
+      "person_index": 96,
+      "attributes": {
+        "well_dressed": false,
+        "young": false
+      },
+      "decision": false,
+      "reasoning": "rbcr_filler",
+      "timestamp": "2025-09-06T11:43:28.506942"
+    },
+    {
+      "person_index": 97,
+      "attributes": {
+        "well_dressed": false,
+        "young": false
+      },
+      "decision": true,
+      "reasoning": "rbcr_filler",
+      "timestamp": "2025-09-06T11:43:28.832144"
+    },
+    {
+      "person_index": 98,
+      "attributes": {
+        "well_dressed": false,
+        "young": false
+      },
+      "decision": false,
+      "reasoning": "rbcr_filler",
+      "timestamp": "2025-09-06T11:43:29.039264"
+    },
+    {
+      "person_index": 99,
+      "attributes": {
+        "well_dressed": true,
+        "young": false
+      },
+      "decision": true,
+      "reasoning": "rbcr_single_need_w",
+      "timestamp": "2025-09-06T11:43:29.246200"
+    },
+    {
+      "person_index": 100,
+      "attributes": {
+        "well_dressed": false,
+        "young": false
+      },
+      "decision": false,
+      "reasoning": "rbcr_filler",
+      "timestamp": "2025-09-06T11:43:29.468780"
+    },
+    {
+      "person_index": 101,
+      "attributes": {
+        "well_dressed": false,
+        "young": false
+      },
+      "decision": false,
+      "reasoning": "rbcr_filler",
+      "timestamp": "2025-09-06T11:43:29.679696"
+    },
+    {
+      "person_index": 102,
+      "attributes": {
+        "well_dressed": false,
+        "young": false
+      },
+      "decision": false,
+      "reasoning": "rbcr_filler",
+      "timestamp": "2025-09-06T11:43:29.887379"
+    },
+    {
+      "person_index": 103,
+      "attributes": {
+        "well_dressed": false,
+        "young": true
+      },
+      "decision": true,
+      "reasoning": "rbcr_single_need_y",
+      "timestamp": "2025-09-06T11:43:30.092627"
+    },
+    {
+      "person_index": 104,
+      "attributes": {
+        "well_dressed": false,
+        "young": false
+      },
+      "decision": false,
+      "reasoning": "rbcr_filler",
+      "timestamp": "2025-09-06T11:43:30.300359"
+    },
+    {
+      "person_index": 105,
+      "attributes": {
+        "well_dressed": false,
+        "young": false
+      },
+      "decision": false,
+      "reasoning": "rbcr_filler",
+      "timestamp": "2025-09-06T11:43:30.559481"
+    },
+    {
+      "person_index": 106,
+      "attributes": {
+        "well_dressed": false,
+        "young": false
+      },
+      "decision": false,
+      "reasoning": "rbcr_filler",
+      "timestamp": "2025-09-06T11:43:30.760597"
+    },
+    {
+      "person_index": 107,
+      "attributes": {
+        "well_dressed": true,
+        "young": true
+      },
+      "decision": true,
+      "reasoning": "rbcr_dual",
+      "timestamp": "2025-09-06T11:43:30.957719"
+    },
+    {
+      "person_index": 108,
+      "attributes": {
+        "well_dressed": true,
+        "young": true
+      },
+      "decision": true,
+      "reasoning": "rbcr_dual",
+      "timestamp": "2025-09-06T11:43:31.167829"
+    },
+    {
+      "person_index": 109,
+      "attributes": {
+        "well_dressed": true,
+        "young": true
+      },
+      "decision": true,
+      "reasoning": "rbcr_dual",
+      "timestamp": "2025-09-06T11:43:31.372387"
+    },
+    {
+      "person_index": 110,
+      "attributes": {
+        "well_dressed": false,
+        "young": false
+      },
+      "decision": false,
+      "reasoning": "rbcr_filler",
+      "timestamp": "2025-09-06T11:43:31.573691"
+    },
+    {
+      "person_index": 111,
+      "attributes": {
+        "well_dressed": false,
+        "young": true
+      },
+      "decision": true,
+      "reasoning": "rbcr_single_need_y",
+      "timestamp": "2025-09-06T11:43:31.779214"
+    },
+    {
+      "person_index": 112,
+      "attributes": {
+        "well_dressed": false,
+        "young": false
+      },
+      "decision": false,
+      "reasoning": "rbcr_filler",
+      "timestamp": "2025-09-06T11:43:31.988147"
+    },
+    {
+      "person_index": 113,
+      "attributes": {
+        "well_dressed": true,
+        "young": false
+      },
+      "decision": true,
+      "reasoning": "rbcr_single_need_w",
+      "timestamp": "2025-09-06T11:43:32.197087"
+    },
+    {
+      "person_index": 114,
+      "attributes": {
+        "well_dressed": false,
+        "young": false
+      },
+      "decision": false,
+      "reasoning": "rbcr_filler",
+      "timestamp": "2025-09-06T11:43:32.419665"
+    },
+    {
+      "person_index": 115,
+      "attributes": {
+        "well_dressed": false,
+        "young": false
+      },
+      "decision": false,
+      "reasoning": "rbcr_filler",
+      "timestamp": "2025-09-06T11:43:32.625308"
+    },
+    {
+      "person_index": 116,
+      "attributes": {
+        "well_dressed": true,
+        "young": false
+      },
+      "decision": true,
+      "reasoning": "rbcr_single_need_w",
+      "timestamp": "2025-09-06T11:43:32.827640"
+    },
+    {
+      "person_index": 117,
+      "attributes": {
+        "well_dressed": false,
+        "young": false
+      },
+      "decision": false,
+      "reasoning": "rbcr_filler",
+      "timestamp": "2025-09-06T11:43:33.035161"
+    },
+    {
+      "person_index": 118,
+      "attributes": {
+        "well_dressed": true,
+        "young": false
+      },
+      "decision": true,
+      "reasoning": "rbcr_single_need_w",
+      "timestamp": "2025-09-06T11:43:33.245809"
+    },
+    {
+      "person_index": 119,
+      "attributes": {
+        "well_dressed": false,
+        "young": false
+      },
+      "decision": false,
+      "reasoning": "rbcr_filler",
+      "timestamp": "2025-09-06T11:43:33.458854"
+    },
+    {
+      "person_index": 120,
+      "attributes": {
+        "well_dressed": true,
+        "young": false
+      },
+      "decision": true,
+      "reasoning": "rbcr_single_need_w",
+      "timestamp": "2025-09-06T11:43:33.668797"
+    },
+    {
+      "person_index": 121,
+      "attributes": {
+        "well_dressed": false,
+        "young": true
+      },
+      "decision": true,
+      "reasoning": "rbcr_single_need_y",
+      "timestamp": "2025-09-06T11:43:33.873758"
+    },
+    {
+      "person_index": 122,
+      "attributes": {
+        "well_dressed": false,
+        "young": false
+      },
+      "decision": false,
+      "reasoning": "rbcr_filler",
+      "timestamp": "2025-09-06T11:43:34.074791"
+    },
+    {
+      "person_index": 123,
+      "attributes": {
+        "well_dressed": false,
+        "young": true
+      },
+      "decision": true,
+      "reasoning": "rbcr_single_need_y",
+      "timestamp": "2025-09-06T11:43:34.264718"
+    },
+    {
+      "person_index": 124,
+      "attributes": {
+        "well_dressed": true,
+        "young": false
+      },
+      "decision": true,
+      "reasoning": "rbcr_single_need_w",
+      "timestamp": "2025-09-06T11:43:34.483112"
+    },
+    {
+      "person_index": 125,
+      "attributes": {
+        "well_dressed": true,
+        "young": true
+      },
+      "decision": true,
+      "reasoning": "rbcr_dual",
+      "timestamp": "2025-09-06T11:43:34.700666"
+    },
+    {
+      "person_index": 126,
+      "attributes": {
+        "well_dressed": false,
+        "young": false
+      },
+      "decision": true,
+      "reasoning": "rbcr_filler",
+      "timestamp": "2025-09-06T11:43:34.919596"
+    },
+    {
+      "person_index": 127,
+      "attributes": {
+        "well_dressed": true,
+        "young": false
+      },
+      "decision": true,
+      "reasoning": "rbcr_single_need_w",
+      "timestamp": "2025-09-06T11:43:35.125061"
+    },
+    {
+      "person_index": 128,
+      "attributes": {
+        "well_dressed": false,
+        "young": true
+      },
+      "decision": true,
+      "reasoning": "rbcr_single_need_y",
+      "timestamp": "2025-09-06T11:43:35.335341"
+    },
+    {
+      "person_index": 129,
+      "attributes": {
+        "well_dressed": false,
+        "young": false
+      },
+      "decision": false,
+      "reasoning": "rbcr_filler",
+      "timestamp": "2025-09-06T11:43:35.542025"
+    },
+    {
+      "person_index": 130,
+      "attributes": {
+        "well_dressed": true,
+        "young": true
+      },
+      "decision": true,
+      "reasoning": "rbcr_dual",
+      "timestamp": "2025-09-06T11:43:35.753651"
+    },
+    {
+      "person_index": 131,
+      "attributes": {
+        "well_dressed": true,
+        "young": true
+      },
+      "decision": true,
+      "reasoning": "rbcr_dual",
+      "timestamp": "2025-09-06T11:43:35.948143"
+    },
+    {
+      "person_index": 132,
+      "attributes": {
+        "well_dressed": false,
+        "young": false
+      },
+      "decision": false,
+      "reasoning": "rbcr_filler",
+      "timestamp": "2025-09-06T11:43:36.151420"
+    },
+    {
+      "person_index": 133,
+      "attributes": {
+        "well_dressed": false,
+        "young": false
+      },
+      "decision": false,
+      "reasoning": "rbcr_filler",
+      "timestamp": "2025-09-06T11:43:36.359063"
+    }
+  ]
+}

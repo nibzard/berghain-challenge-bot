@@ -3,11 +3,12 @@
 
 from .base_solver import BaseSolver
 from .rarity_solver import RarityWeightedStrategy
-from .adaptive_solver import AdaptiveStrategy
-from .balanced_solver import BalancedStrategy
-from .greedy_solver import GreedyConstraintStrategy
-from .diversity_solver import DiversityFirstStrategy
-from .quota_solver import QuotaTrackerStrategy
+# Archived basic strategies
+# from .adaptive_solver import AdaptiveStrategy
+# from .balanced_solver import BalancedStrategy
+# from .greedy_solver import GreedyConstraintStrategy
+# from .diversity_solver import DiversityFirstStrategy
+# from .quota_solver import QuotaTrackerStrategy
 from .dual_deficit_solver import DualDeficitController
 from .rbcr_solver import RBCRStrategy
 from .rbcr2_solver import RBCR2Strategy
@@ -21,23 +22,30 @@ from .optimal_control_solver import OptimalControlSolver, OptimalControlStrategy
 from .optimal_control_final import OptimalControlFinalSolver, OptimalControlFinalStrategy
 from .optimal_control_safe import OptimalControlSafeSolver, OptimalControlSafeStrategy
 from .perfect_solver import PerfectSolver, PerfectStrategy
-from .mec_solver import MecSolver, MecStrategy
-from .ogds_solver import OGDSSolver, OGDSStrategy
-from .ogds_simple import OGDSSimpleSolver, OGDSSimpleStrategy
+# Archived solvers moved to archive/ directory
+# from .mec_solver import MecSolver, MecStrategy
+# from .ogds_solver import OGDSSolver, OGDSStrategy  
+# from .ogds_simple import OGDSSimpleSolver, OGDSSimpleStrategy
 from .apex_solver import ApexSolver, ApexStrategy
-from .pec_solver import PECStrategy
+# from .pec_solver import PECStrategy
 from .pec_v2_solver import PECv2Strategy
 from .rl_lstm_solver import RLLSTMSolver, RLLSTMStrategy, RLLSTMHybridStrategy
-from .lagrangian_admission_strategy import LagrangianAdmissionSolver, LagrangianAdmissionStrategy
+from .elite_lstm_solver import EliteLSTMSolver, EliteLSTMStrategy
+from .ultra_elite_lstm_solver import UltraEliteLSTMSolver, UltraEliteLSTMStrategy
+from .constraint_focused_lstm_solver import ConstraintFocusedLSTMSolver, ConstraintFocusedLSTMStrategy
+from .random_walk_hybrid_solver import RandomWalkHybridSolver, RandomWalkHybridStrategy
+from .transformer_solver import TransformerSolver, TransformerStrategy
+from .hybrid_transformer_solver import HybridTransformerSolver, HybridTransformerStrategy
+# from .lagrangian_admission_strategy import LagrangianAdmissionSolver, LagrangianAdmissionStrategy
 
 __all__ = [
     "BaseSolver",
     "RarityWeightedStrategy", 
-    "AdaptiveStrategy",
-    "BalancedStrategy",
-    "GreedyConstraintStrategy",
-    "DiversityFirstStrategy",
-    "QuotaTrackerStrategy",
+    # "AdaptiveStrategy",
+    # "BalancedStrategy", 
+    # "GreedyConstraintStrategy",
+    # "DiversityFirstStrategy",
+    # "QuotaTrackerStrategy",
     "DualDeficitController",
     "RBCRStrategy",
     "RBCR2Strategy",
@@ -61,19 +69,31 @@ __all__ = [
     "OptimalControlSafeStrategy",
     "PerfectSolver",
     "PerfectStrategy",
-    "MecSolver",
-    "MecStrategy",
-    "OGDSSolver",
-    "OGDSStrategy",
-    "OGDSSimpleSolver", 
-    "OGDSSimpleStrategy",
+    # "MecSolver",
+    # "MecStrategy",
+    # "OGDSSolver",
+    # "OGDSStrategy",
+    # "OGDSSimpleSolver", 
+    # "OGDSSimpleStrategy",
     "ApexSolver",
     "ApexStrategy",
-    "PECStrategy",
+    # "PECStrategy",
     "PECv2Strategy",
     "RLLSTMSolver",
     "RLLSTMStrategy", 
     "RLLSTMHybridStrategy",
-    "LagrangianAdmissionSolver",
-    "LagrangianAdmissionStrategy",
+    "EliteLSTMSolver",
+    "EliteLSTMStrategy",
+    "UltraEliteLSTMSolver",
+    "UltraEliteLSTMStrategy",
+    "ConstraintFocusedLSTMSolver",
+    "ConstraintFocusedLSTMStrategy",
+    "RandomWalkHybridSolver",
+    "RandomWalkHybridStrategy",
+    "TransformerSolver",
+    "TransformerStrategy",
+    "HybridTransformerSolver",
+    "HybridTransformerStrategy",
+    # "LagrangianAdmissionSolver",
+    # "LagrangianAdmissionStrategy",
 ]

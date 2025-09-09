@@ -1,0 +1,11 @@
+{
+  "tier": "average",
+  "description": "Average games for baseline training",
+  "max_rejections": 950,
+  "game_count": 5165,
+  "avg_rejections": 909.891577928364,
+  "strategies": {
+    "unknown": 5165
+  },
+  "created": "2025-09-08T20:22:10.241988"
+}

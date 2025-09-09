@@ -1,0 +1,75 @@
+{
+  "total_ultra_elite_games": 9,
+  "max_rejections_threshold": 800,
+  "games": [
+    {
+      "file": "elite_rbcr2_795rej_20250906_114144_d7c1132e-ceb2-4ed7-b854-25e22d46e51e.json",
+      "strategy": "rbcr2",
+      "rejections": 795,
+      "admitted": 983,
+      "success": true
+    },
+    {
+      "file": "elite_rbcr2_796rej_20250906_114242_c7a8fa83-d862-479b-9773-5322d0ca8a3b.json",
+      "strategy": "rbcr2",
+      "rejections": 796,
+      "admitted": 975,
+      "success": true
+    },
+    {
+      "file": "elite_rbcr2_771rej_20250906_114902_b2a83ca3-344a-4852-b5a3-3ad703cd4a8b.json",
+      "strategy": "rbcr2",
+      "rejections": 771,
+      "admitted": 999,
+      "success": true
+    },
+    {
+      "file": "elite_rbcr2_778rej_20250906_115732_df54e20e-26c5-4f70-8201-8d5f65536f0b.json",
+      "strategy": "rbcr2",
+      "rejections": 778,
+      "admitted": 986,
+      "success": true
+    },
+    {
+      "file": "elite_rbcr_799rej_20250906_113930_2d5b8e37-cc91-4787-9358-157eadc913e1.json",
+      "strategy": "rbcr",
+      "rejections": 799,
+      "admitted": 988,
+      "success": true
+    },
+    {
+      "file": "elite_rbcr_794rej_20250906_114507_bced99e8-3de8-4901-b616-a393a6c1e446.json",
+      "strategy": "rbcr",
+      "rejections": 794,
+      "admitted": 972,
+      "success": true
+    },
+    {
+      "file": "elite_rbcr2_798rej_20250906_114311_31e7442d-f573-45e1-b64e-d12db1558812.json",
+      "strategy": "rbcr2",
+      "rejections": 798,
+      "admitted": 969,
+      "success": true
+    },
+    {
+      "file": "elite_rbcr2_800rej_20250906_115109_fd60e998-509a-4547-bc34-26165fbfa157.json",
+      "strategy": "rbcr2",
+      "rejections": 800,
+      "admitted": 990,
+      "success": true
+    },
+    {
+      "file": "elite_rbcr_781rej_20250906_113920_11049277-7f33-496b-829a-1400d2db40d3.json",
+      "strategy": "rbcr",
+      "rejections": 781,
+      "admitted": 984,
+      "success": true
+    }
+  ],
+  "strategy_breakdown": {
+    "rbcr2": 6,
+    "rbcr": 3
+  },
+  "best_performance": 771,
+  "avg_rejections": 790.2222222222222
+}

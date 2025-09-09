@@ -113,13 +113,18 @@ class BerghainSequenceDataset(Dataset):
     
     def _load_sequences(self, game_logs_path: Path, elite_only: bool, scenario: int):
         """Load and preprocess game sequences."""
-        target_path = game_logs_path / "elite_games" if elite_only else game_logs_path / "game_logs_filtered"
-        
-        if not target_path.exists():
-            target_path = game_logs_path / "game_logs"
+        if elite_only:
+            # If elite_only, use the provided path directly (it should point to elite games)
+            target_path = game_logs_path
+        else:
+            # For non-elite, look for filtered data first, then regular game_logs
+            target_path = game_logs_path / "game_logs_filtered"
+            if not target_path.exists():
+                target_path = game_logs_path / "game_logs"
         
         pattern = f"events_scenario_{scenario}_*.jsonl"
         log_files = list(target_path.glob(pattern))
+        
         
         for log_file in log_files:
             # Parse game log

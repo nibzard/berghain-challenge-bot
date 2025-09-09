@@ -19,7 +19,7 @@ settings:
   buffer_percentage: 1.35
 
   # Whether to enable high score checking by default
-  enabled: true
+  enabled: false
 
   # Log level for high score messages
   log_early_termination: true

@@ -1,0 +1,84 @@
+# Random Walk Hybrid Strategy Configuration
+# Combines best performing strategies with adaptive selection using Thompson Sampling
+
+name: "Random Walk Hybrid"
+description: "Adaptive strategy that uses random walk to intelligently select between proven top performers"
+version: "1.0"
+
+parameters:
+  # Phase thresholds - when to transition between game phases
+  early_phase_cutoff: 0.3    # Early phase: 0-30% capacity used
+  mid_phase_cutoff: 0.7      # Mid phase: 30-70% capacity used
+                             # Late phase: 70-100% capacity used
+
+  # Strategy weights (initial probabilities for each phase)
+  # Strategies: [RBCR2, Perfect, Ultimate3, DualDeficit]
+  early_weights: [0.5, 0.3, 0.1, 0.1]   # Early: favor exploration (RBCR2)
+  mid_weights: [0.2, 0.5, 0.2, 0.1]     # Mid: favor optimization (Perfect)  
+  late_weights: [0.1, 0.2, 0.6, 0.1]    # Late: favor constraint rush (Ultimate3)
+
+  # Thompson Sampling parameters for adaptive learning
+  thompson_alpha: 1.0        # Prior success count (higher = more optimistic)
+  thompson_beta: 1.0         # Prior failure count (higher = more pessimistic)
+  learning_window: 20        # Number of decisions to track per strategy
+  adaptation_rate: 0.1       # How fast to adapt weights (0.0 = no adaptation, 1.0 = full adaptation)
+
+  # Safety parameters
+  min_strategy_prob: 0.05           # Minimum probability for any strategy (prevents total abandonment)
+  constraint_boost_factor: 0.3     # Boost for emergency strategy when constraints at risk
+  emergency_override_threshold: 100 # Deficit level that triggers emergency strategy boost
+
+  # Strategy mixing - blend decisions from multiple strategies
+  enable_strategy_mixing: true                # Allow mixing strategies for better decisions
+  mixing_confidence_threshold: 0.7           # Only mix when top strategy confidence < this
+  max_strategies_in_mix: 2                   # Maximum strategies to blend together
+
+  # Random walk parameters - control strategy selection dynamics  
+  walk_temperature: 0.1       # Temperature for probability sampling (lower = more decisive)
+  walk_momentum: 0.9          # Momentum for strategy transitions (higher = more sticky)
+  walk_exploration: 0.05      # Exploration rate for random strategy selection
+
+# Expected performance characteristics
+performance:
+  target_rejections: 700      # Target: beat current best of 754
+  expected_success_rate: 0.95 # Aim for 95% constraint satisfaction
+  convergence_games: 50       # Games needed to learn optimal strategy mix
+
+# Strategy component details
+components:
+  rbcr2:
+    strength: "Early game exploration and acceptance rate management"
+    weakness: "Can be too conservative in late game"
+    best_phase: "early"
+    
+  perfect:
+    strength: "Mathematical optimization and balanced decision making"
+    weakness: "Complex logic can be suboptimal under time pressure"  
+    best_phase: "mid"
+    
+  ultimate3:
+    strength: "Aggressive dual acceptance and constraint satisfaction"
+    weakness: "May be too aggressive in early game"
+    best_phase: "late"
+    
+  dual_deficit:
+    strength: "Reliable constraint satisfaction and safety"
+    weakness: "Higher rejection count than optimal strategies"
+    best_phase: "emergency"
+
+# Tuning notes
+tuning:
+  # If success rate is low: 
+  # - Increase constraint_boost_factor
+  # - Decrease adaptation_rate  
+  # - Increase thompson_alpha for safety strategies
+  
+  # If rejection count is high:
+  # - Increase adaptation_rate
+  # - Enable strategy mixing
+  # - Adjust phase cutoffs for earlier optimization
+  
+  # If strategy selection is too random:
+  # - Increase walk_momentum
+  # - Decrease walk_exploration
+  # - Increase mixing_confidence_threshold

@@ -1,0 +1,45 @@
+name: "Elite_LSTM"
+description: "LSTM strategy trained on elite game data using supervised learning"
+
+parameters:
+  # Model configuration
+  model_path: "models/elite_lstm_best.pth"  # Path to trained model
+  device: "cpu"  # Device for inference ('cpu' or 'cuda')
+  fallback_strategy: "greedy"  # Fallback when model unavailable
+  sequence_length: 100  # Context window for decisions
+  
+  # Model architecture (for reference)
+  input_dim: 15
+  hidden_dim: 256
+  lstm_layers: 3
+  dropout: 0.3
+
+# Strategy metadata
+strategy_type: "supervised_learning"
+trained_on_scenario: 1
+requires_model_file: true
+
+# Performance expectations (update after testing)
+expected_success_rate: 0.90
+expected_rejection_count: 650
+training_games: 119
+
+# Notes about the strategy
+notes: |
+  This strategy uses a supervised LSTM model trained on 119 elite games.
+  The model achieved 97.48% validation accuracy on elite game decision sequences.
+  
+  Key features:
+  - Trained on high-quality elite game data
+  - Uses 15 enhanced features including constraint urgency and strategic value
+  - Maintains decision context with 100-step sequence length
+  - Enhanced LSTM with 3 layers and 256 hidden dimensions
+  
+  Training approach:
+  - Supervised learning on expert demonstrations
+  - Elite games collected from best-performing strategies
+  - Enhanced feature engineering with temporal dynamics
+  
+  Usage:
+  1. Ensure model file exists at models/elite_lstm_best.pth
+  2. Run with: python main.py run --scenario 1 --strategy elite_lstm

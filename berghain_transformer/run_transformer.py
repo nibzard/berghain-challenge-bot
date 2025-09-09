@@ -35,6 +35,7 @@ def train_model(config: dict, args):
     
     # Set up paths
     game_logs_path = Path(config['paths']['game_logs'])
+    elite_games_path = Path(config['paths']['elite_games'])
     models_dir = Path(config['paths']['models_dir'])
     models_dir.mkdir(parents=True, exist_ok=True)
     
@@ -49,7 +50,7 @@ def train_model(config: dict, args):
     
     # Train model
     model, encoder = train_behavioral_cloning(
-        game_logs_path=game_logs_path,
+        game_logs_path=elite_games_path if config['training']['data']['elite_only'] else game_logs_path,
         save_dir=save_dir,
         model_type=config['model']['type'],
         num_epochs=config['training']['num_epochs'],

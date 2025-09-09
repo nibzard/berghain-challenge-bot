@@ -1,0 +1,29 @@
+{
+  "tier": "ultra_elite",
+  "description": "Ultra-elite successful games",
+  "max_rejections": 778,
+  "min_admitted": 900,
+  "game_count": 5,
+  "avg_rejections": 765.6,
+  "min_rejections": 750,
+  "avg_admitted": 991.8,
+  "strategies": {
+    "rbcr2": 2,
+    "constraint_focused_lstm": 1,
+    "ultra_elite_lstm": 2
+  },
+  "file_paths": [
+    "verified_elite_data/ultra_elite/game_rbcr2_36277_20250906_114902_b2a83ca3.json",
+    "verified_elite_data/ultra_elite/game_rbcr2_50524_20250906_115732_df54e20e.json",
+    "verified_elite_data/ultra_elite/game_constraint_focused_lstm_000_20250906_153814_c57e1bf8.json",
+    "verified_elite_data/ultra_elite/game_ultra_elite_lstm_000_20250907_121915_e7b83a89.json",
+    "verified_elite_data/ultra_elite/game_ultra_elite_lstm_026_20250907_154448_b50822df.json"
+  ],
+  "best_games": [
+    "game_logs/game_ultra_elite_lstm_026_20250907_154448_b50822df.json",
+    "game_logs/game_ultra_elite_lstm_000_20250907_121915_e7b83a89.json",
+    "game_logs/game_rbcr2_36277_20250906_114902_b2a83ca3.json",
+    "game_logs/game_constraint_focused_lstm_000_20250906_153814_c57e1bf8.json",
+    "game_logs/game_rbcr2_50524_20250906_115732_df54e20e.json"
+  ]
+}

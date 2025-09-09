@@ -1,0 +1,75 @@
+# Constraint-Focused LSTM Strategy Configuration
+# Ultra-elite LSTM enhanced with mandatory constraint satisfaction logic
+# Designed to achieve exactly 600/600 constraints + 1000 capacity
+
+name: "Constraint-Focused LSTM"
+description: "Ultra-elite LSTM with constraint satisfaction override logic"
+category: "neural_network_hybrid"
+difficulty_rating: 9.8
+expected_performance:
+  scenario_1: 800  # Target: ~800 rejections with 600/600 constraints met (improved from 875)
+
+# Core Parameters
+parameters:
+  # Model Configuration
+  model_path: "models/fixed_ultra_elite_lstm_best.pth"
+  device: "cpu"
+  
+  # Sequence Processing
+  sequence_length: 80
+  confidence_threshold: 0.5
+  adaptive_confidence: true
+  
+  # Constraint Enforcement (optimized thresholds)
+  emergency_override: true
+  critical_threshold: 30
+  high_priority_threshold: 75
+  
+# Constraint Logic Parameters (optimized for better capacity utilization)
+constraint_logic:
+  # Emergency: Must accept when constraint in immediate danger (more aggressive)
+  emergency_capacity_ratio: 0.8  # Accept if capacity_remaining <= constraint_deficit * 0.8
+  
+  # Critical: Very low capacity, need dual attributes (reduced threshold)
+  critical_capacity_threshold: 30
+  
+  # High Priority: Large deficit with needed attribute (reduced threshold)
+  high_priority_deficit_threshold: 75
+  
+  # Strategic: Don't need attributes and capacity tight (reduced threshold) 
+  selective_capacity_threshold: 50
+  
+  # Model Override: Override model reject if we need attributes (reduced threshold)
+  override_deficit_threshold: 30
+  
+  # Adaptive Confidence: Dynamic threshold based on game progress
+  adaptive_confidence_thresholds:
+    early_game: 0.7      # 0-500 decisions: very selective
+    mid_game: 0.6        # 500+ decisions, >200 capacity: moderate
+    late_mid_game: 0.4   # >100 capacity: less selective
+    end_game: 0.3        # <=100 capacity: accept readily
+
+# Decision Priority Hierarchy
+decision_priorities:
+  1: "Emergency constraint satisfaction (capacity <= deficit)"
+  2: "No capacity remaining (mandatory reject)"
+  3: "Strategic rejection (constraints met, selective)"
+  4: "LSTM model prediction"
+  5: "Constraint-aware model override"
+  6: "Fallback constraint logic"
+
+# Performance Notes
+performance_notes:
+  - "Optimized for <800 rejections while meeting constraints"
+  - "Uses adaptive confidence threshold for better capacity utilization"
+  - "Implements precise constraint targeting (exactly 600/600)"
+  - "Reduced emergency thresholds for more aggressive acceptance"
+  - "Expected: 600/600 constraints + 980-1000 admitted + ~800 rejections"
+  
+# Optimization History
+optimization_notes:
+  - "Phase 1: Reduced emergency thresholds from 100->75, 50->30"
+  - "Phase 1: Added adaptive confidence system (0.7->0.3 progression)"
+  - "Phase 1: Implemented precise constraint targeting logic"
+  - "Phase 1: Reduced strategic reject threshold from 100->50"
+  - "Target: Beat 875 baseline, achieve ~800 rejections"

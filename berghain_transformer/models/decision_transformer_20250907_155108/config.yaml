@@ -1,0 +1,59 @@
+api:
+  scenario: 1
+  url: https://berghain.challenges.listenlabs.ai
+evaluation:
+  games_per_temperature: 5
+  num_games: 20
+  num_workers: 4
+  temperature_sweep:
+  - 0.5
+  - 0.7
+  - 0.9
+  - 1.0
+  - 1.2
+  - 1.5
+inference:
+  device: cuda
+  dropout_samples: 10
+  max_admitted: 1000
+  max_rejected: 20000
+  max_seq_length: 100
+  recent_decisions_history: 10
+  temperature: 1.0
+  top_k: 1
+  uncertainty_threshold: 0.6
+model:
+  action_dim: 2
+  d_ff: 1024
+  d_model: 256
+  dropout: 0.1
+  max_seq_length: 100
+  n_heads: 8
+  n_layers: 6
+  state_dim: 128
+  type: decision_transformer
+paths:
+  checkpoints_dir: ./checkpoints
+  elite_games: ../elite_games_converted
+  game_logs: ../game_logs
+  models_dir: ./models
+  results_dir: ./results
+training:
+  batch_size: 32
+  data:
+    elite_only: true
+    scenario: 1
+    seq_length: 100
+    stride: 50
+    train_split: 0.9
+  early_stopping_patience: 10
+  learning_rate: 1e-4
+  max_grad_norm: 1.0
+  num_epochs: 10
+  save_frequency: 5
+  warmup_steps: 1000
+  weight_decay: 1e-4
+wandb:
+  enabled: false
+  entity: null
+  project: berghain-transformer

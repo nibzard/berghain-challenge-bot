@@ -19,7 +19,7 @@ training:
   weight_decay: 1e-4
   warmup_steps: 1000
   max_grad_norm: 1.0
-  num_epochs: 50
+  num_epochs: 10
   early_stopping_patience: 10
   save_frequency: 5
   
@@ -56,13 +56,13 @@ evaluation:
 
 # API Configuration
 api:
-  url: "https://berghain-trainer-production.up.railway.app"
+  url: "https://berghain.challenges.listenlabs.ai"
   scenario: 1
 
 # Paths
 paths:
   game_logs: "../game_logs"
-  elite_games: "../elite_games"
+  elite_games: "../elite_games_converted"
   models_dir: "./models"
   results_dir: "./results"
   checkpoints_dir: "./checkpoints"

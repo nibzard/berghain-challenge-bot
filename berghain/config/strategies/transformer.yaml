@@ -1,0 +1,19 @@
+name: "transformer"
+description: "Decision Transformer trained on elite games"
+
+# Model configuration
+model_path: "berghain_transformer/models/decision_transformer_20250907_155108/best_model.pt"
+encoder_path: "berghain_transformer/models/decision_transformer_20250907_155108/encoder.pkl"
+max_seq_length: 100
+temperature: 0.05
+
+# Strategy metadata  
+strategy_type: "transformer"
+created_date: "2025-09-07"
+training_data: "elite_games (771-849 rejections)"
+model_architecture: "Decision Transformer (6 layers, 8 heads, 256 d_model)"
+training_accuracy: 55.7
+
+# Performance target
+target_rejections: 754  # Beat current best ultra_elite_lstm
+expected_performance: "770-800 rejections based on training data"

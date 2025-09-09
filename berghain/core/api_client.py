@@ -173,12 +173,9 @@ class BerghainAPIClient:
             else:
                 game_state.complete_game(GameStatus.FAILED)
         
-        # Special handling for capacity edge cases - both 999 and 1000
-        elif game_state.admitted_count >= 999:
-            if game_state.admitted_count >= game_state.target_capacity:
-                logger.info(f"Hit target capacity ({game_state.admitted_count}/{game_state.target_capacity}) but API still shows running")
-            else:
-                logger.info(f"At 999 admissions but API still shows running - potential completion state")
+        # Special handling for capacity edge cases - only at 1000
+        elif game_state.admitted_count >= game_state.target_capacity:
+            logger.info(f"Hit target capacity ({game_state.admitted_count}/{game_state.target_capacity}) but API still shows running")
         
         return response
     
@@ -204,21 +201,28 @@ class BerghainAPIClient:
         return self.make_decision(game_state, 0)  # personIndex 0 is just for status check
     
     def is_game_effectively_complete(self, game_state: GameState) -> bool:
-        """Check if game is effectively complete (handles 999 edge case)."""
+        """Check if game is effectively complete (only at actual capacity)."""
         try:
-            # If we're at 999 or 1000, make a status check to see if game is really done
-            if game_state.admitted_count >= 999:
+            # Only consider complete when we've actually reached target capacity (1000)
+            if game_state.admitted_count >= game_state.target_capacity:
                 response = self.get_game_status(game_state)
                 # If API says running but provides no next person, game is effectively done
                 if response.get("status") == "running" and "nextPerson" not in response:
+                    logger.info(f"Game effectively complete at {game_state.admitted_count}: status=running but no nextPerson")
                     return True
                 # If API explicitly says completed or failed
                 if response.get("status") in ["completed", "failed"]:
+                    logger.info(f"Game explicitly complete at {game_state.admitted_count}: status={response.get('status')}")
                     return True
+            
+            # Never assume completion before reaching actual target capacity
             return False
         except Exception as e:
             logger.warning(f"Could not check if game is effectively complete: {e}")
-            # Default to false to avoid false positives
+            # Only assume complete if we're actually at target capacity and can't check
+            if game_state.admitted_count >= game_state.target_capacity:
+                logger.warning(f"Assuming game complete due to target capacity reached: {game_state.admitted_count}")
+                return True
             return False
     
     def close(self):

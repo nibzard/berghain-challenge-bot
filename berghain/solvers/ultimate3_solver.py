@@ -154,6 +154,11 @@ class Ultimate3Strategy(BaseDecisionStrategy):
     def should_accept(self, person: Person, game_state: GameState) -> Tuple[bool, str]:
         self._decision_count += 1
         
+        # CRITICAL: Constraint safety override - this overrides all other logic
+        constraint_override, constraint_reason = self._constraint_safety_check(person, game_state)
+        if constraint_override is not None:
+            return constraint_override, f"ULTIMATE3_CONSTRAINT_OVERRIDE: {constraint_reason}"
+        
         if self.is_emergency_mode(game_state):
             return True, "ultimate3_emergency"
 
@@ -231,3 +236,48 @@ class Ultimate3Strategy(BaseDecisionStrategy):
         
         # Fallback
         return False, "ultimate3_default_reject"
+
+    def _constraint_safety_check(self, person: Person, game_state: GameState) -> Tuple[Optional[bool], str]:
+        """
+        Critical constraint safety check - overrides all other logic.
+        Returns (None, reason) if no override needed.
+        Returns (True/False, reason) if override is required.
+        """
+        has_young = person.has_attribute('young')
+        has_well_dressed = person.has_attribute('well_dressed')
+        
+        # Get current constraint status
+        young_current = game_state.admitted_attributes.get('young', 0)
+        well_dressed_current = game_state.admitted_attributes.get('well_dressed', 0)
+        capacity_remaining = game_state.target_capacity - game_state.admitted_count
+        
+        # Calculate deficits
+        young_deficit = max(0, 600 - young_current)
+        well_dressed_deficit = max(0, 600 - well_dressed_current)
+        
+        # MANDATORY ACCEPT: Critical constraint situation
+        if capacity_remaining <= max(young_deficit, well_dressed_deficit):
+            # Running out of capacity and still need constraints
+            if young_deficit > 0 and has_young:
+                return True, f"MUST_ACCEPT_young_deficit={young_deficit}_cap={capacity_remaining}"
+            if well_dressed_deficit > 0 and has_well_dressed:
+                return True, f"MUST_ACCEPT_well_dressed_deficit={well_dressed_deficit}_cap={capacity_remaining}"
+            # If we need both and person has both
+            if young_deficit > 0 and well_dressed_deficit > 0 and has_young and has_well_dressed:
+                return True, f"MUST_ACCEPT_dual_needed_y={young_deficit}_w={well_dressed_deficit}_cap={capacity_remaining}"
+        
+        # MANDATORY REJECT: Would make constraint satisfaction impossible
+        if capacity_remaining > 0:
+            # Check if accepting this person would use capacity we need for constraints
+            remaining_after = capacity_remaining - 1
+            if remaining_after < (young_deficit + well_dressed_deficit):
+                # Only allow if this person helps with constraints
+                if not ((young_deficit > 0 and has_young) or (well_dressed_deficit > 0 and has_well_dressed)):
+                    return False, f"MUST_REJECT_constraint_safety_y_need={young_deficit}_w_need={well_dressed_deficit}_cap_after={remaining_after}"
+        
+        # CAPACITY FILL: If constraints are met, fill remaining capacity
+        if young_deficit == 0 and well_dressed_deficit == 0 and capacity_remaining > 0:
+            return True, f"FILL_CAPACITY_constraints_met_cap={capacity_remaining}"
+        
+        # No override needed
+        return None, "no_constraint_override"

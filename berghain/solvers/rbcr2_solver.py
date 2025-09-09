@@ -268,6 +268,11 @@ class RBCR2Strategy(BaseDecisionStrategy):
 
     def should_accept(self, person: Person, game_state: GameState) -> Tuple[bool, str]:
         """Main decision logic with enhanced dual-based pricing."""
+        # CRITICAL: Constraint safety override - this overrides all other logic
+        constraint_override, constraint_reason = self._constraint_safety_check(person, game_state)
+        if constraint_override is not None:
+            return constraint_override, f"RBCR2_CONSTRAINT_OVERRIDE: {constraint_reason}"
+        
         if self.is_emergency_mode(game_state):
             return True, "rbcr2_emergency_mode"
 
@@ -323,6 +328,14 @@ class RBCR2Strategy(BaseDecisionStrategy):
         is_w = (a_w in attrs)
         shortage = game_state.constraint_shortage()
         
+        # CRITICAL FIX: At 999 capacity, accept anyone with needed attributes
+        capacity_remaining = game_state.target_capacity - game_state.admitted_count
+        if capacity_remaining == 1:
+            if is_y and shortage.get(a_y, 0) > 0:
+                return True, "rbcr2_final_need_y_at_999"
+            if is_w and shortage.get(a_w, 0) > 0:
+                return True, "rbcr2_final_need_w_at_999"
+        
         # Accept if strictly needed
         if is_y and shortage.get(a_y, 0) > 0:
             return True, "rbcr2_single_need_y"
@@ -359,12 +372,16 @@ class RBCR2Strategy(BaseDecisionStrategy):
         rw = next(c.min_count for c in gs.constraints if c.attribute == a_w)
         dy = max(0, ry - cy)
         dw = max(0, rw - cw)
-        s = max(0, gs.target_capacity - (gs.admitted_count + 1))
+        s = max(0, gs.target_capacity - gs.admitted_count)
         
         if dy == 0 and dw == 0:
             return True
+        # CRITICAL FIX: Don't reject at 999 - allow the final admission
         if s <= 0:
             return False
+        # Special case: At 999, accept anyone with needed attributes
+        if s == 1 and (dy > 0 or dw > 0):
+            return True
 
         # Use oracle if available
         if self._oracle is not None:
@@ -504,3 +521,48 @@ class RBCR2Strategy(BaseDecisionStrategy):
         except Exception as e:
             # Log the error but don't crash the game
             print(f"Warning: Failed to update duals: {e}")
+
+    def _constraint_safety_check(self, person: Person, game_state: GameState) -> Tuple[Optional[bool], str]:
+        """
+        Critical constraint safety check - overrides all other logic.
+        Returns (None, reason) if no override needed.
+        Returns (True/False, reason) if override is required.
+        """
+        has_young = person.has_attribute('young')
+        has_well_dressed = person.has_attribute('well_dressed')
+        
+        # Get current constraint status
+        young_current = game_state.admitted_attributes.get('young', 0)
+        well_dressed_current = game_state.admitted_attributes.get('well_dressed', 0)
+        capacity_remaining = game_state.target_capacity - game_state.admitted_count
+        
+        # Calculate deficits
+        young_deficit = max(0, 600 - young_current)
+        well_dressed_deficit = max(0, 600 - well_dressed_current)
+        
+        # MANDATORY ACCEPT: Critical constraint situation
+        if capacity_remaining <= max(young_deficit, well_dressed_deficit):
+            # Running out of capacity and still need constraints
+            if young_deficit > 0 and has_young:
+                return True, f"MUST_ACCEPT_young_deficit={young_deficit}_cap={capacity_remaining}"
+            if well_dressed_deficit > 0 and has_well_dressed:
+                return True, f"MUST_ACCEPT_well_dressed_deficit={well_dressed_deficit}_cap={capacity_remaining}"
+            # If we need both and person has both
+            if young_deficit > 0 and well_dressed_deficit > 0 and has_young and has_well_dressed:
+                return True, f"MUST_ACCEPT_dual_needed_y={young_deficit}_w={well_dressed_deficit}_cap={capacity_remaining}"
+        
+        # MANDATORY REJECT: Would make constraint satisfaction impossible
+        if capacity_remaining > 0:
+            # Check if accepting this person would use capacity we need for constraints
+            remaining_after = capacity_remaining - 1
+            if remaining_after < (young_deficit + well_dressed_deficit):
+                # Only allow if this person helps with constraints
+                if not ((young_deficit > 0 and has_young) or (well_dressed_deficit > 0 and has_well_dressed)):
+                    return False, f"MUST_REJECT_constraint_safety_y_need={young_deficit}_w_need={well_dressed_deficit}_cap_after={remaining_after}"
+        
+        # CAPACITY FILL: If constraints are met, fill remaining capacity
+        if young_deficit == 0 and well_dressed_deficit == 0 and capacity_remaining > 0:
+            return True, f"FILL_CAPACITY_constraints_met_cap={capacity_remaining}"
+        
+        # No override needed
+        return None, "no_constraint_override"

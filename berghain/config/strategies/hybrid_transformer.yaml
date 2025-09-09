@@ -1,0 +1,48 @@
+name: "Hybrid Transformer"
+description: "Strategy controller that orchestrates existing algorithmic strategies using transformer coordination"
+author: "Claude Code"
+version: "1.0"
+
+parameters:
+  # Strategy controller settings
+  model_path: null  # Path to trained controller model (null = untrained)
+  device: "cpu"     # Device for transformer inference
+  temperature: 0.1  # Temperature for strategy selection (0.0 = deterministic, 1.0 = random)
+  
+  # Strategy orchestration
+  strategy_switch_frequency: 150  # Re-evaluate strategy every N decisions
+  emergency_switch_threshold: 0.6  # Switch if constraint risk exceeds this
+  
+  # Available strategies to orchestrate
+  available_strategies:
+    - "rbcr2"
+    - "perfect" 
+    - "ultimate3"
+    - "ultimate3h"
+    - "dual_deficit"
+    - "ultra_elite_lstm"
+    - "constraint_focused_lstm"
+  
+  # Performance tracking
+  track_strategy_performance: true
+  performance_window: 50  # Track performance over last N decisions
+  
+  # Fallback behavior
+  fallback_strategy: "rbcr2"
+  use_heuristic_fallback: true
+
+# Strategy performance targets
+targets:
+  max_rejections: 850  # Target: beat current best strategies
+  constraint_satisfaction_rate: 1.0  # Must satisfy all constraints
+  consistency_std_dev: 50  # Low variance across games
+
+# Usage notes
+notes: |
+  Hybrid transformer uses an untrained strategy controller by default.
+  The controller learns to select and tune existing proven strategies
+  rather than replacing them. This leverages the best of both worlds:
+  proven algorithmic strategies + adaptive coordination.
+  
+  For better performance, train the controller using:
+  python -m berghain.training.train_strategy_controller

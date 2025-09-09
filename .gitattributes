@@ -1,2 +1,4 @@
 game_logs/*.json filter=lfs diff=lfs merge=lfs -text
 game_logs/*.jsonl filter=lfs diff=lfs merge=lfs -text
+*.pkl filter=lfs diff=lfs merge=lfs -text
+*.pth filter=lfs diff=lfs merge=lfs -text

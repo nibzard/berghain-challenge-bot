@@ -1,0 +1,609 @@
+{
+  "total_games": 100,
+  "successful_games": 0,
+  "avg_rejections": 871.82,
+  "min_rejections": 840,
+  "record_beating_games": 0,
+  "games": [
+    {
+      "filename": "synthetic_862rej_000.json",
+      "rejections": 862,
+      "success": false,
+      "target": 680
+    },
+    {
+      "filename": "synthetic_857rej_001.json",
+      "rejections": 857,
+      "success": false,
+      "target": 680
+    },
+    {
+      "filename": "synthetic_844rej_002.json",
+      "rejections": 844,
+      "success": false,
+      "target": 680
+    },
+    {
+      "filename": "synthetic_873rej_003.json",
+      "rejections": 873,
+      "success": false,
+      "target": 680
+    },
+    {
+      "filename": "synthetic_861rej_004.json",
+      "rejections": 861,
+      "success": false,
+      "target": 680
+    },
+    {
+      "filename": "synthetic_862rej_005.json",
+      "rejections": 862,
+      "success": false,
+      "target": 680
+    },
+    {
+      "filename": "synthetic_862rej_006.json",
+      "rejections": 862,
+      "success": false,
+      "target": 680
+    },
+    {
+      "filename": "synthetic_857rej_007.json",
+      "rejections": 857,
+      "success": false,
+      "target": 680
+    },
+    {
+      "filename": "synthetic_840rej_008.json",
+      "rejections": 840,
+      "success": false,
+      "target": 680
+    },
+    {
+      "filename": "synthetic_849rej_009.json",
+      "rejections": 849,
+      "success": false,
+      "target": 680
+    },
+    {
+      "filename": "synthetic_840rej_010.json",
+      "rejections": 840,
+      "success": false,
+      "target": 680
+    },
+    {
+      "filename": "synthetic_867rej_011.json",
+      "rejections": 867,
+      "success": false,
+      "target": 680
+    },
+    {
+      "filename": "synthetic_854rej_012.json",
+      "rejections": 854,
+      "success": false,
+      "target": 680
+    },
+    {
+      "filename": "synthetic_861rej_013.json",
+      "rejections": 861,
+      "success": false,
+      "target": 680
+    },
+    {
+      "filename": "synthetic_879rej_014.json",
+      "rejections": 879,
+      "success": false,
+      "target": 680
+    },
+    {
+      "filename": "synthetic_860rej_015.json",
+      "rejections": 860,
+      "success": false,
+      "target": 680
+    },
+    {
+      "filename": "synthetic_856rej_016.json",
+      "rejections": 856,
+      "success": false,
+      "target": 680
+    },
+    {
+      "filename": "synthetic_874rej_017.json",
+      "rejections": 874,
+      "success": false,
+      "target": 680
+    },
+    {
+      "filename": "synthetic_874rej_018.json",
+      "rejections": 874,
+      "success": false,
+      "target": 680
+    },
+    {
+      "filename": "synthetic_853rej_019.json",
+      "rejections": 853,
+      "success": false,
+      "target": 680
+    },
+    {
+      "filename": "synthetic_847rej_020.json",
+      "rejections": 847,
+      "success": false,
+      "target": 690
+    },
+    {
+      "filename": "synthetic_862rej_021.json",
+      "rejections": 862,
+      "success": false,
+      "target": 690
+    },
+    {
+      "filename": "synthetic_875rej_022.json",
+      "rejections": 875,
+      "success": false,
+      "target": 690
+    },
+    {
+      "filename": "synthetic_853rej_023.json",
+      "rejections": 853,
+      "success": false,
+      "target": 690
+    },
+    {
+      "filename": "synthetic_848rej_024.json",
+      "rejections": 848,
+      "success": false,
+      "target": 690
+    },
+    {
+      "filename": "synthetic_859rej_025.json",
+      "rejections": 859,
+      "success": false,
+      "target": 690
+    },
+    {
+      "filename": "synthetic_881rej_026.json",
+      "rejections": 881,
+      "success": false,
+      "target": 690
+    },
+    {
+      "filename": "synthetic_864rej_027.json",
+      "rejections": 864,
+      "success": false,
+      "target": 690
+    },
+    {
+      "filename": "synthetic_877rej_028.json",
+      "rejections": 877,
+      "success": false,
+      "target": 690
+    },
+    {
+      "filename": "synthetic_882rej_029.json",
+      "rejections": 882,
+      "success": false,
+      "target": 690
+    },
+    {
+      "filename": "synthetic_886rej_030.json",
+      "rejections": 886,
+      "success": false,
+      "target": 690
+    },
+    {
+      "filename": "synthetic_858rej_031.json",
+      "rejections": 858,
+      "success": false,
+      "target": 690
+    },
+    {
+      "filename": "synthetic_862rej_032.json",
+      "rejections": 862,
+      "success": false,
+      "target": 690
+    },
+    {
+      "filename": "synthetic_869rej_033.json",
+      "rejections": 869,
+      "success": false,
+      "target": 690
+    },
+    {
+      "filename": "synthetic_855rej_034.json",
+      "rejections": 855,
+      "success": false,
+      "target": 690
+    },
+    {
+      "filename": "synthetic_883rej_035.json",
+      "rejections": 883,
+      "success": false,
+      "target": 690
+    },
+    {
+      "filename": "synthetic_843rej_036.json",
+      "rejections": 843,
+      "success": false,
+      "target": 690
+    },
+    {
+      "filename": "synthetic_874rej_037.json",
+      "rejections": 874,
+      "success": false,
+      "target": 690
+    },
+    {
+      "filename": "synthetic_856rej_038.json",
+      "rejections": 856,
+      "success": false,
+      "target": 690
+    },
+    {
+      "filename": "synthetic_872rej_039.json",
+      "rejections": 872,
+      "success": false,
+      "target": 690
+    },
+    {
+      "filename": "synthetic_885rej_040.json",
+      "rejections": 885,
+      "success": false,
+      "target": 690
+    },
+    {
+      "filename": "synthetic_869rej_041.json",
+      "rejections": 869,
+      "success": false,
+      "target": 690
+    },
+    {
+      "filename": "synthetic_870rej_042.json",
+      "rejections": 870,
+      "success": false,
+      "target": 690
+    },
+    {
+      "filename": "synthetic_879rej_043.json",
+      "rejections": 879,
+      "success": false,
+      "target": 690
+    },
+    {
+      "filename": "synthetic_842rej_044.json",
+      "rejections": 842,
+      "success": false,
+      "target": 690
+    },
+    {
+      "filename": "synthetic_868rej_045.json",
+      "rejections": 868,
+      "success": false,
+      "target": 700
+    },
+    {
+      "filename": "synthetic_857rej_046.json",
+      "rejections": 857,
+      "success": false,
+      "target": 700
+    },
+    {
+      "filename": "synthetic_879rej_047.json",
+      "rejections": 879,
+      "success": false,
+      "target": 700
+    },
+    {
+      "filename": "synthetic_861rej_048.json",
+      "rejections": 861,
+      "success": false,
+      "target": 700
+    },
+    {
+      "filename": "synthetic_863rej_049.json",
+      "rejections": 863,
+      "success": false,
+      "target": 700
+    },
+    {
+      "filename": "synthetic_867rej_050.json",
+      "rejections": 867,
+      "success": false,
+      "target": 700
+    },
+    {
+      "filename": "synthetic_870rej_051.json",
+      "rejections": 870,
+      "success": false,
+      "target": 700
+    },
+    {
+      "filename": "synthetic_876rej_052.json",
+      "rejections": 876,
+      "success": false,
+      "target": 700
+    },
+    {
+      "filename": "synthetic_881rej_053.json",
+      "rejections": 881,
+      "success": false,
+      "target": 700
+    },
+    {
+      "filename": "synthetic_865rej_054.json",
+      "rejections": 865,
+      "success": false,
+      "target": 700
+    },
+    {
+      "filename": "synthetic_863rej_055.json",
+      "rejections": 863,
+      "success": false,
+      "target": 700
+    },
+    {
+      "filename": "synthetic_879rej_056.json",
+      "rejections": 879,
+      "success": false,
+      "target": 700
+    },
+    {
+      "filename": "synthetic_879rej_057.json",
+      "rejections": 879,
+      "success": false,
+      "target": 700
+    },
+    {
+      "filename": "synthetic_882rej_058.json",
+      "rejections": 882,
+      "success": false,
+      "target": 700
+    },
+    {
+      "filename": "synthetic_870rej_059.json",
+      "rejections": 870,
+      "success": false,
+      "target": 700
+    },
+    {
+      "filename": "synthetic_878rej_060.json",
+      "rejections": 878,
+      "success": false,
+      "target": 700
+    },
+    {
+      "filename": "synthetic_882rej_061.json",
+      "rejections": 882,
+      "success": false,
+      "target": 700
+    },
+    {
+      "filename": "synthetic_886rej_062.json",
+      "rejections": 886,
+      "success": false,
+      "target": 700
+    },
+    {
+      "filename": "synthetic_873rej_063.json",
+      "rejections": 873,
+      "success": false,
+      "target": 700
+    },
+    {
+      "filename": "synthetic_891rej_064.json",
+      "rejections": 891,
+      "success": false,
+      "target": 700
+    },
+    {
+      "filename": "synthetic_869rej_065.json",
+      "rejections": 869,
+      "success": false,
+      "target": 700
+    },
+    {
+      "filename": "synthetic_866rej_066.json",
+      "rejections": 866,
+      "success": false,
+      "target": 700
+    },
+    {
+      "filename": "synthetic_874rej_067.json",
+      "rejections": 874,
+      "success": false,
+      "target": 700
+    },
+    {
+      "filename": "synthetic_879rej_068.json",
+      "rejections": 879,
+      "success": false,
+      "target": 700
+    },
+    {
+      "filename": "synthetic_856rej_069.json",
+      "rejections": 856,
+      "success": false,
+      "target": 700
+    },
+    {
+      "filename": "synthetic_886rej_070.json",
+      "rejections": 886,
+      "success": false,
+      "target": 700
+    },
+    {
+      "filename": "synthetic_864rej_071.json",
+      "rejections": 864,
+      "success": false,
+      "target": 700
+    },
+    {
+      "filename": "synthetic_877rej_072.json",
+      "rejections": 877,
+      "success": false,
+      "target": 700
+    },
+    {
+      "filename": "synthetic_879rej_073.json",
+      "rejections": 879,
+      "success": false,
+      "target": 700
+    },
+    {
+      "filename": "synthetic_875rej_074.json",
+      "rejections": 875,
+      "success": false,
+      "target": 700
+    },
+    {
+      "filename": "synthetic_883rej_075.json",
+      "rejections": 883,
+      "success": false,
+      "target": 710
+    },
+    {
+      "filename": "synthetic_881rej_076.json",
+      "rejections": 881,
+      "success": false,
+      "target": 710
+    },
+    {
+      "filename": "synthetic_885rej_077.json",
+      "rejections": 885,
+      "success": false,
+      "target": 710
+    },
+    {
+      "filename": "synthetic_895rej_078.json",
+      "rejections": 895,
+      "success": false,
+      "target": 710
+    },
+    {
+      "filename": "synthetic_903rej_079.json",
+      "rejections": 903,
+      "success": false,
+      "target": 710
+    },
+    {
+      "filename": "synthetic_879rej_080.json",
+      "rejections": 879,
+      "success": false,
+      "target": 710
+    },
+    {
+      "filename": "synthetic_897rej_081.json",
+      "rejections": 897,
+      "success": false,
+      "target": 710
+    },
+    {
+      "filename": "synthetic_887rej_082.json",
+      "rejections": 887,
+      "success": false,
+      "target": 710
+    },
+    {
+      "filename": "synthetic_885rej_083.json",
+      "rejections": 885,
+      "success": false,
+      "target": 710
+    },
+    {
+      "filename": "synthetic_894rej_084.json",
+      "rejections": 894,
+      "success": false,
+      "target": 710
+    },
+    {
+      "filename": "synthetic_912rej_085.json",
+      "rejections": 912,
+      "success": false,
+      "target": 710
+    },
+    {
+      "filename": "synthetic_897rej_086.json",
+      "rejections": 897,
+      "success": false,
+      "target": 710
+    },
+    {
+      "filename": "synthetic_882rej_087.json",
+      "rejections": 882,
+      "success": false,
+      "target": 710
+    },
+    {
+      "filename": "synthetic_877rej_088.json",
+      "rejections": 877,
+      "success": false,
+      "target": 710
+    },
+    {
+      "filename": "synthetic_880rej_089.json",
+      "rejections": 880,
+      "success": false,
+      "target": 710
+    },
+    {
+      "filename": "synthetic_893rej_090.json",
+      "rejections": 893,
+      "success": false,
+      "target": 710
+    },
+    {
+      "filename": "synthetic_882rej_091.json",
+      "rejections": 882,
+      "success": false,
+      "target": 710
+    },
+    {
+      "filename": "synthetic_874rej_092.json",
+      "rejections": 874,
+      "success": false,
+      "target": 710
+    },
+    {
+      "filename": "synthetic_886rej_093.json",
+      "rejections": 886,
+      "success": false,
+      "target": 710
+    },
+    {
+      "filename": "synthetic_880rej_094.json",
+      "rejections": 880,
+      "success": false,
+      "target": 710
+    },
+    {
+      "filename": "synthetic_875rej_095.json",
+      "rejections": 875,
+      "success": false,
+      "target": 710
+    },
+    {
+      "filename": "synthetic_880rej_096.json",
+      "rejections": 880,
+      "success": false,
+      "target": 710
+    },
+    {
+      "filename": "synthetic_861rej_097.json",
+      "rejections": 861,
+      "success": false,
+      "target": 710
+    },
+    {
+      "filename": "synthetic_892rej_098.json",
+      "rejections": 892,
+      "success": false,
+      "target": 710
+    },
+    {
+      "filename": "synthetic_891rej_099.json",
+      "rejections": 891,
+      "success": false,
+      "target": 710
+    }
+  ]
+}

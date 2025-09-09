@@ -22,7 +22,7 @@ class TransformerSolver:
         model_path: Path,
         encoder_path: Path,
         config: Optional[Dict[str, Any]] = None,
-        api_url: str = "https://berghain-trainer-production.up.railway.app",
+        api_url: str = "https://berghain.challenges.listenlabs.ai",
         scenario: int = 1,
         temperature: float = 1.0,
         top_k: int = 1,
@@ -55,14 +55,14 @@ class TransformerSolver:
         self.model = self._load_model(model_path)
         self.model.eval()
         
-        # Game state tracking
-        self.reset_game_state()
-        
         # Sequence buffers for transformer input
         self.state_buffer = deque(maxlen=self.max_seq_length)
         self.action_buffer = deque(maxlen=self.max_seq_length)
         self.reward_buffer = deque(maxlen=self.max_seq_length)
         self.rtg_buffer = deque(maxlen=self.max_seq_length)
+        
+        # Game state tracking
+        self.reset_game_state()
     
     def _load_model(self, model_path: Path) -> torch.nn.Module:
         """Load the trained transformer model."""
@@ -73,15 +73,23 @@ class TransformerSolver:
         has_rtg_embedding = any('rtg_embedding' in k for k in state_dict.keys())
         
         if has_rtg_embedding:
+            model_config = self.config.get('model', {})
             model = DecisionTransformer(
                 state_dim=self.encoder.feature_dim,
-                action_dim=2,
+                action_dim=model_config.get('action_dim', 2),
+                n_layers=model_config.get('n_layers', 6),
+                n_heads=model_config.get('n_heads', 8),
+                d_model=model_config.get('d_model', 256),
+                d_ff=model_config.get('d_ff', 1024),
+                dropout=model_config.get('dropout', 0.1),
+                max_seq_length=model_config.get('max_seq_length', 100),
                 use_learned_rtg=True
             )
         else:
             model = BerghainTransformer(
                 state_dim=self.encoder.feature_dim,
                 action_dim=2,
+                max_seq_length=self.config.get('model', {}).get('max_seq_length', 1000),
                 use_value_head=False
             )
         

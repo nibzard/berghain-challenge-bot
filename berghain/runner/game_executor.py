@@ -9,7 +9,7 @@ from datetime import datetime
 from typing import Dict, Any, Optional, Callable
 
 from ..core import GameResult
-from ..solvers import BaseSolver, RarityWeightedStrategy, AdaptiveStrategy
+from ..solvers import BaseSolver, RarityWeightedStrategy
 
 
 logger = logging.getLogger(__name__)
@@ -73,20 +73,21 @@ class GameExecutor:
         name = strategy_name.lower()
         if name in ('conservative', 'aggressive'):
             return RarityWeightedStrategy(base_params)
-        elif name == 'adaptive':
-            return AdaptiveStrategy(base_params)
+        # elif name == 'adaptive':
+        #     return AdaptiveStrategy(base_params)
         else:
             # Try additional strategies if available
             try:
-                from ..solvers import BalancedStrategy, GreedyConstraintStrategy, DiversityFirstStrategy, QuotaTrackerStrategy, DualDeficitController, RBCRStrategy, RBCR2Strategy, DVOStrategy, RamanujanStrategy, UltimateStrategy, Ultimate2Strategy, Ultimate3Strategy, Ultimate3HStrategy, OptimalControlStrategy, OptimalControlFinalStrategy, OptimalControlSafeStrategy, PerfectStrategy, MecStrategy, OGDSStrategy, OGDSSimpleStrategy, ApexStrategy, PECStrategy, PECv2Strategy, LagrangianAdmissionStrategy
-                if name == 'balanced':
-                    return BalancedStrategy(base_params)
-                if name == 'greedy':
-                    return GreedyConstraintStrategy(base_params)
-                if name == 'diversity':
-                    return DiversityFirstStrategy(base_params)
-                if name in ('quota', 'quota_tracker'):
-                    return QuotaTrackerStrategy(base_params)
+                from ..solvers import DualDeficitController, RBCRStrategy, RBCR2Strategy, DVOStrategy, RamanujanStrategy, UltimateStrategy, Ultimate2Strategy, Ultimate3Strategy, Ultimate3HStrategy, OptimalControlStrategy, OptimalControlFinalStrategy, OptimalControlSafeStrategy, PerfectStrategy, ApexStrategy, PECv2Strategy
+                # Archived basic strategies
+                # if name == 'balanced':
+                #     return BalancedStrategy(base_params)
+                # if name == 'greedy':
+                #     return GreedyConstraintStrategy(base_params)
+                # if name == 'diversity':
+                #     return DiversityFirstStrategy(base_params)
+                # if name in ('quota', 'quota_tracker'):
+                #     return QuotaTrackerStrategy(base_params)
                 if name in ('dual', 'dual_deficit', 'dualdeficit'):
                     return DualDeficitController(base_params)
                 if name in ('rbcr', 'bidprice', 'bid_price'):
@@ -113,20 +114,21 @@ class GameExecutor:
                     return OptimalControlSafeStrategy(base_params)
                 if name in ('perfect', 'pbo', 'balance'):
                     return PerfectStrategy(base_params)
-                if name in ('mec', 'exact', 'mathematician'):
-                    return MecStrategy(base_params)
-                if name in ('ogds', 'oracle', 'oracle_gated'):
-                    return OGDSStrategy(base_params)
-                if name in ('ogds_simple', 'ogds2', 'simple_oracle'):
-                    return OGDSSimpleStrategy(base_params)
+                # Archived strategies (moved to archive/ directory)
+                # if name in ('mec', 'exact', 'mathematician'):
+                #     return MecStrategy(base_params)
+                # if name in ('ogds', 'oracle', 'oracle_gated'):
+                #     return OGDSStrategy(base_params)
+                # if name in ('ogds_simple', 'ogds2', 'simple_oracle'):
+                #     return OGDSSimpleStrategy(base_params)
                 if name in ('apex', 'superior', 'hybrid_apex', 'triple_mode'):
                     return ApexStrategy(base_params)
-                if name in ('pec', 'predictive', 'equilibrium', 'predictive_equilibrium'):
-                    return PECStrategy(base_params)
+                # if name in ('pec', 'predictive', 'equilibrium', 'predictive_equilibrium'):
+                #     return PECStrategy(base_params)
                 if name in ('pec_v2', 'pec2', 'predictive_v2', 'improved_pec'):
                     return PECv2Strategy(base_params)
-                if name in ('lagrangian_admission', 'lagrangian', 'dual_pricing', 'bid_price_theory', 'admission_control'):
-                    return LagrangianAdmissionStrategy(base_params)
+                # if name in ('lagrangian_admission', 'lagrangian', 'dual_pricing', 'bid_price_theory', 'admission_control'):
+                #     return LagrangianAdmissionStrategy(base_params)
                 # RL LSTM Strategy
                 if name in ('rl_lstm', 'lstm', 'reinforcement', 'neural', 'ai'):
                     try:
@@ -138,6 +140,95 @@ class GameExecutor:
                         )
                     except Exception as e:
                         logger.error(f"Failed to create RL LSTM strategy: {e}")
+                        logger.info("Falling back to RarityWeighted strategy")
+                
+                # RL LSTM Hybrid Strategy
+                if name in ('rl_lstm_hybrid', 'rl_hybrid', 'lstm_hybrid', 'hybrid_rl'):
+                    try:
+                        from ..solvers import RLLSTMHybridStrategy
+                        return RLLSTMHybridStrategy(
+                            model_path=base_params.get('model_path', 'models/lstm_supervised_best.pth'),
+                            device=base_params.get('device', 'cpu'),
+                            confidence_threshold=base_params.get('confidence_threshold', 0.8),
+                            safety_rules=base_params.get('safety_rules', True)
+                        )
+                    except Exception as e:
+                        logger.error(f"Failed to create RL LSTM Hybrid strategy: {e}")
+                        logger.info("Falling back to RarityWeighted strategy")
+                
+                # Elite LSTM Strategy
+                if name in ('elite_lstm', 'elite', 'supervised_lstm', 'elite_supervised'):
+                    try:
+                        from ..solvers import EliteLSTMStrategy
+                        return EliteLSTMStrategy(
+                            model_path=base_params.get('model_path', 'models/elite_lstm_best.pth'),
+                            device=base_params.get('device', 'cpu'),
+                            fallback_strategy=base_params.get('fallback_strategy', 'greedy'),
+                            sequence_length=base_params.get('sequence_length', 100)
+                        )
+                    except Exception as e:
+                        logger.error(f"Failed to create Elite LSTM strategy: {e}")
+                        logger.info("Falling back to RarityWeighted strategy")
+                
+                # Ultra-Elite LSTM Strategy
+                if name in ('ultra_elite_lstm', 'ultra_elite', 'enhanced_lstm', 'ultra_supervised'):
+                    try:
+                        from ..solvers import UltraEliteLSTMStrategy
+                        return UltraEliteLSTMStrategy(
+                            model_path=base_params.get('model_path', 'models/ultra_elite_lstm_best.pth'),
+                            device=base_params.get('device', 'cpu'),
+                            fallback_strategy=base_params.get('fallback_strategy', 'intelligent_greedy'),
+                            sequence_length=base_params.get('sequence_length', 100),
+                            confidence_threshold=base_params.get('confidence_threshold', 0.6)
+                        )
+                    except Exception as e:
+                        logger.error(f"Failed to create Ultra-Elite LSTM strategy: {e}")
+                        logger.info("Falling back to RarityWeighted strategy")
+                
+                # Constraint-Focused LSTM Strategy
+                if name in ('constraint_focused_lstm', 'constraint_lstm', 'focused_lstm', 'constraint_focused'):
+                    try:
+                        from ..solvers import ConstraintFocusedLSTMStrategy
+                        return ConstraintFocusedLSTMStrategy(
+                            model_path=base_params.get('model_path', 'models/fixed_ultra_elite_lstm_best.pth'),
+                            device=base_params.get('device', 'cpu'),
+                            sequence_length=base_params.get('sequence_length', 80),
+                            confidence_threshold=base_params.get('confidence_threshold', 0.5)
+                        )
+                    except Exception as e:
+                        logger.error(f"Failed to create Constraint-Focused LSTM strategy: {e}")
+                        logger.info("Falling back to RarityWeighted strategy")
+                
+                # Transformer Strategy (Dual-Head)
+                if name in ('transformer', 'decision_transformer', 'dt', 'neural_transformer'):
+                    try:
+                        from ..solvers.transformer_solver import TransformerStrategy
+                        # Pass all parameters as strategy_params dict
+                        transformer_params = {
+                            'model_path': base_params.get('model_path', 'berghain_transformer/models/berghain_transformer_deployment.pt'),
+                            'temperature': base_params.get('temperature', 0.3),
+                            'confidence_threshold': base_params.get('confidence_threshold', 0.5)
+                        }
+                        transformer_params.update(base_params)  # Add any other params
+                        return TransformerStrategy(transformer_params)
+                    except Exception as e:
+                        import traceback
+                        logger.error(f"Failed to create Transformer strategy: {e}")
+                        logger.error(f"Full traceback: {traceback.format_exc()}")
+                        logger.info("Falling back to RarityWeighted strategy")
+                
+                # Hybrid Transformer Strategy
+                if name in ('hybrid_transformer', 'hybrid_dt', 'strategy_controller', 'ht'):
+                    try:
+                        from ..solvers.hybrid_transformer_solver import HybridTransformerStrategy
+                        return HybridTransformerStrategy(
+                            model_path=base_params.get('model_path', None),
+                            device=base_params.get('device', 'cpu'),
+                            temperature=base_params.get('temperature', 0.3),
+                            strategy_params=base_params
+                        )
+                    except Exception as e:
+                        logger.error(f"Failed to create Hybrid Transformer strategy: {e}")
                         logger.info("Falling back to RarityWeighted strategy")
             except Exception:
                 pass
@@ -242,6 +333,30 @@ class GameExecutor:
         elif name in ('apex', 'superior', 'hybrid_apex', 'triple_mode'):
             from ..solvers import ApexSolver
             solver = ApexSolver(solver_id, api_client=api_client, enable_high_score_check=enable_high_score_check)
+        elif name in ('random_walk_hybrid', 'rwh', 'adaptive_hybrid', 'thompson_hybrid'):
+            from ..solvers import RandomWalkHybridSolver
+            solver = RandomWalkHybridSolver(solver_id, api_client=api_client, enable_high_score_check=enable_high_score_check)
+        elif name in ('transformer', 'decision_transformer', 'dt', 'neural_transformer'):
+            from ..solvers import TransformerSolver
+            # Get temperature from strategy config
+            temperature = strategy.temperature if hasattr(strategy, 'temperature') else 1.0
+            solver = TransformerSolver(
+                model_path='berghain_transformer/models/berghain_transformer_deployment.pt',
+                temperature=temperature,
+                solver_id=solver_id, 
+                api_client=api_client, 
+                enable_high_score_check=enable_high_score_check
+            )
+        elif name in ('hybrid_transformer', 'hybrid_dt', 'strategy_controller', 'ht'):
+            from ..solvers import HybridTransformerSolver
+            solver = HybridTransformerSolver(
+                solver_id=solver_id,
+                model_path=None,  # Start with untrained controller
+                device='cpu',
+                temperature=0.3,
+                api_client=api_client,
+                enable_high_score_check=enable_high_score_check
+            )
         elif name in ('ogds_simple', 'ogds2', 'simple_oracle'):
             from ..solvers import OGDSSimpleSolver
             solver = OGDSSimpleSolver(solver_id, api_client=api_client, enable_high_score_check=enable_high_score_check)

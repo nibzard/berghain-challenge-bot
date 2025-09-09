@@ -1,0 +1,253 @@
+{
+  "total_files_processed": 12634,
+  "valid_successful_games": 7054,
+  "invalid_failed_games": 5580,
+  "best_performance": 750,
+  "record_beating_potential": false,
+  "tier_distribution": {
+    "ultra_elite": {
+      "count": 5,
+      "avg_rejections": 765.6,
+      "best_rejection": 750,
+      "strategies": {
+        "rbcr2": 2,
+        "constraint_focused_lstm": 1,
+        "ultra_elite_lstm": 2
+      },
+      "training_potential": "low"
+    },
+    "elite": {
+      "count": 81,
+      "avg_rejections": 806.9876543209876,
+      "best_rejection": 781,
+      "strategies": {
+        "ultra_elite_lstm": 4,
+        "rbcr2": 24,
+        "rbcr": 38,
+        "rl": 1,
+        "constraint_focused_lstm": 1,
+        "perfect": 2,
+        "dual": 2,
+        "transformer": 5,
+        "ultimate3": 1,
+        "ultimate3h": 3
+      },
+      "training_potential": "high"
+    },
+    "good": {
+      "count": 278,
+      "avg_rejections": 837.4964028776978,
+      "best_rejection": 821,
+      "strategies": {
+        "transformer": 48,
+        "rbcr": 177,
+        "dual": 8,
+        "constraint_focused_lstm": 7,
+        "ultimate3": 2,
+        "rbcr2": 8,
+        "perfect": 4,
+        "ultimate2": 6,
+        "apex": 5,
+        "rl": 2,
+        "ultra_elite_lstm": 2,
+        "random": 1,
+        "elite_lstm": 2,
+        "RBCR2": 2,
+        "ultimate3h": 4
+      },
+      "training_potential": "high"
+    }
+  },
+  "strategy_performance": {
+    "ultimate2": {
+      "game_count": 279,
+      "avg_rejections": 926.0071684587814,
+      "min_rejections": 825,
+      "max_rejections": 965,
+      "sub_750_count": 0,
+      "record_potential": false
+    },
+    "optimal": {
+      "game_count": 16,
+      "avg_rejections": 931.875,
+      "min_rejections": 878,
+      "max_rejections": 961,
+      "sub_750_count": 0,
+      "record_potential": false
+    },
+    "transformer": {
+      "game_count": 1940,
+      "avg_rejections": 924.8768041237114,
+      "min_rejections": 790,
+      "max_rejections": 999,
+      "sub_750_count": 0,
+      "record_potential": false
+    },
+    "ultra_elite_lstm": {
+      "game_count": 35,
+      "avg_rejections": 877.8,
+      "min_rejections": 750,
+      "max_rejections": 958,
+      "sub_750_count": 0,
+      "record_potential": false
+    },
+    "dual": {
+      "game_count": 481,
+      "avg_rejections": 919.8960498960499,
+      "min_rejections": 810,
+      "max_rejections": 966,
+      "sub_750_count": 0,
+      "record_potential": false
+    },
+    "rbcr": {
+      "game_count": 2477,
+      "avg_rejections": 915.1849010900282,
+      "min_rejections": 781,
+      "max_rejections": 1000,
+      "sub_750_count": 0,
+      "record_potential": false
+    },
+    "RBCR": {
+      "game_count": 18,
+      "avg_rejections": 921.8333333333334,
+      "min_rejections": 857,
+      "max_rejections": 996,
+      "sub_750_count": 0,
+      "record_potential": false
+    },
+    "rbcr2": {
+      "game_count": 154,
+      "avg_rejections": 893.2467532467532,
+      "min_rejections": 771,
+      "max_rejections": 995,
+      "sub_750_count": 0,
+      "record_potential": false
+    },
+    "apex": {
+      "game_count": 368,
+      "avg_rejections": 920.366847826087,
+      "min_rejections": 823,
+      "max_rejections": 965,
+      "sub_750_count": 0,
+      "record_potential": false
+    },
+    "perfect": {
+      "game_count": 323,
+      "avg_rejections": 923.1857585139319,
+      "min_rejections": 815,
+      "max_rejections": 965,
+      "sub_750_count": 0,
+      "record_potential": false
+    },
+    "ultimate3h": {
+      "game_count": 310,
+      "avg_rejections": 924.6322580645161,
+      "min_rejections": 807,
+      "max_rejections": 965,
+      "sub_750_count": 0,
+      "record_potential": false
+    },
+    "ultimate3": {
+      "game_count": 335,
+      "avg_rejections": 925.2686567164179,
+      "min_rejections": 812,
+      "max_rejections": 965,
+      "sub_750_count": 0,
+      "record_potential": false
+    },
+    "rl": {
+      "game_count": 43,
+      "avg_rejections": 914.9069767441861,
+      "min_rejections": 818,
+      "max_rejections": 964,
+      "sub_750_count": 0,
+      "record_potential": false
+    },
+    "hybrid": {
+      "game_count": 12,
+      "avg_rejections": 944.25,
+      "min_rejections": 855,
+      "max_rejections": 989,
+      "sub_750_count": 0,
+      "record_potential": false
+    },
+    "constraint_focused_lstm": {
+      "game_count": 93,
+      "avg_rejections": 901.5483870967741,
+      "min_rejections": 775,
+      "max_rejections": 964,
+      "sub_750_count": 0,
+      "record_potential": false
+    },
+    "adaptive": {
+      "game_count": 19,
+      "avg_rejections": 939.1578947368421,
+      "min_rejections": 915,
+      "max_rejections": 962,
+      "sub_750_count": 0,
+      "record_potential": false
+    },
+    "elite_lstm": {
+      "game_count": 65,
+      "avg_rejections": 932.276923076923,
+      "min_rejections": 832,
+      "max_rejections": 995,
+      "sub_750_count": 0,
+      "record_potential": false
+    },
+    "test": {
+      "game_count": 6,
+      "avg_rejections": 927.5,
+      "min_rejections": 900,
+      "max_rejections": 975,
+      "sub_750_count": 0,
+      "record_potential": false
+    },
+    "pec": {
+      "game_count": 36,
+      "avg_rejections": 934.0,
+      "min_rejections": 860,
+      "max_rejections": 965,
+      "sub_750_count": 0,
+      "record_potential": false
+    },
+    "RBCR2": {
+      "game_count": 19,
+      "avg_rejections": 901.4736842105264,
+      "min_rejections": 846,
+      "max_rejections": 956,
+      "sub_750_count": 0,
+      "record_potential": false
+    },
+    "random": {
+      "game_count": 7,
+      "avg_rejections": 919.4285714285714,
+      "min_rejections": 846,
+      "max_rejections": 952,
+      "sub_750_count": 0,
+      "record_potential": false
+    },
+    "quota": {
+      "game_count": 17,
+      "avg_rejections": 945.0,
+      "min_rejections": 884,
+      "max_rejections": 965,
+      "sub_750_count": 0,
+      "record_potential": false
+    },
+    "greedy": {
+      "game_count": 1,
+      "avg_rejections": 947.0,
+      "min_rejections": 947,
+      "max_rejections": 947,
+      "sub_750_count": 0,
+      "record_potential": false
+    }
+  },
+  "training_recommendations": [
+    "Prioritize ultra_elite_lstm strategy (best: 750 rejections)",
+    "Prioritize rbcr2 strategy (best: 771 rejections)",
+    "Prioritize constraint_focused_lstm strategy (best: 775 rejections)",
+    "Need synthetic data generation - closest to record is 750 rejections"
+  ]
+}

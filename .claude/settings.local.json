@@ -4,7 +4,10 @@
       "Bash(python:*)",
       "Bash(timeout 10 python main.py run:*)",
       "Bash(jq:*)",
-      "Bash(grep:*)"
+      "Bash(grep:*)",
+      "Bash(find:*)",
+      "WebFetch(domain:listenlabs.ai)",
+      "Bash(source:*)"
     ],
     "deny": [],
     "ask": []

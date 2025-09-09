@@ -36,8 +36,8 @@ class BehavioralCloningTrainer:
         # Optimizer
         self.optimizer = optim.AdamW(
             model.parameters(),
-            lr=learning_rate,
-            weight_decay=weight_decay
+            lr=float(learning_rate),
+            weight_decay=float(weight_decay)
         )
         
         # Learning rate scheduler with warmup
@@ -81,10 +81,10 @@ class BehavioralCloningTrainer:
             # Forward pass
             if isinstance(self.model, DecisionTransformer):
                 action_logits = self.model(
-                    states=states,
+                    states=states[:, :-1],   # Match the action sequence length
                     actions=actions[:, :-1],  # Don't include last action for input
                     rewards=rewards[:, :-1],
-                    returns_to_go=returns_to_go
+                    returns_to_go=returns_to_go[:, :-1]
                 )
             else:
                 action_logits, _ = self.model(
@@ -160,10 +160,10 @@ class BehavioralCloningTrainer:
                 # Forward pass
                 if isinstance(self.model, DecisionTransformer):
                     action_logits = self.model(
-                        states=states,
+                        states=states[:, :-1],
                         actions=actions[:, :-1],
                         rewards=rewards[:, :-1],
-                        returns_to_go=returns_to_go
+                        returns_to_go=returns_to_go[:, :-1]
                     )
                 else:
                     action_logits, _ = self.model(

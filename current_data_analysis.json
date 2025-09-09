@@ -1,0 +1,85 @@
+{
+  "analysis_timestamp": "2025-09-08T20:24:43.274668",
+  "total_games_analyzed": 12054,
+  "tier_distribution": {
+    "ultra_elite": {
+      "count": 686,
+      "percentage": 5.691056910569105,
+      "avg_rejections": 649.100583090379,
+      "min_rejections": 62,
+      "max_rejections": 750,
+      "strategies": {
+        "unknown": 686
+      }
+    },
+    "elite": {
+      "count": 166,
+      "percentage": 1.3771362203417954,
+      "avg_rejections": 779.4578313253012,
+      "min_rejections": 751,
+      "max_rejections": 800,
+      "strategies": {
+        "unknown": 166
+      }
+    },
+    "good": {
+      "count": 762,
+      "percentage": 6.321553011448482,
+      "avg_rejections": 827.3241469816273,
+      "min_rejections": 801,
+      "max_rejections": 850,
+      "strategies": {
+        "unknown": 762
+      }
+    },
+    "average": {
+      "count": 5303,
+      "percentage": 43.993695038991206,
+      "avg_rejections": 909.8936451065434,
+      "min_rejections": 851,
+      "max_rejections": 950,
+      "strategies": {
+        "unknown": 5303
+      }
+    },
+    "below_average": {
+      "count": 5137,
+      "percentage": 42.616558818649416,
+      "avg_rejections": 967.7194860813704,
+      "min_rejections": 951,
+      "max_rejections": 1310,
+      "strategies": {
+        "unknown": 5137
+      }
+    }
+  },
+  "strategy_performance": {
+    "unknown": {
+      "total_games": 12054,
+      "avg_rejections": 912.679193628671,
+      "min_rejections": 62,
+      "best_performances": [
+        62,
+        529,
+        538,
+        542,
+        543
+      ],
+      "success_rate": 56.16392898622864
+    }
+  },
+  "overall_stats": {
+    "avg_rejections": 912.679193628671,
+    "min_rejections": 62,
+    "ultra_elite_target_met": true,
+    "record_beat_games": 639
+  },
+  "training_recommendations": {
+    "primary_training_data": [
+      "Use 686 ultra-elite games as primary training set"
+    ],
+    "augmentation_targets": [],
+    "pattern_analysis": [],
+    "architecture_suggestions": []
+  }
+}

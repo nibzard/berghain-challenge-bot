@@ -37,13 +37,21 @@ def run_games(args):
     else:
         strategies = [s.strip() for s in args.strategy.split(',')]
     
-    # Validate all strategies exist
+    # Validate all strategies exist and apply CLI overrides
     strategy_configs = {}
     for strategy in strategies:
         config = config_manager.get_strategy_config(strategy)
         if not config:
             print(f"❌ Strategy '{strategy}' not found")
             return
+        
+        # Apply CLI temperature override if provided
+        if args.temp is not None:
+            if 'parameters' not in config:
+                config['parameters'] = {}
+            config['parameters']['temperature'] = args.temp
+            print(f"🌡️  Temperature override: {args.temp} for {strategy} strategy")
+        
         strategy_configs[strategy] = config
     
     total_games = args.count * len(strategies)
@@ -312,6 +320,7 @@ def main():
     run_parser.add_argument('--workers', type=int, default=10, help='Parallel workers (default: 10, API calls limited to 10 concurrent)')
     run_parser.add_argument('--no-high-score-check', action='store_true', help='Disable high score checking for early termination')
     run_parser.add_argument('--mode', choices=['local','api'], default='local', help='Backend mode: local simulator or live API (default: local)')
+    run_parser.add_argument('--temp', type=float, help='Temperature for transformer strategy (overrides config file)')
     
     # Monitor command
     monitor_parser = subparsers.add_parser('monitor', help='Start monitoring dashboard')

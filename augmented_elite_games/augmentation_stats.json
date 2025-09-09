@@ -1,0 +1,14 @@
+{
+  "total_augmented_games": 27,
+  "techniques_used": [
+    "strategy_mixing",
+    "trajectory_splice",
+    "strategic_flip",
+    "noise_injection"
+  ],
+  "avg_rejections": 931.4814814814815,
+  "rejection_range": [
+    761,
+    1351
+  ]
+}

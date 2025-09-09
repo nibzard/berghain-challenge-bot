@@ -142,21 +142,21 @@ class BaseSolver:
                 for constraint in game_state.constraints
             )
             
-            # Track if we're stuck at 999 admissions 
-            if game_state.admitted_count == 999:
+            # Track if we're stuck at 1000 admissions 
+            if game_state.admitted_count == 1000:
                 consecutive_999_count += 1
-                if consecutive_999_count > 5:  # Detect stuck at 999 much faster
-                    logger.warning(f"🔄 [{self.solver_id}] Stuck at 999 admissions for {consecutive_999_count} iterations")
-                    if consecutive_999_count > 10:  # Force completion after 10 iterations at 999
+                if consecutive_999_count >= 3:  # Detect stuck at 1000 much faster
+                    logger.warning(f"🔄 [{self.solver_id}] Stuck at 1000 admissions for {consecutive_999_count} iterations")
+                    if consecutive_999_count >= 5:  # Force completion after 5 iterations at 1000
                         if constraints_satisfied:
-                            logger.info(f"🏁 [{self.solver_id}] Force completing game stuck at 999 - constraints satisfied")
+                            logger.info(f"🏁 [{self.solver_id}] Force completing game stuck at 1000 - constraints satisfied")
                             game_state.complete_game(GameStatus.COMPLETED)
                         else:
-                            logger.warning(f"🏁 [{self.solver_id}] Force completing game stuck at 999 - constraints NOT satisfied")
+                            logger.warning(f"🏁 [{self.solver_id}] Force completing game stuck at 1000 - constraints NOT satisfied")
                             game_state.complete_game(GameStatus.FAILED)
                         break
             else:
-                consecutive_999_count = 0  # Reset counter if we're not at 999
+                consecutive_999_count = 0  # Reset counter if we're not at 1000
 
             # Stream API response snapshot (post-update row for append-only logs)
             try:
@@ -178,7 +178,7 @@ class BaseSolver:
             should_check_high_score = (
                 self.high_score_checker and 
                 self.high_score_checker.should_terminate(game_state.rejected_count) and
-                game_state.admitted_count >= game_state.target_capacity  # Only terminate if we've reached 1000 admissions
+                game_state.admitted_count >= 1000  # Only terminate if we've reached exactly 1000 admissions
             )
             
             if should_check_high_score:
@@ -194,7 +194,7 @@ class BaseSolver:
             elif (self.high_score_checker and 
                   self.high_score_checker.should_terminate(game_state.rejected_count) and
                   constraints_satisfied and 
-                  game_state.admitted_count >= 980):  # Very close to 1000
+                  game_state.admitted_count >= 999):  # Very close to 1000
                 logger.info(f"🎯 [{self.solver_id}] High score threshold reached but continuing to fill capacity "
                            f"({game_state.admitted_count}/{game_state.target_capacity}) with constraints satisfied")
             elif (self.high_score_checker and 
@@ -231,21 +231,31 @@ class BaseSolver:
                 person = Person(person_data["personIndex"], person_data["attributes"])
             else:
                 person = None
-                # Special handling for 999 admissions: API may consider this complete even with "running" status
-                if game_state.admitted_count == 999 and response["status"] == "running" and "nextPerson" not in response:
-                    logger.info(f"🏁 [{self.solver_id}] API at 999 admissions with no next person - treating as completion")
+                # Special handling for 1000 admissions: API may consider this complete even with "running" status
+                if game_state.admitted_count >= 1000 and response["status"] == "running" and "nextPerson" not in response:
+                    logger.info(f"🏁 [{self.solver_id}] API at {game_state.admitted_count} admissions with no next person - treating as completion")
                     if constraints_satisfied:
+                        logger.info(f"✅ [{self.solver_id}] Game completed at {game_state.admitted_count} with constraints satisfied")
                         game_state.complete_game(GameStatus.COMPLETED)
                     else:
-                        logger.warning(f"🏁 [{self.solver_id}] Completing at 999 but constraints not satisfied")
+                        logger.warning(f"❌ [{self.solver_id}] Completing at {game_state.admitted_count} but constraints not satisfied")
+                        game_state.complete_game(GameStatus.FAILED)
+                # Handle other no-nextPerson cases for at-capacity scenarios
+                elif game_state.admitted_count >= 1000 and response["status"] == "running" and "nextPerson" not in response:
+                    logger.info(f"🏁 [{self.solver_id}] API at {game_state.admitted_count} admissions (at capacity) with no next person")
+                    if constraints_satisfied:
+                        logger.info(f"✅ [{self.solver_id}] Game completed at {game_state.admitted_count} with constraints satisfied")
+                        game_state.complete_game(GameStatus.COMPLETED)
+                    else:
+                        logger.warning(f"❌ [{self.solver_id}] Game ended at {game_state.admitted_count} with constraints not satisfied")
                         game_state.complete_game(GameStatus.FAILED)
                 # Update final status from API
                 elif response["status"] != "running":
                     status_map = {"completed": GameStatus.COMPLETED, "failed": GameStatus.FAILED}
                     game_state.complete_game(status_map.get(response["status"], GameStatus.FAILED))
             
-            # Additional check for capacity reached (defensive programming)
-            if game_state.admitted_count >= game_state.target_capacity:  # Only at exactly 1000
+            # Additional check for capacity reached (defensive programming) - only at 1000
+            if game_state.admitted_count >= 1000:  # Only complete when we actually reach 1000
                 if game_state.status == GameStatus.RUNNING:
                     logger.info(f"🏁 [{self.solver_id}] Full capacity reached: {game_state.admitted_count}/{game_state.target_capacity}")
                     
@@ -281,13 +291,16 @@ class BaseSolver:
                 
                 person = None
             
-            # Special handling for 999 admissions - only complete if constraints are satisfied AND no next person
-            elif (game_state.admitted_count == 999 and 
+            # Special handling for at-capacity completion - if no next person and at capacity
+            elif (game_state.admitted_count >= 1000 and 
                   game_state.status == GameStatus.RUNNING and 
-                  person is None and 
-                  constraints_satisfied):
-                logger.info(f"🏁 [{self.solver_id}] At 999 admissions with constraints satisfied and no next person - completing")
-                game_state.complete_game(GameStatus.COMPLETED)
+                  person is None):
+                if constraints_satisfied:
+                    logger.info(f"🏁 [{self.solver_id}] At {game_state.admitted_count} admissions with constraints satisfied and no next person - completing")
+                    game_state.complete_game(GameStatus.COMPLETED)
+                else:
+                    logger.warning(f"🏁 [{self.solver_id}] At {game_state.admitted_count} admissions with constraints NOT satisfied and no next person - failing")
+                    game_state.complete_game(GameStatus.FAILED)
                 person = None
             
             # Periodic progress logging

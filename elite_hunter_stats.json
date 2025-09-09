@@ -1,26 +1,26 @@
 {
-  "total_games": 3200,
-  "elite_games": 133,
+  "total_games": 3902,
+  "elite_games": 162,
   "games_per_strategy": {
-    "rbcr": 447,
-    "rbcr2": 397,
-    "optimal": 314,
-    "apex": 314,
-    "dual": 472,
-    "ultimate3": 314,
-    "perfect": 314,
-    "ultimate3h": 314,
-    "ultimate2": 314
+    "rbcr": 541,
+    "rbcr2": 491,
+    "optimal": 384,
+    "apex": 384,
+    "dual": 566,
+    "ultimate3": 384,
+    "perfect": 384,
+    "ultimate3h": 384,
+    "ultimate2": 384
   },
   "elite_per_strategy": {
-    "dual": 6,
-    "rbcr": 90,
-    "rbcr2": 21,
-    "ultimate3": 1,
+    "dual": 9,
+    "rbcr": 107,
+    "rbcr2": 26,
+    "ultimate3": 2,
     "apex": 3,
     "optimal": 0,
     "perfect": 5,
-    "ultimate3h": 3,
+    "ultimate3h": 6,
     "ultimate2": 4
   },
   "best_performance": {
@@ -29,15 +29,15 @@
     "rbcr2": 761,
     "perfect": 815,
     "apex": 823,
-    "ultimate3h": 837,
-    "ultimate3": 839,
+    "ultimate3h": 807,
+    "ultimate3": 812,
     "ultimate2": 834,
     "rbcr": 781
   },
   "start_time": "2025-09-06T11:22:05.044797",
-  "last_elite_time": "2025-09-06T11:52:40.605440",
-  "elite_rate": 0.0415625,
-  "runtime_hours": 0.5167652022222222,
-  "games_per_hour": 6192.367382784605,
-  "elite_per_hour": 257.37026907029565
+  "last_elite_time": "2025-09-06T11:58:14.375474",
+  "elite_rate": 0.041517170681701694,
+  "runtime_hours": 0.6063048222222223,
+  "games_per_hour": 6435.706686136412,
+  "elite_per_hour": 267.19233282328037
 }

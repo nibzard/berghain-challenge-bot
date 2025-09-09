@@ -1,0 +1,156 @@
+{
+  "analysis_timestamp": "2025-09-08T20:25:27.606503",
+  "total_sequences_analyzed": 29,
+  "games_analyzed": 10,
+  "patterns_discovered": {
+    "opening_patterns": [
+      {
+        "strategy": "unknown",
+        "sample_size": 10,
+        "best_admit_rate": 0.5399999999999999,
+        "best_efficiency": 1.1768800780213555,
+        "top_games": [
+          "game_rbcr_000_20250906_114408_e55184ac",
+          "game_optimal_055_20250906_020546_d65e6e8f",
+          "game_optimal_65724_20250906_113748_ae47ed98",
+          "game_optimal_02353_20250906_115646_12416491",
+          "game_ultimate_035_20250906_015636_8dfd3e9f"
+        ],
+        "avg_final_rejections": 442.8
+      }
+    ],
+    "endgame_patterns": [
+      {
+        "sample_size": 10,
+        "optimal_endgame_selectivity": 0.4789999999999999,
+        "optimal_endgame_admit_rate": 0.5210000000000001,
+        "best_endgame_strategies": [
+          "unknown",
+          "unknown",
+          "unknown",
+          "unknown",
+          "unknown",
+          "unknown",
+          "unknown",
+          "unknown",
+          "unknown",
+          "unknown"
+        ],
+        "avg_final_rejections": 498.5
+      }
+    ],
+    "crisis_patterns": [
+      {
+        "general_selectivity": {
+          "sample_size": 9,
+          "best_recovery_rate": 0.4517777777777778,
+          "optimal_reject_rate": 0.737037037037037,
+          "successful_strategies": [
+            "unknown",
+            "unknown",
+            "unknown",
+            "unknown",
+            "unknown",
+            "unknown",
+            "unknown",
+            "unknown",
+            "unknown"
+          ],
+          "avg_final_rejections": 548.2222222222222
+        }
+      }
+    ],
+    "efficiency_patterns": [
+      {
+        "opening": {
+          "sample_size": 10,
+          "top_efficiency_score": 1.1699347990768665,
+          "best_strategies": [
+            "unknown",
+            "unknown",
+            "unknown",
+            "unknown",
+            "unknown",
+            "unknown",
+            "unknown",
+            "unknown",
+            "unknown",
+            "unknown"
+          ],
+          "avg_final_rejections": 498.5
+        },
+        "endgame": {
+          "sample_size": 10,
+          "top_efficiency_score": 1.096830962354104,
+          "best_strategies": [
+            "unknown",
+            "unknown",
+            "unknown",
+            "unknown",
+            "unknown",
+            "unknown",
+            "unknown",
+            "unknown",
+            "unknown",
+            "unknown"
+          ],
+          "avg_final_rejections": 498.5
+        }
+      }
+    ]
+  },
+  "actionable_insights": [
+    {
+      "type": "opening_strategy",
+      "description": "unknown shows excellent opening efficiency (1.18)",
+      "frequency": 10,
+      "performance": 442.8,
+      "examples": [
+        "game_rbcr_000_20250906_114408_e55184ac",
+        "game_optimal_055_20250906_020546_d65e6e8f",
+        "game_optimal_65724_20250906_113748_ae47ed98"
+      ],
+      "recommendation": "Use unknown opening patterns for early game transformer training"
+    },
+    {
+      "type": "crisis_management",
+      "description": "general_selectivity recovery with 0.74 reject rate",
+      "frequency": 9,
+      "performance": 548.2222222222222,
+      "examples": [
+        "unknown",
+        "unknown",
+        "unknown"
+      ],
+      "recommendation": "Create specialized transformer for general_selectivity situations"
+    }
+  ],
+  "transformer_architecture_recommendations": [
+    "Implement early-game specialized transformer head",
+    "Create crisis detection and recovery modules"
+  ],
+  "synthetic_data_generation_targets": [
+    {
+      "pattern_type": "opening_strategy",
+      "target_performance": 442.8,
+      "frequency_boost_needed": 90,
+      "source_examples": [
+        "game_rbcr_000_20250906_114408_e55184ac",
+        "game_optimal_055_20250906_020546_d65e6e8f",
+        "game_optimal_65724_20250906_113748_ae47ed98"
+      ],
+      "generation_priority": "high"
+    },
+    {
+      "pattern_type": "crisis_management",
+      "target_performance": 548.2222222222222,
+      "frequency_boost_needed": 91,
+      "source_examples": [
+        "unknown",
+        "unknown",
+        "unknown"
+      ],
+      "generation_priority": "high"
+    }
+  ]
+}

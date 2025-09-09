@@ -1,0 +1,83 @@
+# Ultra-Elite LSTM Strategy Configuration
+# Enhanced supervised learning approach trained on <800 rejection ultra-elite games
+# Features 35 strategic features, bidirectional LSTM, and attention mechanism
+
+name: "Ultra-Elite LSTM"
+description: "Advanced LSTM trained on ultra-elite games with 35 strategic features and attention"
+category: "neural_network"
+difficulty_rating: 9.5
+expected_performance:
+  scenario_1: 775  # Target: <780 rejections
+  scenario_2: 850
+  scenario_3: 920
+
+# Core Parameters
+parameters:
+  # Model Configuration
+  model_path: "models/fixed_ultra_elite_lstm_best.pth"
+  device: "cpu"  # Change to "cuda" if GPU available
+  
+  # Sequence Processing
+  sequence_length: 80
+  confidence_threshold: 0.5  # Balanced threshold for properly trained model
+  
+  # Fallback Strategy
+  fallback_strategy: "intelligent_greedy"
+  
+  # Advanced Features (35 strategic features)
+  use_enhanced_features: true
+  feature_count: 35
+  
+  # Model Architecture Settings
+  use_attention: true
+  use_positional_encoding: true
+  bidirectional: true
+  hidden_dim: 512
+  num_layers: 3
+  num_heads: 8
+  dropout: 0.2
+
+# Scenario-Specific Adjustments
+scenario_adjustments:
+  "1":
+    confidence_threshold: 0.6
+    sequence_length: 100
+  "2":
+    confidence_threshold: 0.65  # Higher confidence for rare attributes
+    sequence_length: 120
+  "3":
+    confidence_threshold: 0.7   # Highest confidence for complex constraints
+    sequence_length: 150
+
+# Training Data Quality
+training_data:
+  source: "ultra_elite_games"
+  max_rejections: 800
+  avg_rejections: 790
+  total_games: 9
+  augmented_games: 27
+  feature_engineering: "35_strategic_features"
+  
+# Performance Expectations
+performance_notes:
+  - "Trained on games with <800 rejections (vs 827 avg for elite)"
+  - "Uses 35 strategic features including lookahead and risk assessment"
+  - "Bidirectional LSTM with multi-head attention mechanism"
+  - "Quality-weighted loss function prioritizes best examples"
+  - "Expected performance: <780 rejections on scenario 1"
+  
+# Model Architecture Details
+architecture:
+  input_features: 35
+  sequence_processing: "bidirectional_lstm"
+  attention_mechanism: "multi_head_attention"
+  positional_encoding: true
+  feature_categories:
+    - "basic_attributes"
+    - "constraint_progress" 
+    - "resource_management"
+    - "temporal_features"
+    - "lookahead_assessment"
+    - "pattern_recognition"
+    - "dynamic_thresholds"
+    - "strategic_correlation"

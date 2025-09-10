@@ -10,7 +10,8 @@
       "Bash(source:*)",
       "Bash(mv:*)",
       "Bash(git commit:*)",
-      "Bash(git add:*)"
+      "Bash(git add:*)",
+      "Bash(git reset:*)"
     ],
     "deny": [],
     "ask": []
